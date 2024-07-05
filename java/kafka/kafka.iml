@@ -7,8 +7,8 @@
     </content>
     <orderEntry type="jdk" jdkName="21" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="apache.kafka.connect.json" level="project" />
-    <orderEntry type="library" name="apache.kafka.clients" level="project" />
     <orderEntry type="library" name="apache.kafka.streams" level="project" />
+    <orderEntry type="library" name="apache.kafka.clients" level="project" />
+    <orderEntry type="library" name="apache.kafka.connect.json" level="project" />
   </component>
 </module>
