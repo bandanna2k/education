@@ -38,7 +38,7 @@ public class MyProducer {
             do {
                 System.out.println("Menu");
                 System.out.println("1 - Add event");
-                System.out.println("1 - Add lots of events");
+                System.out.println("2 - Add lots of events");
                 System.out.println("0 - Exit");
                 final String input = reader.readLine();
                 menuChoice = Integer.parseInt(input);

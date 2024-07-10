@@ -12,6 +12,7 @@ import org.apache.kafka.streams.kstream.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.UUID;
 
 public class MyStreams
 {
@@ -32,7 +33,7 @@ public class MyStreams
     {
         Properties streamProperties = new Properties();
         streamProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        streamProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, "my-streamer");
+        streamProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, UUID.randomUUID().toString());
         streamProperties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         streamProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
