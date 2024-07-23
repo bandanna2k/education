@@ -18,3 +18,9 @@ docker exec my-kafka /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server 
 
 docker exec my-kafka /opt/kafka/bin/kafka-topics.sh --describe --topic test-topic --bootstrap-server localhost:9092
 ```
+
+# Todo
+
+- Projection
+- Read / Write separation
+- Snapshotting example
