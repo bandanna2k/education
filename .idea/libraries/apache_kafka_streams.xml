@@ -1,6 +1,10 @@
 <component name="libraryTable">
   <library name="apache.kafka.streams" type="repository">
-    <properties maven-id="org.apache.kafka:kafka-streams:3.5.0" />
+    <properties maven-id="org.apache.kafka:kafka-streams:3.5.0">
+      <exclude>
+        <dependency maven-id="org.slf4j:slf4j-api" />
+      </exclude>
+    </properties>
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-streams/3.5.0/kafka-streams-3.5.0.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/3.5.0/kafka-clients-3.5.0.jar!/" />
@@ -8,7 +12,6 @@
       <root url="jar://$MAVEN_REPOSITORY$/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/xerial/snappy/snappy-java/1.1.10.0/snappy-java-1.1.10.0.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.13.5/jackson-annotations-2.13.5.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.13.5/jackson-databind-2.13.5.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.13.5/jackson-core-2.13.5.jar!/" />

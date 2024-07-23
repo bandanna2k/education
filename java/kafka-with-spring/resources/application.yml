@@ -1,0 +1,12 @@
+name: kafka-with-spring
+
+server:
+  port: 9092
+
+spring:
+  kafka:
+    consumer:
+      group-id: default-spring-consumer
+      auto-offset-reset: earliest
+  jackson:
+    date-format: yyyy-MMM-dd

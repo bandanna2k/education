@@ -1,0 +1,29 @@
+<component name="libraryTable">
+  <library name="springframework.kafka.spring" type="repository">
+    <properties maven-id="org.springframework.kafka:spring-kafka:3.2.1">
+      <exclude>
+        <dependency maven-id="org.slf4j:slf4j-api" />
+      </exclude>
+    </properties>
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/kafka/spring-kafka/3.2.1/spring-kafka-3.2.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/6.1.9/spring-context-6.1.9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-aop/6.1.9/spring-aop-6.1.9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-beans/6.1.9/spring-beans-6.1.9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-core/6.1.9/spring-core-6.1.9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-jcl/6.1.9/spring-jcl-6.1.9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-expression/6.1.9/spring-expression-6.1.9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-messaging/6.1.9/spring-messaging-6.1.9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-tx/6.1.9/spring-tx-6.1.9.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/retry/spring-retry/2.0.6/spring-retry-2.0.6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/kafka/kafka-clients/3.7.0/kafka-clients-3.7.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/luben/zstd-jni/1.5.5-6/zstd-jni-1.5.5-6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/xerial/snappy/snappy-java/1.1.10.5/snappy-java-1.1.10.5.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/micrometer/micrometer-observation/1.13.1/micrometer-observation-1.13.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/micrometer/micrometer-commons/1.13.1/micrometer-commons-1.13.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
