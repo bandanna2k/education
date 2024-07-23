@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 public class Withdrawal extends Message
 {
-    private static final String TYPE = "withdrawal";
-
     public BigDecimal amount;
 
     public Withdrawal()
@@ -18,7 +16,7 @@ public class Withdrawal extends Message
     }
     public Withdrawal(BigDecimal value)
     {
-        this.type = TYPE;
+        super();
         amount = value;
     }
 

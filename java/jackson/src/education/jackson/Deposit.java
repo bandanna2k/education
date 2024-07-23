@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 public class Deposit extends Message
 {
-    private static final String TYPE = "deposit";
-
     public BigDecimal amount;
 
     public Deposit()
@@ -18,7 +16,7 @@ public class Deposit extends Message
     }
     public Deposit(BigDecimal value)
     {
-        this.type = TYPE;
+        super();
         amount = value;
     }
 
