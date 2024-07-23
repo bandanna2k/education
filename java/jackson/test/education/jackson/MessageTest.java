@@ -1,5 +1,6 @@
 package education.jackson;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class MessageTest
 {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.ALWAYS);
     private static final ObjectReader MESSAGE_READER = OBJECT_MAPPER.readerFor(Message.class);
 
     @Test
