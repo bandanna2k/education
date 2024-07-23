@@ -1,6 +1,6 @@
 package education.jackson;
 
-public class TestVisitor implements Visitor
+public class TestVisitor implements MessageVisitor
 {
     @Override
     public void visit(Deposit deposit)

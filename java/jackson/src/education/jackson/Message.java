@@ -12,7 +12,7 @@ public abstract class Message
 {
     public String type;
 
-    public abstract void visit(Visitor visitor);
+    public abstract void visit(MessageVisitor visitor);
 
     @Override
     public String toString()

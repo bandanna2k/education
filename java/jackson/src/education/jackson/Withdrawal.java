@@ -7,7 +7,7 @@ public class Withdrawal extends Message
     public BigDecimal amount;
 
     @Override
-    public void visit(Visitor visitor)
+    public void visit(MessageVisitor visitor)
     {
         visitor.visit(this);
     }

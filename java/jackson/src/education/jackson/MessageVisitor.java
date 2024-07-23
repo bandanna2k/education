@@ -1,6 +1,6 @@
 package education.jackson;
 
-public interface Visitor
+public interface MessageVisitor
 {
     default void visit(Deposit deposit) {}
 
