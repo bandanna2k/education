@@ -1,4 +1,4 @@
-package examples.withJson;
+package example.withJson;
 
 public record Event(String name, String description)
 {

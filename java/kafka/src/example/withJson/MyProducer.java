@@ -1,4 +1,4 @@
-package examples.withJson;
+package example.withJson;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,6 +1,7 @@
-package examples;
+package example.withStreams;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -16,7 +17,7 @@ public class MyProducer {
     private final static String BOOTSTRAP_SERVERS = "localhost:9092";
     private final static String TOPIC = "test-topic";
 
-    private org.apache.kafka.clients.producer.Producer<String, String> producer;
+    private Producer<String, String> producer;
 
     public static void main(String[] args)
     {
@@ -33,7 +34,7 @@ public class MyProducer {
             do {
                 System.out.println("Menu");
                 System.out.println("1 - Add event");
-                System.out.println("1 - Add lots of events");
+                System.out.println("2 - Add lots of events");
                 System.out.println("0 - Exit");
                 final String input = reader.readLine();
                 menuChoice = Integer.parseInt(input);
@@ -42,11 +43,13 @@ public class MyProducer {
                 {
                     case 1:
                         addEvent();
+                        producer.flush();
                         break;
                     case 2:
                         for (int i = 0; i < 10; i++) {
                             addEvent();
                         }
+                        producer.flush();
                         break;
                 }
             }
@@ -72,6 +75,7 @@ public class MyProducer {
         producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
         producer = new KafkaProducer<>(producerProps);
     }
 }
