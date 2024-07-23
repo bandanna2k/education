@@ -2,22 +2,26 @@ package education.jackson;
 
 import java.math.BigDecimal;
 
+import static education.jackson.NoAccountId.NO_ACCOUNT_ID;
+
 public class Deposit extends Message
 {
     public BigDecimal amount;
+    public long accountId;
 
     public Deposit()
     {
-        this(BigDecimal.ZERO);
+        this(NO_ACCOUNT_ID, BigDecimal.ZERO);
     }
-    public Deposit(String value)
+    public Deposit(long accountId, String value)
     {
-        this(new BigDecimal(value));
+        this(accountId, new BigDecimal(value));
     }
-    public Deposit(BigDecimal value)
+    public Deposit(long accountId, BigDecimal value)
     {
         super();
-        amount = value;
+        this.amount = value;
+        this.accountId = accountId;
     }
 
     @Override
@@ -27,10 +31,10 @@ public class Deposit extends Message
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Deposit{" +
                 "amount=" + amount +
+                ", accountId=" + accountId +
                 "} " + super.toString();
     }
 }

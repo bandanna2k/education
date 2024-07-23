@@ -2,22 +2,26 @@ package education.jackson;
 
 import java.math.BigDecimal;
 
+import static education.jackson.NoAccountId.NO_ACCOUNT_ID;
+
 public class Withdrawal extends Message
 {
     public BigDecimal amount;
+    public long accountId;
 
     public Withdrawal()
     {
-        this(BigDecimal.ZERO);
+        this(NO_ACCOUNT_ID, BigDecimal.ZERO);
     }
-    public Withdrawal(String value)
+    public Withdrawal(long accountId, String value)
     {
-        this(new BigDecimal(value));
+        this(accountId, new BigDecimal(value));
     }
-    public Withdrawal(BigDecimal value)
+    public Withdrawal(long accountId, BigDecimal value)
     {
         super();
-        amount = value;
+        this.amount = value;
+        this.accountId = accountId;
     }
 
     @Override
@@ -27,10 +31,10 @@ public class Withdrawal extends Message
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Withdrawal{" +
                 "amount=" + amount +
+                ", accountId=" + accountId +
                 "} " + super.toString();
     }
 }

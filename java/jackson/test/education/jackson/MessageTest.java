@@ -22,8 +22,7 @@ public class MessageTest
         {
             final String json;
             {
-                Deposit deposit = new Deposit();
-                deposit.amount = BigDecimal.valueOf(90.02);
+                Deposit deposit = new Deposit(1L, "90.02");
                 json = OBJECT_MAPPER.writeValueAsString(deposit);
 
                 Message message = MESSAGE_READER.readValue(json);
@@ -33,8 +32,7 @@ public class MessageTest
         {
             final String json;
             {
-                Withdrawal withdrawal = new Withdrawal();
-                withdrawal.amount = BigDecimal.valueOf(66.43);
+                Withdrawal withdrawal = new Withdrawal(1, "66.43");
                 json = OBJECT_MAPPER.writeValueAsString(withdrawal);
 
                 Message message = MESSAGE_READER.readValue(json);
@@ -51,6 +49,7 @@ public class MessageTest
             String json = STR."""
                     {
                         "type": "deposit",
+                        "accountId" : "1",
                         "amount" : "50.25"
                     }
                     """;
@@ -61,6 +60,7 @@ public class MessageTest
             String json = STR."""
                     {
                         "type": "withdrawal",
+                        "accountId" : "1",
                         "amount" : "44.77"
                     }
                     """;
@@ -75,6 +75,7 @@ public class MessageTest
         String json = STR."""
                 {
                     "type": "deposit",
+                    "accountId" : "1",
                     "amount" : "50.25"
                 }
                 """;
@@ -83,12 +84,8 @@ public class MessageTest
 
         assertDeposit((Deposit)message, new BigDecimal("50.25"));
 
-
         TestVisitor tester = new TestVisitor();
         message.visit(tester);
-
-//
-//        assertMessage(OBJECT_MAPPER.readerFor(Message.class).readValue(json), new BigDecimal("50.25"));
     }
     private void assertDeposit(Deposit deposit, BigDecimal amount)
     {
