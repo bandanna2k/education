@@ -32,11 +32,15 @@ public class Bank
         streamProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, MessageSerde.class);
 
         final StreamsBuilder streamsBuilder = new StreamsBuilder();
-        KStream<String, Message> textLines = streamsBuilder.stream(TOPIC);
-        textLines.foreach((key, message) ->
-        {
-            System.out.printf("Key: %s, Message: %s%n", key, message);
-        });
+        KStream<String, Message> messageStream = streamsBuilder.stream(TOPIC);
+
+        BankVisitor bankVisitor = new BankVisitor();
+        messageStream.foreach((key, message) -> message.visit(bankVisitor));
+//        messageStream.foreach((key, message) ->
+//        {
+//            message.visit(bankVisitor);
+//            System.out.printf("Key: %s, Message: %s%n", key, message);
+//        });
 
         try (KafkaStreams streams = new KafkaStreams(streamsBuilder.build(), streamProperties))
         {
