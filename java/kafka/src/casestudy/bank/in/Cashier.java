@@ -37,13 +37,14 @@ public class Cashier
         producer = new KafkaProducer<>(producerProps);
 
         int menuChoice;
+        int accountId = 1;
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)))
         {
             do
             {
                 System.out.println("Menu");
-                System.out.println("1 - Add deposit");
-                System.out.println("2 - Add withdrawal");
+                System.out.println("1 - Add deposit for " + accountId);
+                System.out.println("2 - Add withdrawal for " + accountId);
                 System.out.println("0 - Exit");
                 final String input = reader.readLine();
                 menuChoice = Integer.parseInt(input);
@@ -51,15 +52,15 @@ public class Cashier
                 switch (menuChoice)
                 {
                     case 1:
-                        addEvent(new Deposit(String.valueOf(random.nextDouble())));
+                        addEvent(new Deposit(accountId, String.valueOf(random.nextDouble())));
                         break;
                     case 2:
-                        addEvent(new Withdrawal(String.valueOf(random.nextDouble())));
+                        addEvent(new Withdrawal(accountId, String.valueOf(random.nextDouble())));
                         break;
                 }
+                accountId = accountId == 1 ? 2 : 1;
             }
             while (menuChoice > 0);
-
         }
         catch (IOException e)
         {

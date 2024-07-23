@@ -1,7 +1,11 @@
 package casestudy.bank;
 
+import casestudy.bank.projections.Account;
+import casestudy.bank.projections.AccountRepository;
 import casestudy.bank.serde.MessageSerde;
+import education.jackson.Deposit;
 import education.jackson.Message;
+import education.jackson.Withdrawal;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.KafkaStreams;
@@ -10,6 +14,9 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.kstream.KStream;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -34,7 +41,11 @@ public class Bank
         final StreamsBuilder streamsBuilder = new StreamsBuilder();
         KStream<String, Message> messageStream = streamsBuilder.stream(TOPIC);
 
-        BankVisitor bankVisitor = new BankVisitor();
+        final AccountRepository accountRepository = new AccountRepository();
+        accountRepository.addAccount(new Account(1));
+        accountRepository.addAccount(new Account(2));
+
+        BankVisitor bankVisitor = new BankVisitor(accountRepository);
         messageStream.foreach((key, message) -> message.visit(bankVisitor));
 //        messageStream.foreach((key, message) ->
 //        {
@@ -63,12 +74,31 @@ public class Bank
             });
             streams.start();
 
-            System.out.printf("Sleeping%n");
-            Thread.sleep(1_000_000);
-        }
-        catch (InterruptedException e)
-        {
-            throw new RuntimeException(e);
+            int menuChoice;
+            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)))
+            {
+                do
+                {
+                    System.out.println("Menu");
+                    System.out.println("1 - Display accounts");
+                    System.out.println("0 - Exit");
+                    final String input = reader.readLine();
+                    menuChoice = Integer.parseInt(input);
+
+                    switch (menuChoice)
+                    {
+                        case 1:
+                            System.out.println("-- Accounts --");
+                            accountRepository.foreach(System.out::println);
+                            break;
+                    }
+                }
+                while (menuChoice > 0);
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

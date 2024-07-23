@@ -4,22 +4,29 @@ import java.math.BigDecimal;
 
 public class Account
 {
-    public BigDecimal balance;
+    public final long accountId;
+    public BigDecimal balance = BigDecimal.ZERO;
+
+    public Account(final long accountId)
+    {
+        this.accountId = accountId;
+    }
 
     public void deposit(final BigDecimal amount)
     {
-        balance.add(amount);
+        balance = balance.add(amount);
     }
 
     public void withdraw(final BigDecimal amount)
     {
-        balance.subtract(amount);
+        balance = balance.subtract(amount);
     }
 
     @Override
     public String toString() {
         return "Account{" +
-                "balance=" + balance +
+                "accountId=" + accountId +
+                ", balance=" + balance +
                 '}';
     }
 }
