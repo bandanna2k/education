@@ -15,6 +15,34 @@ public class MessageTest
     private static final ObjectReader MESSAGE_READER = OBJECT_MAPPER.readerFor(Message.class);
 
     @Test
+    public void testSerde() throws JsonProcessingException
+    {
+        TestVisitor tester = new TestVisitor();
+        {
+            final String json;
+            {
+                Deposit deposit = new Deposit();
+                deposit.amount = BigDecimal.valueOf(90.02);
+                json = OBJECT_MAPPER.writeValueAsString(deposit);
+
+                Message message = MESSAGE_READER.readValue(json);
+                message.visit(tester);
+            }
+        }
+        {
+            final String json;
+            {
+                Withdrawal withdrawal = new Withdrawal();
+                withdrawal.amount = BigDecimal.valueOf(66.43);
+                json = OBJECT_MAPPER.writeValueAsString(withdrawal);
+
+                Message message = MESSAGE_READER.readValue(json);
+                message.visit(tester);
+            }
+        }
+    }
+
+    @Test
     public void testDeserialisationVisitor() throws JsonProcessingException
     {
         TestVisitor tester = new TestVisitor();
