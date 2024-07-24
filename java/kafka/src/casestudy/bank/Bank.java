@@ -42,8 +42,11 @@ public class Bank
         accountRepository.addAccount(new Account(1));
         accountRepository.addAccount(new Account(2));
 
-        BankVisitor bankVisitor = new BankVisitor(accountRepository);
-        requestStream.foreach((key, message) -> message.visit(bankVisitor));
+        RequestRegistry requestRegistry = new RequestRegistry();
+        requestRegistry.subscribe((RequestRegistry.DepositListener)accountRepository);
+        requestRegistry.subscribe((RequestRegistry.WithdrawalListener)accountRepository);
+
+        requestStream.foreach((key, message) -> message.visit(requestRegistry));
 //        requestStream.foreach((key, request) ->
 //        {
 //            request.visit(bankVisitor);
