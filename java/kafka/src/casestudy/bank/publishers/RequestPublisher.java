@@ -16,7 +16,7 @@ public class RequestPublisher
 
     public void publishRequest(Request request)
     {
-        ProducerRecord<String, Request> record = new ProducerRecord<>(Topics.RESPONSE_TOPIC, request);
+        ProducerRecord<String, Request> record = new ProducerRecord<>(Topics.REQUESTS_TOPIC, request);
         producer.send(record);
         producer.flush();
         System.out.println("Request sent: " + request);

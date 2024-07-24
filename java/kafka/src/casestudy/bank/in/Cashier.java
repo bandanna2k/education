@@ -1,5 +1,6 @@
 package casestudy.bank.in;
 
+import casestudy.bank.publishers.RequestExecutor;
 import casestudy.bank.publishers.RequestPublisher;
 import casestudy.bank.serde.requests.RequestSerializer;
 import casestudy.bank.serde.response.ResponseSerde;
@@ -10,10 +11,9 @@ import education.jackson.response.Balance;
 import education.jackson.response.Error;
 import education.jackson.response.Response;
 import education.jackson.response.ResponseVisitor;
+import io.vertx.core.Vertx;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.KafkaStreams;
@@ -31,7 +31,6 @@ import java.util.Random;
 import java.util.UUID;
 
 import static casestudy.bank.Topics.BOOTSTRAP_SERVERS;
-import static casestudy.bank.Topics.REQUESTS_TOPIC;
 import static casestudy.bank.Topics.RESPONSE_TOPIC;
 import static java.util.UUID.randomUUID;
 
@@ -40,7 +39,7 @@ public class Cashier implements Closeable
     private final Random random = new Random(1);
 
     private KafkaStreams kafkaStreams;
-    private RequestPublisher publisher;
+    private RequestExecutor executor;
 
     public static void main(String[] args)
     {
@@ -59,7 +58,10 @@ public class Cashier implements Closeable
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, RequestSerializer.class.getName());
         final KafkaProducer<String, Request> producer = new KafkaProducer<>(producerProps);
-        publisher = new RequestPublisher(producer);
+
+        final Vertx vertx = Vertx.vertx();
+        final RequestPublisher requestPublisher = new RequestPublisher(producer);
+        executor = new RequestExecutor(vertx, requestPublisher);
     }
 
     private void initKafkaStreams()
@@ -78,13 +80,13 @@ public class Cashier implements Closeable
                 @Override
                 public void visit(final Balance balance)
                 {
-                    System.out.println("Response:" + balance);
+                    executor.onResponse(balance);
                 }
 
                 @Override
                 public void visit(final Error error)
                 {
-                    System.out.println("Response:" + error);
+                    executor.onResponse(error);
                 }
             }));
 //        requestStream.foreach((key, request) ->
@@ -150,7 +152,7 @@ public class Cashier implements Closeable
 
     private void addEvent(Request request)
     {
-        publisher.publishRequest(request);
+        executor.request(request);
         System.out.println("Request sent: " + request);
     }
 
