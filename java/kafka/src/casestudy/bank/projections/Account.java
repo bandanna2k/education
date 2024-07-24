@@ -1,5 +1,7 @@
 package casestudy.bank.projections;
 
+import education.common.result.Result;
+
 import java.math.BigDecimal;
 
 public class Account
@@ -12,22 +14,21 @@ public class Account
         this.accountId = accountId;
     }
 
-    public boolean deposit(final BigDecimal amount)
+    public Result<BigDecimal, String> deposit(final BigDecimal amount)
     {
-        BigDecimal newBalance = balance.add(amount);
-        balance = newBalance;
-        return true;
+        balance = balance.add(amount);
+        return Result.success(balance);
     }
 
-    public boolean withdraw(final BigDecimal amount)
+    public Result<BigDecimal, String> withdraw(final BigDecimal amount)
     {
         BigDecimal newBalance = balance.subtract(amount);
         if(newBalance.compareTo(BigDecimal.ZERO) < 0)
         {
-            return false;
+            return Result.failure("Not enough equity to withdraw.");
         }
         balance = newBalance;
-        return true;
+        return Result.success(balance);
     }
 
     @Override

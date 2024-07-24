@@ -24,13 +24,15 @@ docker exec my-kafka /opt/kafka/bin/kafka-topics.sh --describe --topic test-topi
 What is Kafka?
 - Getting it started
 - Sending strings, receiving strings
+- Because this is testing, Kafka is not persisting between restarts (come back to that)
 
 How to convert strings to objects?
 - JSON Objects and Polymorphism 
 
 What is a projection?
 - This answers, what is the CQRS all about? Where is the line that separates these 2 concepts?
-- Projection can be in memory, can also be your database. E.g. if you are doing crud.
+- Projection can be in memory, can also be your database. E.g. if you are doing crud. 
+  - Oooo, I'm using Kafka docker. I can spin up MySQL (need to see if I can run MySQL in non-persisting mode similar to my kafka)
 - Now we have a database, I can just create a REST service that makes read calls on that database.
 
 You have this command, what if this fails?
@@ -52,6 +54,11 @@ You have this command, what if this fails?
 
 # Todo
 
-- Projection
-- Read / Write separation
+- Stream results on response topic
+- Connect request with response
+- Create REST calls
+
+- Projection DONE
+- Read / Write separation DONE
+- MySQL non-persisting https://medium.com/@pybrarian/mysql-databases-that-dont-retain-data-293bc2ed7f02
 - Snapshotting example

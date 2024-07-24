@@ -2,9 +2,12 @@ package casestudy.bank;
 
 import casestudy.bank.projections.Account;
 import casestudy.bank.projections.AccountRepository;
+import education.common.result.Result;
 import education.jackson.requests.Deposit;
 import education.jackson.requests.RequestVisitor;
 import education.jackson.requests.Withdrawal;
+
+import java.math.BigDecimal;
 
 public class BankVisitor implements RequestVisitor
 {
@@ -20,7 +23,8 @@ public class BankVisitor implements RequestVisitor
     {
         System.out.println("Deposit " + deposit);
         final Account account = accountRepository.getAccount(deposit.accountId);
-        account.deposit(deposit.amount);
+        Result<BigDecimal, String> result = account.deposit(deposit.amount);
+        System.out.println("Deposit result:" + result);
     }
 
     @Override
@@ -28,6 +32,13 @@ public class BankVisitor implements RequestVisitor
     {
         System.out.println("Withdrawal " + withdrawal);
         final Account account = accountRepository.getAccount(withdrawal.accountId);
-        account.withdraw(withdrawal.amount);
+        Result<BigDecimal, String> result = account.withdraw(withdrawal.amount);
+        result.fold(success ->
+        {
+            System.out.println("After withdrawal balance:" + success);
+        }, error ->
+        {
+            System.out.println("Failed to withdraw:" + error);
+        });
     }
 }
