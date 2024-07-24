@@ -1,44 +1,120 @@
 package casestudy.bank.in;
 
-import casestudy.bank.Bank;
-import casestudy.bank.serde.requests.RequestSerde;
 import casestudy.bank.serde.requests.RequestSerializer;
+import casestudy.bank.serde.response.ResponseSerde;
 import education.jackson.requests.Deposit;
 import education.jackson.requests.Request;
 import education.jackson.requests.Withdrawal;
+import education.jackson.response.Balance;
+import education.jackson.response.Error;
+import education.jackson.response.Response;
+import education.jackson.response.ResponseVisitor;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
+import org.apache.kafka.streams.kstream.KStream;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.Random;
+import java.util.UUID;
 
+import static casestudy.bank.Topics.BOOTSTRAP_SERVERS;
+import static casestudy.bank.Topics.REQUESTS_TOPIC;
+import static casestudy.bank.Topics.RESPONSES_TOPIC;
 import static java.util.UUID.randomUUID;
 
-public class Cashier
+public class Cashier implements Closeable
 {
     private final Random random = new Random(1);
 
     private Producer<String, Request> producer;
+    private KafkaStreams kafkaStreams;
 
     public static void main(String[] args)
     {
-        new Cashier().go();
+        try(final Cashier cashier = new Cashier())
+        {
+            cashier.initKafkaProducer();
+            cashier.initKafkaStreams();
+            cashier.startMenu();
+        }
     }
 
-    private void go()
+    private void initKafkaProducer()
     {
         Properties producerProps = new Properties();
-        producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Bank.BOOTSTRAP_SERVERS);
+        producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, RequestSerializer.class.getName());
         producer = new KafkaProducer<>(producerProps);
+    }
 
+    private void initKafkaStreams()
+    {
+            Properties streamProperties = new Properties();
+            streamProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+            streamProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, UUID.randomUUID().toString());
+            streamProperties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+            streamProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, ResponseSerde.class);
+
+            final StreamsBuilder streamsBuilder = new StreamsBuilder();
+            KStream<String, Response> requestStream = streamsBuilder.stream(RESPONSES_TOPIC);
+
+            requestStream.foreach((key, message) -> message.visit(new ResponseVisitor()
+            {
+                @Override
+                public void visit(final Balance balance)
+                {
+                    System.out.println("Response:" + balance);
+                }
+
+                @Override
+                public void visit(final Error error)
+                {
+                    System.out.println("Response:" + error);
+                }
+            }));
+//        requestStream.foreach((key, request) ->
+//        {
+//            request.visit(bankVisitor);
+//            System.out.printf("Key: %s, Message: %s%n", key, request);
+//        });
+
+            kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamProperties);
+
+            System.out.printf("Listening to topic '%s'%n", RESPONSES_TOPIC);
+
+            Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook")
+            {
+                @Override
+                public void run()
+                {
+                    kafkaStreams.close();
+                }
+            });
+
+            kafkaStreams.cleanUp();
+            kafkaStreams.setUncaughtExceptionHandler(throwable ->
+            {
+                throwable.printStackTrace();
+                return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_APPLICATION;
+            });
+            kafkaStreams.start();
+    }
+
+    private void startMenu()
+    {
         int menuChoice;
         int accountId = 1;
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)))
@@ -61,7 +137,6 @@ public class Cashier
                         addEvent(new Withdrawal(randomUUID(), accountId, String.valueOf(random.nextDouble())));
                         break;
                 }
-                accountId = accountId == 1 ? 2 : 1;
             }
             while (menuChoice > 0);
         }
@@ -73,9 +148,15 @@ public class Cashier
 
     private void addEvent(Request request)
     {
-        ProducerRecord<String, Request> record = new ProducerRecord<>(Bank.REQUESTS_TOPIC, request);
+        ProducerRecord<String, Request> record = new ProducerRecord<>(REQUESTS_TOPIC, request);
         producer.send(record);
         producer.flush();
         System.out.println("Request sent: " + request);
+    }
+
+    @Override
+    public void close()
+    {
+        kafkaStreams.close();
     }
 }

@@ -20,6 +20,12 @@ public class Error extends Response
     }
 
     @Override
+    public void visit(final ResponseVisitor visitor)
+    {
+        visitor.visit(this);
+    }
+
+    @Override
     public String toString()
     {
         return "Error{" +

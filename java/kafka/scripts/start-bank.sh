@@ -9,7 +9,7 @@ docker ps
 # Create Topics
 docker exec my-kafka-bank /opt/kafka/bin/kafka-topics.sh --topic bank-requests --bootstrap-server localhost:9092  --create
 docker exec my-kafka-bank /opt/kafka/bin/kafka-topics.sh --topic bank-responses --bootstrap-server localhost:9092 --create \
-    --config cleanup.policy=delete --config file.delete.delay.ms=5000 --config retention.check.interval.ms=5000
+    --config cleanup.policy=delete --config file.delete.delay.ms=5000
 # We are not interested in responses after a certain time. Set a retention period
 docker exec my-kafka-bank /opt/kafka/bin/kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name bank-responses --add-config retention.ms=5000
 

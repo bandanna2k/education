@@ -28,6 +28,8 @@ public abstract class Response
         this.type = this.getClass().getSimpleName().toLowerCase(Locale.ROOT);
     }
 
+    public abstract void visit(ResponseVisitor visitor);
+
     @Override
     public String toString()
     {

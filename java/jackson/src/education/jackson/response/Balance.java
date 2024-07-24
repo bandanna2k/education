@@ -1,5 +1,7 @@
 package education.jackson.response;
 
+import education.jackson.requests.RequestVisitor;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -23,6 +25,12 @@ public class Balance extends Response
         super(uuid);
         this.amount = value;
         this.accountId = accountId;
+    }
+
+    @Override
+    public void visit(final ResponseVisitor visitor)
+    {
+        visitor.visit(this);
     }
 
     @Override

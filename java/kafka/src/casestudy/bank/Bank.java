@@ -24,11 +24,10 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.UUID;
 
+import static casestudy.bank.Topics.REQUESTS_TOPIC;
+
 public class Bank implements Closeable
 {
-    public final static String BOOTSTRAP_SERVERS = "localhost:9092";
-    public final static String REQUESTS_TOPIC = "bank-requests";
-
     private RequestRegistry requestRegistry;
     private AccountRepository accountRepository;
     private Publisher publisher;
@@ -48,7 +47,7 @@ public class Bank implements Closeable
     private void initKafkaProducer()
     {
         Properties producerProps = new Properties();
-        producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Bank.BOOTSTRAP_SERVERS);
+        producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Topics.BOOTSTRAP_SERVERS);
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ResponseSerializer.class.getName());
 
@@ -71,7 +70,7 @@ public class Bank implements Closeable
     private void initKafkaStreams()
     {
         Properties streamProperties = new Properties();
-        streamProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        streamProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, Topics.BOOTSTRAP_SERVERS);
         streamProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, UUID.randomUUID().toString());
         streamProperties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         streamProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, RequestSerde.class);

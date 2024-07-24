@@ -7,7 +7,7 @@ import org.apache.kafka.common.serialization.Serializer;
 
 import java.util.Map;
 
-public class RequestSerde implements Serde<Request>
+public class ResponseSerde implements Serde<Request>
 {
     private Serializer serializer = new ResponseSerializer();
     private Deserializer deserializer = new ResponseDeserializer();
