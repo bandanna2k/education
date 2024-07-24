@@ -1,9 +1,12 @@
 package casestudy.bank.projections;
 
+import casestudy.bank.Publisher;
 import casestudy.bank.RequestRegistry;
 import education.common.result.Result;
 import education.jackson.requests.Deposit;
 import education.jackson.requests.Withdrawal;
+import education.jackson.response.Balance;
+import education.jackson.response.Error;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -12,7 +15,13 @@ import java.util.function.Consumer;
 
 public class AccountRepository implements RequestRegistry.DepositListener, RequestRegistry.WithdrawalListener
 {
-    final Map<Long, Account> accounts = new TreeMap<>();
+    private final Map<Long, Account> accounts = new TreeMap<>();
+    private final Publisher publisher;
+
+    public AccountRepository(Publisher publisher)
+    {
+        this.publisher = publisher;
+    }
 
     public Account getAccount(final long accountId)
     {
@@ -43,6 +52,9 @@ public class AccountRepository implements RequestRegistry.DepositListener, Reque
 
         Account account = accounts.get(deposit.accountId);
         Result<BigDecimal, String> result = account.deposit(deposit.amount);
+
+        publisher.publishResponse(new Balance(deposit.uuid, account.accountId, account.balance));
+
         System.out.println("Deposit result:" + result);
     }
 
@@ -53,12 +65,12 @@ public class AccountRepository implements RequestRegistry.DepositListener, Reque
 
         Account account = accounts.get(withdrawal.accountId);
         Result<BigDecimal, String> result = account.withdraw(withdrawal.amount);
-        result.fold(success ->
+        result.fold(balance ->
         {
-            System.out.println("After withdrawal balance:" + success);
+            publisher.publishResponse(new Balance(withdrawal.uuid, account.accountId, balance));
         }, error ->
         {
-            System.out.println("Failed to withdraw:" + error);
+            publisher.publishResponse(new Error(withdrawal.uuid, error));
         });
     }
 }
