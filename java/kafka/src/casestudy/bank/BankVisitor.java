@@ -2,11 +2,11 @@ package casestudy.bank;
 
 import casestudy.bank.projections.Account;
 import casestudy.bank.projections.AccountRepository;
-import education.jackson.Deposit;
-import education.jackson.MessageVisitor;
-import education.jackson.Withdrawal;
+import education.jackson.requests.Deposit;
+import education.jackson.requests.RequestVisitor;
+import education.jackson.requests.Withdrawal;
 
-public class BankVisitor implements MessageVisitor
+public class BankVisitor implements RequestVisitor
 {
     private final AccountRepository accountRepository;
 

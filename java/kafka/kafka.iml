@@ -14,5 +14,6 @@
     <orderEntry type="library" name="apache.kafka.clients" level="project" />
     <orderEntry type="library" name="apache.kafka.connect.json" level="project" />
     <orderEntry type="module" module-name="jackson" />
+    <orderEntry type="library" name="slf4j.api" level="project" />
   </component>
 </module>

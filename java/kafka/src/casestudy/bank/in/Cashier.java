@@ -1,10 +1,11 @@
 package casestudy.bank.in;
 
 import casestudy.bank.Bank;
-import casestudy.bank.serde.MessageSerializer;
-import education.jackson.Deposit;
-import education.jackson.Message;
-import education.jackson.Withdrawal;
+import casestudy.bank.serde.requests.RequestSerde;
+import casestudy.bank.serde.requests.RequestSerializer;
+import education.jackson.requests.Deposit;
+import education.jackson.requests.Request;
+import education.jackson.requests.Withdrawal;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -17,11 +18,13 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.Random;
 
+import static java.util.UUID.randomUUID;
+
 public class Cashier
 {
     private final Random random = new Random(1);
 
-    private Producer<String, Message> producer;
+    private Producer<String, Request> producer;
 
     public static void main(String[] args)
     {
@@ -33,7 +36,7 @@ public class Cashier
         Properties producerProps = new Properties();
         producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Bank.BOOTSTRAP_SERVERS);
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MessageSerializer.class.getName());
+        producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, RequestSerializer.class.getName());
         producer = new KafkaProducer<>(producerProps);
 
         int menuChoice;
@@ -52,10 +55,10 @@ public class Cashier
                 switch (menuChoice)
                 {
                     case 1:
-                        addEvent(new Deposit(accountId, String.valueOf(random.nextDouble())));
+                        addEvent(new Deposit(randomUUID(), accountId, String.valueOf(random.nextDouble())));
                         break;
                     case 2:
-                        addEvent(new Withdrawal(accountId, String.valueOf(random.nextDouble())));
+                        addEvent(new Withdrawal(randomUUID(), accountId, String.valueOf(random.nextDouble())));
                         break;
                 }
                 accountId = accountId == 1 ? 2 : 1;
@@ -68,16 +71,11 @@ public class Cashier
         }
     }
 
-    private void addEvent(Message message)
+    private void addEvent(Request request)
     {
-        ProducerRecord<String, Message> record = new ProducerRecord<>(Bank.TOPIC, getKey(), message);
+        ProducerRecord<String, Request> record = new ProducerRecord<>(Bank.REQUESTS_TOPIC, request);
         producer.send(record);
         producer.flush();
-        System.out.println("Message sent: " + message);
-    }
-
-    private String getKey()
-    {
-        return String.valueOf(System.currentTimeMillis());
+        System.out.println("Request sent: " + request);
     }
 }

@@ -19,6 +19,27 @@ docker exec my-kafka /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server 
 docker exec my-kafka /opt/kafka/bin/kafka-topics.sh --describe --topic test-topic --bootstrap-server localhost:9092
 ```
 
+# My Story
+
+What is Kafka?
+- Getting it started
+- Sending strings, receiving strings
+
+How to convert strings to objects?
+- JSON Objects and Polymorphism 
+
+What is a projection?
+- This answers, what is the CQRS all about? Where is the line that separates these 2 concepts?
+- Projection can be in memory, can also be your database. E.g. if you are doing crud.
+- Now we have a database, I can just create a REST service that makes read calls on that database.
+
+You have this command, what if this fails?
+- Implement a very LMAXy, async request/response pattern?
+
+
+
+
+
 # Questions
 
 - How do I use Kafka?
