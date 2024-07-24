@@ -1,5 +1,6 @@
 package casestudy.bank.in;
 
+import casestudy.bank.publishers.RequestPublisher;
 import casestudy.bank.serde.requests.RequestSerializer;
 import casestudy.bank.serde.response.ResponseSerde;
 import education.jackson.requests.Deposit;
@@ -31,15 +32,15 @@ import java.util.UUID;
 
 import static casestudy.bank.Topics.BOOTSTRAP_SERVERS;
 import static casestudy.bank.Topics.REQUESTS_TOPIC;
-import static casestudy.bank.Topics.RESPONSES_TOPIC;
+import static casestudy.bank.Topics.RESPONSE_TOPIC;
 import static java.util.UUID.randomUUID;
 
 public class Cashier implements Closeable
 {
     private final Random random = new Random(1);
 
-    private Producer<String, Request> producer;
     private KafkaStreams kafkaStreams;
+    private RequestPublisher publisher;
 
     public static void main(String[] args)
     {
@@ -57,7 +58,8 @@ public class Cashier implements Closeable
         producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, RequestSerializer.class.getName());
-        producer = new KafkaProducer<>(producerProps);
+        final KafkaProducer<String, Request> producer = new KafkaProducer<>(producerProps);
+        publisher = new RequestPublisher(producer);
     }
 
     private void initKafkaStreams()
@@ -69,7 +71,7 @@ public class Cashier implements Closeable
             streamProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, ResponseSerde.class);
 
             final StreamsBuilder streamsBuilder = new StreamsBuilder();
-            KStream<String, Response> requestStream = streamsBuilder.stream(RESPONSES_TOPIC);
+            KStream<String, Response> requestStream = streamsBuilder.stream(RESPONSE_TOPIC);
 
             requestStream.foreach((key, message) -> message.visit(new ResponseVisitor()
             {
@@ -93,7 +95,7 @@ public class Cashier implements Closeable
 
             kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamProperties);
 
-            System.out.printf("Listening to topic '%s'%n", RESPONSES_TOPIC);
+            System.out.printf("Listening to topic '%s'%n", RESPONSE_TOPIC);
 
             Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook")
             {
@@ -148,9 +150,7 @@ public class Cashier implements Closeable
 
     private void addEvent(Request request)
     {
-        ProducerRecord<String, Request> record = new ProducerRecord<>(REQUESTS_TOPIC, request);
-        producer.send(record);
-        producer.flush();
+        publisher.publishRequest(request);
         System.out.println("Request sent: " + request);
     }
 

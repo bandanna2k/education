@@ -1,6 +1,6 @@
 package casestudy.bank.projections;
 
-import casestudy.bank.Publisher;
+import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.RequestRegistry;
 import education.common.result.Result;
 import education.jackson.requests.Deposit;
@@ -16,9 +16,9 @@ import java.util.function.Consumer;
 public class AccountRepository implements RequestRegistry.DepositListener, RequestRegistry.WithdrawalListener
 {
     private final Map<Long, Account> accounts = new TreeMap<>();
-    private final Publisher publisher;
+    private final ResponsePublisher publisher;
 
-    public AccountRepository(Publisher publisher)
+    public AccountRepository(ResponsePublisher publisher)
     {
         this.publisher = publisher;
     }

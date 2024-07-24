@@ -2,6 +2,7 @@ package casestudy.bank;
 
 import casestudy.bank.projections.Account;
 import casestudy.bank.projections.AccountRepository;
+import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.serde.requests.RequestSerde;
 import casestudy.bank.serde.response.ResponseSerializer;
 import education.jackson.requests.Request;
@@ -30,7 +31,7 @@ public class Bank implements Closeable
 {
     private RequestRegistry requestRegistry;
     private AccountRepository accountRepository;
-    private Publisher publisher;
+    private ResponsePublisher publisher;
     private KafkaStreams kafkaStreams;
 
     public static void main(String[] args)
@@ -53,7 +54,7 @@ public class Bank implements Closeable
 
         Producer<String, Response> producer;
         producer = new KafkaProducer<>(producerProps);
-        publisher = new Publisher(producer);
+        publisher = new ResponsePublisher(producer);
     }
 
     private void initBank()
