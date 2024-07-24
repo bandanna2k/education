@@ -1,8 +1,5 @@
 package education.jackson.requests;
 
-import education.jackson.Message;
-import education.jackson.MessageVisitor;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
