@@ -19,6 +19,16 @@ docker exec my-kafka /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server 
 docker exec my-kafka /opt/kafka/bin/kafka-topics.sh --describe --topic test-topic --bootstrap-server localhost:9092
 ```
 
+# Questions
+
+- How do I use Kafka?
+
+- Where exactly is the Command Query separation?
+
+- How do I validate a command?
+
+- How can I snapshot?
+
 # Todo
 
 - Projection

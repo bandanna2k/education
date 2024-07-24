@@ -12,14 +12,22 @@ public class Account
         this.accountId = accountId;
     }
 
-    public void deposit(final BigDecimal amount)
+    public boolean deposit(final BigDecimal amount)
     {
-        balance = balance.add(amount);
+        BigDecimal newBalance = balance.add(amount);
+        balance = newBalance;
+        return true;
     }
 
-    public void withdraw(final BigDecimal amount)
+    public boolean withdraw(final BigDecimal amount)
     {
-        balance = balance.subtract(amount);
+        BigDecimal newBalance = balance.subtract(amount);
+        if(newBalance.compareTo(BigDecimal.ZERO) < 0)
+        {
+            return false;
+        }
+        balance = newBalance;
+        return true;
     }
 
     @Override
