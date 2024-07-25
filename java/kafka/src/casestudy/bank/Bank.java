@@ -2,6 +2,8 @@ package casestudy.bank;
 
 import casestudy.bank.projections.Account;
 import casestudy.bank.projections.AccountRepository;
+import casestudy.bank.publishers.AsyncExecutor;
+import casestudy.bank.publishers.RequestPublisher;
 import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.serde.requests.RequestSerde;
 import casestudy.bank.serde.response.ResponseSerializer;
@@ -38,15 +40,16 @@ public class Bank implements Closeable
     private RequestRegistry requestRegistry;
     private AccountRepository accountRepository;
     private ResponsePublisher publisher;
+    private RequestPublisher requestPublisher;
+
     private KafkaStreams kafkaStreams;
-    private Vertx vertx;
 
     public static void main(String[] args)
     {
         try(Bank bank = new Bank())
         {
-            bank.initVertx();
             bank.initKafkaProducer();
+            bank.initVertx();
             bank.initBank();
             bank.initKafkaStreams();
             bank.startMenu();
@@ -55,8 +58,8 @@ public class Bank implements Closeable
 
     private void initVertx()
     {
-        vertx = Vertx.vertx();
-        vertx.deployVerticle(new BankVerticle(vertx))
+        Vertx vertx = Vertx.vertx();
+        vertx.deployVerticle(new BankVerticle(vertx, requestPublisher, new AsyncExecutor(vertx)))
                 .onSuccess(event -> System.out.println("Verticles deployed."))
                 .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
     }

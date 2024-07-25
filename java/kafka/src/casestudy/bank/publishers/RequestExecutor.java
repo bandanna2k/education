@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Deprecated(since = "Just to show request and responses coming to the same place.")
 public class RequestExecutor
 {
     private final Vertx vertx;
