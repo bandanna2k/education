@@ -45,8 +45,8 @@ public class BankVerticle extends AbstractVerticle
         final Router router = Router.router(getVertx());
         router.route(POST, "/deposit").handler(event ->
         {
-            final long accountId = Long.parseLong(event.pathParam("accountId"));
-            final BigDecimal amount = new BigDecimal(event.pathParam("amount"));
+            final long accountId = Long.parseLong(event.queryParam("accountId").getFirst());
+            final BigDecimal amount = new BigDecimal(event.queryParam("amount").getFirst());
 
             final Deposit deposit = new Deposit(UUID.randomUUID(), accountId, amount);
 
