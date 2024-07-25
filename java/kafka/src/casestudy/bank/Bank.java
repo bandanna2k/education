@@ -2,18 +2,11 @@ package casestudy.bank;
 
 import casestudy.bank.projections.Account;
 import casestudy.bank.projections.AccountRepository;
-import casestudy.bank.publishers.AsyncExecutor;
-import casestudy.bank.publishers.RequestPublisher;
 import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.serde.requests.RequestSerde;
 import casestudy.bank.serde.response.ResponseSerializer;
-import casestudy.bank.vertx.BankVerticle;
 import education.jackson.requests.Request;
 import education.jackson.response.Response;
-import io.vertx.core.Context;
-import io.vertx.core.Promise;
-import io.vertx.core.Verticle;
-import io.vertx.core.Vertx;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -33,14 +26,12 @@ import java.util.Properties;
 import java.util.UUID;
 
 import static casestudy.bank.Topics.REQUESTS_TOPIC;
-import static io.vertx.core.http.HttpMethod.GET;
 
 public class Bank implements Closeable
 {
     private RequestRegistry requestRegistry;
     private AccountRepository accountRepository;
     private ResponsePublisher publisher;
-    private RequestPublisher requestPublisher;
 
     private KafkaStreams kafkaStreams;
 
@@ -49,19 +40,10 @@ public class Bank implements Closeable
         try(Bank bank = new Bank())
         {
             bank.initKafkaProducer();
-            bank.initVertx();
             bank.initBank();
             bank.initKafkaStreams();
             bank.startMenu();
         }
-    }
-
-    private void initVertx()
-    {
-        Vertx vertx = Vertx.vertx();
-        vertx.deployVerticle(new BankVerticle(vertx, requestPublisher, new AsyncExecutor(vertx)))
-                .onSuccess(event -> System.out.println("Verticles deployed."))
-                .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
     }
 
     private void initKafkaProducer()

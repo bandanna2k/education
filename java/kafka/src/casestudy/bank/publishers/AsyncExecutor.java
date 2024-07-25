@@ -6,18 +6,18 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import org.apache.kafka.common.Uuid;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class AsyncExecutor
 {
     private final Vertx vertx;
 
-    private final Map<Uuid, RequestTracking> requests = new HashMap<>();
+    private final Map<UUID, RequestTracking> requests = new HashMap<>();
 
     private volatile Throwable timeoutResponse;
     private volatile String timeoutMessage;
@@ -28,21 +28,21 @@ public class AsyncExecutor
         this.vertx = vertx;
     }
 
-    public Future<Response> execute(final Consumer<Uuid> asyncRequest)
+    public Future<Response> execute(UUID uuid, final Consumer<UUID> asyncRequest)
     {
-        final Uuid uuid = Uuid.randomUuid();
         final Promise<Response> promise = createAndRegisterPromise(uuid);
         asyncRequest.accept(uuid);
         return promise.future();
     }
 
-    private Promise<Response> createAndRegisterPromise(final Uuid uuid)
+    private Promise<Response> createAndRegisterPromise(final UUID uuid)
     {
         final Promise<Response> asyncPromise = Promise.promise();
-        final long timerId = vertx.setTimer(5000, id -> timeout(uuid));
+        final long timerId = vertx.setTimer(15000, id -> timeout(uuid));
         final RequestTracking existingPromise = requests.putIfAbsent(
                 uuid,
                 new RequestTracking(asyncPromise, vertx.getOrCreateContext(), timerId));
+        System.out.println("XXXput"+requests);
         if (existingPromise != null)
         {
             vertx.cancelTimer(timerId);
@@ -51,56 +51,54 @@ public class AsyncExecutor
         return asyncPromise;
     }
 
-    private void onRequestContext(final RequestTracking requestTracking, final Handler<Void> handler)
+    private void runOnContext(final RequestTracking requestTracking, final Handler<Void> handler)
     {
         requestTracking.context.runOnContext(handler);
     }
 
-    public void onResponse(final Response response, final Handler<Void> handler)
+    public void onResponseReceived(final Response response)
     {
-        final RequestTracking record = requests.remove(response.uuid);
-        if (record == null)
+        final RequestTracking requestTracking = requests.remove(response.uuid);
+        if (requestTracking != null)
         {
-            System.out.println("Request not found for response: " + response);
+            vertx.cancelTimer(requestTracking.timerId);
+            runOnContext(requestTracking, v -> requestTracking.promise.complete(response));
         }
         else
         {
-            record.context.runOnContext(handler);
-            vertx.cancelTimer(record.timerId);
-
-            System.out.printf("Request found for response: Response: %s%n", response);
+            System.out.println("XXX ocund not find " + response.uuid);
         }
     }
 
-
-    private void timeout(final Uuid Uuid)
+    private void timeout(final UUID uuid)
     {
-        final RequestTracking requestTracking = requests.remove(Uuid);
+        final RequestTracking requestTracking = requests.remove(uuid);
         if (requestTracking != null)
         {
             if (timeoutResponse != null)
             {
-                onRequestContext(requestTracking, v -> requestTracking.promise.tryFail(timeoutResponse));
+                runOnContext(requestTracking, v -> requestTracking.promise.tryFail(timeoutResponse));
             }
             else
             {
-                onRequestContext(requestTracking, v -> requestTracking.promise.tryFail(Objects.requireNonNullElse(timeoutMessage, "Request timed out with correlation id - " + Uuid)));
+                runOnContext(requestTracking, v -> requestTracking.promise.tryFail(
+                        Objects.requireNonNullElse(timeoutMessage, "Request timed out with uuid id - " + uuid)));
             }
         }
     }
 
-    public AsyncExecutor onTimeoutReturn(final Throwable timeoutResponse)
-    {
-        this.timeoutResponse = timeoutResponse;
-        return this;
-    }
-
-    public AsyncExecutor onTimeoutReturn(final String timeoutMessage)
-    {
-        assert timeoutResponse == null;
-        this.timeoutMessage = timeoutMessage;
-        return this;
-    }
+//    public AsyncExecutor onTimeoutReturn(final Throwable timeoutResponse)
+//    {
+//        this.timeoutResponse = timeoutResponse;
+//        return this;
+//    }
+//
+//    public AsyncExecutor onTimeoutReturn(final String timeoutMessage)
+//    {
+//        assert timeoutResponse == null;
+//        this.timeoutMessage = timeoutMessage;
+//        return this;
+//    }
 
 
     private static final class RequestTracking

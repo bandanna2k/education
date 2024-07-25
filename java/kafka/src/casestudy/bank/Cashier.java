@@ -1,9 +1,11 @@
 package casestudy.bank;
 
+import casestudy.bank.publishers.AsyncExecutor;
 import casestudy.bank.publishers.RequestExecutor;
 import casestudy.bank.publishers.RequestPublisher;
 import casestudy.bank.serde.requests.RequestSerializer;
 import casestudy.bank.serde.response.ResponseSerde;
+import casestudy.bank.vertx.BankVerticle;
 import education.jackson.requests.Deposit;
 import education.jackson.requests.Request;
 import education.jackson.requests.Withdrawal;
@@ -39,13 +41,15 @@ public class Cashier implements Closeable
     private final Random random = new Random(1);
 
     private KafkaStreams kafkaStreams;
-    private RequestExecutor executor;
+    private RequestPublisher requestPublisher;
+    private AsyncExecutor executor;
 
     public static void main(String[] args)
     {
         try(final Cashier cashier = new Cashier())
         {
             cashier.initKafkaProducer();
+            cashier.initVertx();
             cashier.initKafkaStreams();
             cashier.startMenu();
         }
@@ -60,8 +64,16 @@ public class Cashier implements Closeable
         final KafkaProducer<String, Request> producer = new KafkaProducer<>(producerProps);
 
         final Vertx vertx = Vertx.vertx();
-        final RequestPublisher requestPublisher = new RequestPublisher(producer);
-        executor = new RequestExecutor(vertx, requestPublisher);
+        requestPublisher = new RequestPublisher(producer);
+        executor = new AsyncExecutor(vertx);
+    }
+
+    private void initVertx()
+    {
+        Vertx vertx = Vertx.vertx();
+        vertx.deployVerticle(new BankVerticle(vertx, requestPublisher, executor))
+//                .onSuccess(event -> System.out.println("Verticles deployed."))
+                .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
     }
 
     private void initKafkaStreams()
@@ -80,13 +92,15 @@ public class Cashier implements Closeable
                 @Override
                 public void visit(final Balance balance)
                 {
-                    executor.onResponse(balance);
+                    System.out.println("XXXbalance" + balance);
+                    executor.onResponseReceived(balance);
                 }
 
                 @Override
                 public void visit(final Error error)
                 {
-                    executor.onResponse(error);
+                    System.out.println("XXXerror" + error);
+                    executor.onResponseReceived(error);
                 }
             }));
 //        requestStream.foreach((key, request) ->
@@ -152,8 +166,8 @@ public class Cashier implements Closeable
 
     private void addEvent(Request request)
     {
-        executor.request(request);
-        System.out.println("Request sent: " + request);
+        requestPublisher.publishRequest(request);
+        System.out.println("Direct request sent: " + request);
     }
 
     @Override
