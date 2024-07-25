@@ -5,13 +5,9 @@ import io.vertx.core.Promise;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 
-import java.util.Arrays;
-
-import static io.vertx.core.http.HttpMethod.*;
+import static io.vertx.core.http.HttpMethod.GET;
 
 public class VertxHelloWorld
 {

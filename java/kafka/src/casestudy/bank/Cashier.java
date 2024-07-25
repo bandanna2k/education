@@ -1,4 +1,4 @@
-package casestudy.bank.in;
+package casestudy.bank;
 
 import casestudy.bank.publishers.RequestExecutor;
 import casestudy.bank.publishers.RequestPublisher;
