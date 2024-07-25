@@ -13,5 +13,6 @@
     <orderEntry type="library" name="flywaydb.flyway.core" level="project" />
     <orderEntry type="library" name="mysql.connector.java" level="project" />
     <orderEntry type="library" name="flywaydb.flyway.mysql" level="project" />
+    <orderEntry type="library" name="springframework.spring.jdbc" level="project" />
   </component>
 </module>
