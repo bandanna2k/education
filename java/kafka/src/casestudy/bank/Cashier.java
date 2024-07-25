@@ -43,6 +43,7 @@ public class Cashier implements Closeable
     private KafkaStreams kafkaStreams;
     private RequestPublisher requestPublisher;
     private AsyncExecutor executor;
+    private Vertx vertx;
 
     public static void main(String[] args)
     {
@@ -70,7 +71,7 @@ public class Cashier implements Closeable
 
     private void initVertx()
     {
-        Vertx vertx = Vertx.vertx();
+        vertx = Vertx.vertx();
         vertx.deployVerticle(new BankVerticle(vertx, requestPublisher, executor))
 //                .onSuccess(event -> System.out.println("Verticles deployed."))
                 .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
@@ -92,14 +93,12 @@ public class Cashier implements Closeable
                 @Override
                 public void visit(final Balance balance)
                 {
-                    System.out.println("XXXbalance" + balance);
                     executor.onResponseReceived(balance);
                 }
 
                 @Override
                 public void visit(final Error error)
                 {
-                    System.out.println("XXXerror" + error);
                     executor.onResponseReceived(error);
                 }
             }));
@@ -174,5 +173,6 @@ public class Cashier implements Closeable
     public void close()
     {
         kafkaStreams.close();
+        vertx.close();
     }
 }

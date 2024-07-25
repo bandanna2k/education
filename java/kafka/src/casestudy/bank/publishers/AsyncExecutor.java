@@ -42,7 +42,6 @@ public class AsyncExecutor
         final RequestTracking existingPromise = requests.putIfAbsent(
                 uuid,
                 new RequestTracking(asyncPromise, vertx.getOrCreateContext(), timerId));
-        System.out.println("XXXput"+requests);
         if (existingPromise != null)
         {
             vertx.cancelTimer(timerId);
@@ -63,10 +62,6 @@ public class AsyncExecutor
         {
             vertx.cancelTimer(requestTracking.timerId);
             runOnContext(requestTracking, v -> requestTracking.promise.complete(response));
-        }
-        else
-        {
-            System.out.println("XXX ocund not find " + response.uuid);
         }
     }
 
