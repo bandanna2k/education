@@ -5,10 +5,22 @@ import io.vertx.core.Promise;
 import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.Router;
+
+import java.util.Arrays;
+
+import static io.vertx.core.http.HttpMethod.*;
 
 public class VertxHelloWorld
 {
-    public static final int PORT = 8888;
+    private static final int PORT = 8888;
+    private static final String HELLO_WORLD = STR."""
+            {
+                "message", "hello-world"
+            }
+            """;
 
     public static void main(String[] args)
     {
@@ -35,12 +47,13 @@ public class VertxHelloWorld
             @Override
             public void start(final Promise<Void> startPromise)
             {
-                getVertx().createHttpServer().requestHandler(request ->
-                {
-                    request.response()
-                            .putHeader("content-type", "text/plain")
-                            .end("Hello World");
-                }).listen(PORT, http ->
+                final Router router = Router.router(vertx);
+                router.route(GET, "/hello-world").handler(event -> event
+                        .response()
+                        .putHeader("Content-Type", "application/json")
+                        .send(HELLO_WORLD)
+                );
+                getVertx().createHttpServer().requestHandler(router).listen(PORT, http ->
                 {
                     if (http.succeeded())
                     {
@@ -55,9 +68,11 @@ public class VertxHelloWorld
             }
 
             @Override
-            public void stop(final Promise<Void> promise) throws Exception {
-
+            public void stop(final Promise<Void> promise)
+            {
             }
-        });
+        })
+        .onSuccess(event -> System.out.println("Verticles deployed."))
+        .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
     }
 }
