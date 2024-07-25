@@ -16,6 +16,7 @@
     <orderEntry type="module" module-name="jackson" />
     <orderEntry type="library" name="slf4j.api" level="project" />
     <orderEntry type="module" module-name="common" />
+    <orderEntry type="library" name="io.vertx.web" level="project" />
     <orderEntry type="library" name="io.vertx.core" level="project" />
   </component>
 </module>

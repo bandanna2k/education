@@ -5,8 +5,13 @@ import casestudy.bank.projections.AccountRepository;
 import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.serde.requests.RequestSerde;
 import casestudy.bank.serde.response.ResponseSerializer;
+import casestudy.bank.vertx.BankVerticle;
 import education.jackson.requests.Request;
 import education.jackson.response.Response;
+import io.vertx.core.Context;
+import io.vertx.core.Promise;
+import io.vertx.core.Verticle;
+import io.vertx.core.Vertx;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -26,6 +31,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import static casestudy.bank.Topics.REQUESTS_TOPIC;
+import static io.vertx.core.http.HttpMethod.GET;
 
 public class Bank implements Closeable
 {
@@ -33,16 +39,26 @@ public class Bank implements Closeable
     private AccountRepository accountRepository;
     private ResponsePublisher publisher;
     private KafkaStreams kafkaStreams;
+    private Vertx vertx;
 
     public static void main(String[] args)
     {
         try(Bank bank = new Bank())
         {
+            bank.initVertx();
             bank.initKafkaProducer();
             bank.initBank();
             bank.initKafkaStreams();
             bank.startMenu();
         }
+    }
+
+    private void initVertx()
+    {
+        vertx = Vertx.vertx();
+        vertx.deployVerticle(new BankVerticle(vertx))
+                .onSuccess(event -> System.out.println("Verticles deployed."))
+                .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
     }
 
     private void initKafkaProducer()
