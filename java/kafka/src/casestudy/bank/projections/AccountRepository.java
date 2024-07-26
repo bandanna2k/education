@@ -45,23 +45,22 @@ public class AccountRepository implements RequestRegistry.DepositListener, Reque
     @Override
     public void onDeposit(Deposit deposit)
     {
-        System.out.println("Deposit " + deposit);
-
+//        System.out.println("Deposit " + deposit);
+//
         Account account = accounts.get(deposit.accountId);
         Result<BigDecimal, String> result = account.deposit(deposit.amount);
 
         dao.deposit(deposit);
 
         publisher.publishResponse(new Balance(deposit.uuid, account.accountId, account.balance));
-
-        System.out.println("Deposit result:" + result);
+//        System.out.println("Deposit result:" + result);
     }
 
     @Override
     public void onWithdrawal(Withdrawal withdrawal)
     {
-        System.out.println("Withdrawal " + withdrawal);
-
+//        System.out.println("Withdrawal " + withdrawal);
+//
         Account account = accounts.get(withdrawal.accountId);
         Result<BigDecimal, String> result = account.withdraw(withdrawal.amount);
         result.fold(balance ->

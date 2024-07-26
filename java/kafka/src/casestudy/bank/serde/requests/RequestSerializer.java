@@ -27,7 +27,7 @@ public class RequestSerializer implements Serializer<Request>
         }
         try
         {
-            System.out.println("Serializing..." + OBJECT_MAPPER.writeValueAsString(data));
+//            System.out.println("Serializing..." + OBJECT_MAPPER.writeValueAsString(data));
             return OBJECT_MAPPER.writeValueAsBytes(data);
         }
         catch (Exception e)

@@ -77,6 +77,7 @@ public class BankVerticle extends AbstractVerticle
 
     private void returnError(final RoutingContext event, final Throwable error)
     {
+        System.out.println("Response: " + error);
         try
         {
             event.response().setStatusCode(200);
@@ -90,6 +91,7 @@ public class BankVerticle extends AbstractVerticle
 
     private void returnSuccess(final RoutingContext event, final Response success)
     {
+        System.out.println("Response: " + success);
         try
         {
             event.response().setStatusCode(200);
