@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import education.jackson.requests.Deposit;
 import education.jackson.requests.Withdrawal;
 import education.jackson.response.Response;
-import io.vertx.core.*;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
@@ -16,7 +19,7 @@ import java.util.UUID;
 
 import static io.vertx.core.http.HttpMethod.POST;
 
-public class BankVerticle extends AbstractVerticle
+public class CashierVerticle extends AbstractVerticle
 {
     private static final int PORT = 8888;
 
@@ -24,7 +27,7 @@ public class BankVerticle extends AbstractVerticle
     private final AsyncExecutor executor;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public BankVerticle(final Vertx vertx, final RequestPublisher publisher, final AsyncExecutor executor)
+    public CashierVerticle(final Vertx vertx, final RequestPublisher publisher, final AsyncExecutor executor)
     {
         this.publisher = publisher;
         this.executor = executor;
@@ -37,6 +40,10 @@ public class BankVerticle extends AbstractVerticle
         final Router router = Router.router(vertx);
         router.route(POST, "/deposit").handler(this::depositHandler);
         router.route(POST, "/withdraw").handler(this::withdrawalHandler);
+
+        final QueryRouter queryRouter = new QueryRouter(vertx);
+        queryRouter.addRoutes(router);
+
         vertx.createHttpServer().requestHandler(router).listen(PORT, http ->
         {
             if (http.succeeded())
