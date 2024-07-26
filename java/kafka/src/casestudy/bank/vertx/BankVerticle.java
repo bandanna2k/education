@@ -32,18 +32,12 @@ public class BankVerticle extends AbstractVerticle
     }
 
     @Override
-    public Vertx getVertx()
-    {
-        return this.vertx;
-    }
-
-    @Override
     public void start(final Promise<Void> startPromise)
     {
-        final Router router = Router.router(getVertx());
+        final Router router = Router.router(vertx);
         router.route(POST, "/deposit").handler(this::depositHandler);
         router.route(POST, "/withdraw").handler(this::withdrawalHandler);
-        getVertx().createHttpServer().requestHandler(router).listen(PORT, http ->
+        vertx.createHttpServer().requestHandler(router).listen(PORT, http ->
         {
             if (http.succeeded())
             {

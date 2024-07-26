@@ -73,61 +73,61 @@ public class Cashier implements Closeable
     {
         vertx = Vertx.vertx();
         vertx.deployVerticle(new BankVerticle(vertx, requestPublisher, executor))
-//                .onSuccess(event -> System.out.println("Verticles deployed."))
+                .onSuccess(event -> System.out.println("Verticles deployed."))
                 .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
     }
 
     private void initKafkaStreams()
     {
-            Properties streamProperties = new Properties();
-            streamProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-            streamProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, UUID.randomUUID().toString());
-            streamProperties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-            streamProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, ResponseSerde.class);
+        Properties streamProperties = new Properties();
+        streamProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        streamProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, UUID.randomUUID().toString());
+        streamProperties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        streamProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, ResponseSerde.class);
 
-            final StreamsBuilder streamsBuilder = new StreamsBuilder();
-            KStream<String, Response> requestStream = streamsBuilder.stream(RESPONSE_TOPIC);
+        final StreamsBuilder streamsBuilder = new StreamsBuilder();
+        KStream<String, Response> requestStream = streamsBuilder.stream(RESPONSE_TOPIC);
 
-            requestStream.foreach((key, message) -> message.visit(new ResponseVisitor()
+        requestStream.foreach((key, message) -> message.visit(new ResponseVisitor()
+        {
+            @Override
+            public void visit(final Balance balance)
             {
-                @Override
-                public void visit(final Balance balance)
-                {
-                    executor.onResponseReceived(balance);
-                }
+                executor.onResponseReceived(balance);
+            }
 
-                @Override
-                public void visit(final Error error)
-                {
-                    executor.onResponseReceived(error);
-                }
-            }));
+            @Override
+            public void visit(final Error error)
+            {
+                executor.onResponseReceived(error);
+            }
+        }));
 //        requestStream.foreach((key, request) ->
 //        {
 //            request.visit(bankVisitor);
 //            System.out.printf("Key: %s, Message: %s%n", key, request);
 //        });
 
-            kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamProperties);
+        kafkaStreams = new KafkaStreams(streamsBuilder.build(), streamProperties);
 
-            System.out.printf("Listening to topic '%s'%n", RESPONSE_TOPIC);
+        System.out.printf("Listening to topic '%s'%n", RESPONSE_TOPIC);
 
-            Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook")
+        Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook")
+        {
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
-                {
-                    kafkaStreams.close();
-                }
-            });
+                kafkaStreams.close();
+            }
+        });
 
-            kafkaStreams.cleanUp();
-            kafkaStreams.setUncaughtExceptionHandler(throwable ->
-            {
-                throwable.printStackTrace();
-                return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_APPLICATION;
-            });
-            kafkaStreams.start();
+        kafkaStreams.cleanUp();
+        kafkaStreams.setUncaughtExceptionHandler(throwable ->
+        {
+            throwable.printStackTrace();
+            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_APPLICATION;
+        });
+        kafkaStreams.start();
     }
 
     private void startMenu()

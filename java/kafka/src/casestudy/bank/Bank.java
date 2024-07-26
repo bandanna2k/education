@@ -1,6 +1,7 @@
 package casestudy.bank;
 
 import casestudy.bank.projections.Account;
+import casestudy.bank.projections.AccountDao;
 import casestudy.bank.projections.AccountRepository;
 import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.serde.requests.RequestSerde;
@@ -17,15 +18,22 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.kstream.KStream;
+import org.flywaydb.core.Flyway;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.DockerImageName;
 
+import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Driver;
 import java.util.Properties;
 import java.util.UUID;
 
 import static casestudy.bank.Topics.REQUESTS_TOPIC;
+import static java.util.Collections.singletonList;
 
 public class Bank implements Closeable
 {
@@ -34,16 +42,51 @@ public class Bank implements Closeable
     private ResponsePublisher publisher;
 
     private KafkaStreams kafkaStreams;
+    private AccountDao accountDao;
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
-        try(Bank bank = new Bank())
+        System.out.println("Starting bank (booting up a database container)");
+
+        try(Bank bank = new Bank();
+            GenericContainer genericContainer = new GenericContainer(DockerImageName.parse("mysql:9.0.1"))
+                    .withExposedPorts(3306)
+                    .withEnv("MYSQL_ROOT_PASSWORD", "password");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)))
         {
+            bank.initDatabase(genericContainer, reader);
             bank.initKafkaProducer();
             bank.initBank();
             bank.initKafkaStreams();
-            bank.startMenu();
+            bank.startMenu(reader);
         }
+    }
+
+    private void initDatabase(final GenericContainer genericContainer, final BufferedReader reader) throws IOException
+    {
+        genericContainer.setPortBindings(singletonList("13306:3306"));
+        genericContainer.start();
+
+        String url = "jdbc:mysql://localhost:13306/common?createDatabaseIfNotExist=true";
+        Flyway flyway = Flyway.configure()
+                .dataSource(url, "root", "password")
+                .load();
+        flyway.migrate();
+
+        try
+        {
+            Driver driver = (Driver)Class.forName("com.mysql.jdbc.Driver").newInstance();
+            DataSource dataSource = new SimpleDriverDataSource(driver, "jdbc:mysql://localhost:13306", "root", "password");
+
+            accountDao = new AccountDao(dataSource);
+        }
+        catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("Open bank (press enter)");
+        final String input = reader.readLine();
     }
 
     private void initKafkaProducer()
@@ -60,7 +103,7 @@ public class Bank implements Closeable
 
     private void initBank()
     {
-        accountRepository = new AccountRepository(publisher);
+        accountRepository = new AccountRepository(publisher, accountDao);
         accountRepository.addAccount(new Account(1));
         accountRepository.addAccount(new Account(2));
 
@@ -109,33 +152,26 @@ public class Bank implements Closeable
         kafkaStreams.start();
     }
 
-    private void startMenu()
+    private void startMenu(final BufferedReader reader) throws IOException
     {
         int menuChoice;
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)))
+        do
         {
-            do
-            {
-                System.out.println("Menu");
-                System.out.println("1 - Display accounts");
-                System.out.println("0 - Exit");
-                final String input = reader.readLine();
-                menuChoice = Integer.parseInt(input);
+            System.out.println("Menu");
+            System.out.println("1 - Display accounts");
+            System.out.println("0 - Exit");
+            final String input = reader.readLine();
+            menuChoice = Integer.parseInt(input);
 
-                switch (menuChoice)
-                {
-                    case 1:
-                        System.out.println("-- Accounts --");
-                        accountRepository.foreach(System.out::println);
-                        break;
-                }
+            switch (menuChoice)
+            {
+                case 1:
+                    System.out.println("-- Accounts --");
+                    accountRepository.foreach(System.out::println);
+                    break;
             }
-            while (menuChoice > 0);
         }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        while (menuChoice > 0);
     }
 
     @Override

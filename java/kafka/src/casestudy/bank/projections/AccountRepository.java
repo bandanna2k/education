@@ -17,15 +17,12 @@ public class AccountRepository implements RequestRegistry.DepositListener, Reque
 {
     private final Map<Long, Account> accounts = new TreeMap<>();
     private final ResponsePublisher publisher;
+    private final AccountDao dao;
 
-    public AccountRepository(ResponsePublisher publisher)
+    public AccountRepository(ResponsePublisher publisher, AccountDao dao)
     {
         this.publisher = publisher;
-    }
-
-    public Account getAccount(final long accountId)
-    {
-        return accounts.get(accountId);
+        this.dao = dao;
     }
 
     @Override
@@ -53,6 +50,8 @@ public class AccountRepository implements RequestRegistry.DepositListener, Reque
         Account account = accounts.get(deposit.accountId);
         Result<BigDecimal, String> result = account.deposit(deposit.amount);
 
+        dao.deposit(deposit);
+
         publisher.publishResponse(new Balance(deposit.uuid, account.accountId, account.balance));
 
         System.out.println("Deposit result:" + result);
@@ -67,6 +66,8 @@ public class AccountRepository implements RequestRegistry.DepositListener, Reque
         Result<BigDecimal, String> result = account.withdraw(withdrawal.amount);
         result.fold(balance ->
         {
+            dao.withdraw(withdrawal);
+
             publisher.publishResponse(new Balance(withdrawal.uuid, account.accountId, balance));
         }, error ->
         {
