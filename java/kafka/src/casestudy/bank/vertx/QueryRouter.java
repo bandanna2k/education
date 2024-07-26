@@ -1,5 +1,6 @@
 package casestudy.bank.vertx;
 
+import casestudy.bank.projections.AccountDao;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,10 +19,12 @@ public class QueryRouter
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     private final Vertx vertx;
+    private final AccountDao accountDao;
 
-    public QueryRouter(Vertx vertx)
+    public QueryRouter(Vertx vertx, AccountDao accountDao)
     {
         this.vertx = vertx;
+        this.accountDao = accountDao;
     }
 
     public void addRoutes(Router router)
@@ -32,13 +35,18 @@ public class QueryRouter
             {
                 try
                 {
-                    Balances balances = getBalances();
+                    Balances balances = accountDao.getBalances();
                     context.response().setStatusCode(200).send(OBJECT_MAPPER.writeValueAsString(balances));
                     future.complete();
                 }
                 catch (JsonProcessingException e)
                 {
+                    e.printStackTrace();
                     future.fail(e.getMessage());
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
                 }
             });
         });

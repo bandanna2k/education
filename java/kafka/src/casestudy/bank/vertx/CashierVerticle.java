@@ -1,5 +1,6 @@
 package casestudy.bank.vertx;
 
+import casestudy.bank.projections.AccountDao;
 import casestudy.bank.publishers.AsyncExecutor;
 import casestudy.bank.publishers.RequestPublisher;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,12 +27,17 @@ public class CashierVerticle extends AbstractVerticle
     private final RequestPublisher publisher;
     private final AsyncExecutor executor;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final QueryRouter queryRouter;
 
-    public CashierVerticle(final Vertx vertx, final RequestPublisher publisher, final AsyncExecutor executor)
+    public CashierVerticle(final Vertx vertx,
+                           final RequestPublisher publisher,
+                           final AsyncExecutor executor,
+                           final AccountDao accountDao)
     {
         this.publisher = publisher;
         this.executor = executor;
         this.vertx = vertx;
+        this.queryRouter = new QueryRouter(vertx, accountDao);
     }
 
     @Override
@@ -41,7 +47,6 @@ public class CashierVerticle extends AbstractVerticle
         router.route(POST, "/deposit").handler(this::depositHandler);
         router.route(POST, "/withdraw").handler(this::withdrawalHandler);
 
-        final QueryRouter queryRouter = new QueryRouter(vertx);
         queryRouter.addRoutes(router);
 
         vertx.createHttpServer().requestHandler(router).listen(PORT, http ->

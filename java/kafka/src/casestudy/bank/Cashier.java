@@ -1,5 +1,6 @@
 package casestudy.bank;
 
+import casestudy.bank.projections.AccountDao;
 import casestudy.bank.publishers.AsyncExecutor;
 import casestudy.bank.publishers.RequestPublisher;
 import casestudy.bank.serde.requests.RequestSerializer;
@@ -22,11 +23,14 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.kstream.KStream;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
+import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Driver;
 import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
@@ -43,15 +47,32 @@ public class Cashier implements Closeable
     private RequestPublisher requestPublisher;
     private AsyncExecutor executor;
     private Vertx vertx;
+    private AccountDao accountDao;
 
     public static void main(String[] args)
     {
         try(final Cashier cashier = new Cashier())
         {
+            cashier.initDataSource();
             cashier.initKafkaProducer();
             cashier.initVertx();
             cashier.initKafkaStreams();
             cashier.startMenu();
+        }
+    }
+
+    private void initDataSource()
+    {
+        try
+        {
+            Driver driver = (Driver)Class.forName("com.mysql.jdbc.Driver").newInstance();
+            DataSource dataSource = new SimpleDriverDataSource(driver, "jdbc:mysql://localhost:13306", "root", "password");
+
+            accountDao = new AccountDao(dataSource);
+        }
+        catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
+        {
+            throw new RuntimeException(e);
         }
     }
 
@@ -71,7 +92,7 @@ public class Cashier implements Closeable
     private void initVertx()
     {
         vertx = Vertx.vertx();
-        vertx.deployVerticle(new CashierVerticle(vertx, requestPublisher, executor))
+        vertx.deployVerticle(new CashierVerticle(vertx, requestPublisher, executor, accountDao))
                 .onSuccess(event -> System.out.println("Verticles deployed."))
                 .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
     }
