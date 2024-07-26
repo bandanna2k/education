@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = Balances.class, name = "balances"),
         @JsonSubTypes.Type(value = Balance.class, name = "balance"),
         @JsonSubTypes.Type(value = Error.class, name = "error")
 })

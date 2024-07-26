@@ -19,6 +19,15 @@ docker exec my-kafka /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server 
 docker exec my-kafka /opt/kafka/bin/kafka-topics.sh --describe --topic test-topic --bootstrap-server localhost:9092
 ```
 
+# Curl Commands
+
+`
+curl -X POST "http://localhost:8888/withdraw?accountId=1&amount=100" | jq
+`
+
+`curl -X POST "http://localhost:8888/withdraw?accountId=1&amount=100" | jq
+`
+
 # My Story
 
 What is Kafka?
@@ -54,11 +63,17 @@ You have this command, what if this fails?
 
 # Todo
 
-- Stream results on response topic
-- Connect request with response
-- Create REST calls
-
-- Projection DONE
-- Read / Write separation DONE
-- MySQL non-persisting https://medium.com/@pybrarian/mysql-databases-that-dont-retain-data-293bc2ed7f02
+- Create REST GET calls
 - Snapshotting example
+
+## Done
+
+- 26/7/24   Use database for projection
+- 25/7/24   Stream results on response topic
+- 25/7/24   Connect request with response
+- 25/7/24   Projection 
+- 25/7/24   Read / Write separation 
+
+## Not Done
+
+- (Using testContainers) MySQL non-persisting https://medium.com/@pybrarian/mysql-databases-that-dont-retain-data-293bc2ed7f02

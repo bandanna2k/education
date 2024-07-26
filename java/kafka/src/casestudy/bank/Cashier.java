@@ -1,11 +1,10 @@
 package casestudy.bank;
 
 import casestudy.bank.publishers.AsyncExecutor;
-import casestudy.bank.publishers.RequestExecutor;
 import casestudy.bank.publishers.RequestPublisher;
 import casestudy.bank.serde.requests.RequestSerializer;
 import casestudy.bank.serde.response.ResponseSerde;
-import casestudy.bank.vertx.BankVerticle;
+import casestudy.bank.vertx.CashierVerticle;
 import education.jackson.requests.Deposit;
 import education.jackson.requests.Request;
 import education.jackson.requests.Withdrawal;
@@ -72,7 +71,7 @@ public class Cashier implements Closeable
     private void initVertx()
     {
         vertx = Vertx.vertx();
-        vertx.deployVerticle(new BankVerticle(vertx, requestPublisher, executor))
+        vertx.deployVerticle(new CashierVerticle(vertx, requestPublisher, executor))
                 .onSuccess(event -> System.out.println("Verticles deployed."))
                 .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
     }
