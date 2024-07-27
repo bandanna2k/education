@@ -1,7 +1,6 @@
 package education.common.result;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class Result<S, E>
 {
@@ -44,13 +43,13 @@ public class Result<S, E>
         }
     }
 
-    public <N> Result<N, E> chain(Supplier<Result<N, E>> result)
+    public <N> Result<N, E> map(Mapping<S, N, E> result)
     {
         if(hasFailed())
         {
             return failure(errorData);
         }
-        return result.get();
+        return result.map(success());
     }
 
     public S success()
@@ -81,5 +80,9 @@ public class Result<S, E>
         return isSuccess() ? "Success:" + successData : "Error:" + errorData;
     }
 
-
+    @FunctionalInterface
+    public interface Mapping<S, N, E>
+    {
+        Result<N, E> map(S success);
+    }
 }
