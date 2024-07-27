@@ -61,6 +61,11 @@ public class Cashier implements Closeable
         }
     }
 
+    public Cashier()
+    {
+        vertx = Vertx.vertx();
+    }
+
     private void initDataSource()
     {
         try
@@ -84,14 +89,12 @@ public class Cashier implements Closeable
         producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, RequestSerializer.class.getName());
         final KafkaProducer<String, Request> producer = new KafkaProducer<>(producerProps);
 
-        final Vertx vertx = Vertx.vertx();
         requestPublisher = new RequestPublisher(producer);
         executor = new AsyncExecutor(vertx);
     }
 
     private void initVertx()
     {
-        vertx = Vertx.vertx();
         vertx.deployVerticle(new CashierVerticle(vertx, requestPublisher, executor, accountDao))
                 .onSuccess(event -> System.out.println("Verticles deployed."))
                 .onFailure(event -> System.err.println("Failed to deploy. " + event.getMessage()));
