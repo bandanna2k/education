@@ -33,7 +33,7 @@ public class Result<S, E>
 
     public void fold(Consumer<S> successConsumer, Consumer<E> errorConsumer)
     {
-        if(state == State.Success)
+        if(isSuccess())
         {
             successConsumer.accept(successData);
         }
@@ -43,14 +43,29 @@ public class Result<S, E>
         }
     }
 
+    public <N> Result<N, E> map(Result<N, E> result)
+    {
+        if(result.isSuccess())
+        {
+            return result;
+        }
+        return failure(result.errorData);
+    }
+
+
     public S success()
     {
         return successData;
     }
 
+    private boolean isSuccess()
+    {
+        return state == State.Success;
+    }
+
     @Override
     public String toString()
     {
-        return state == State.Success ? "Success:" + successData : "Error:" + errorData;
+        return isSuccess() ? "Success:" + successData : "Error:" + errorData;
     }
 }
