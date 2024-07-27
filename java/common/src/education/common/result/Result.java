@@ -1,6 +1,7 @@
 package education.common.result;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class Result<S, E>
 {
@@ -43,24 +44,35 @@ public class Result<S, E>
         }
     }
 
-    public <N> Result<N, E> map(Result<N, E> result)
+    public <N> Result<N, E> chain(Supplier<Result<N, E>> result)
     {
-        if(result.isSuccess())
+        if(hasFailed())
         {
-            return result;
+            return failure(errorData);
         }
-        return failure(result.errorData);
+        return result.get();
     }
-
 
     public S success()
     {
+        assert isSuccess() : "Result not successful";
         return successData;
     }
 
-    private boolean isSuccess()
+    public E error()
+    {
+        assert hasFailed() : "Result not failed";
+        return errorData;
+    }
+
+    public boolean isSuccess()
     {
         return state == State.Success;
+    }
+
+    public boolean hasFailed()
+    {
+        return state == State.Error;
     }
 
     @Override
@@ -68,4 +80,6 @@ public class Result<S, E>
     {
         return isSuccess() ? "Success:" + successData : "Error:" + errorData;
     }
+
+
 }
