@@ -39,25 +39,12 @@ public class QueryRouter
                     context.response().setStatusCode(200).send(OBJECT_MAPPER.writeValueAsString(balances));
                     future.complete();
                 }
-                catch (JsonProcessingException e)
+                catch (Exception e)
                 {
                     e.printStackTrace();
                     future.fail(e.getMessage());
                 }
-                catch (Exception ex)
-                {
-                    ex.printStackTrace();
-                }
             });
         });
-    }
-
-    private Balances getBalances()
-    {
-        return new Balances(UUID.randomUUID(), List.of(
-                new Balance(null, 1L, "1000"),
-                new Balance(null, 2L, "2000"),
-                new Balance(null, 3L, "3000")
-        ));
     }
 }
