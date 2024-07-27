@@ -63,11 +63,12 @@ You have this command, what if this fails?
 
 # Todo
 
-- DAO tests
+- Separate code into handling and projection
 - Snapshotting example
 
 ## Done
 
+- 27/7/24   DAO tests
 - 27/7/24   Bug, why does 2 updates always give a result of 100?
 - 27/7/24   Create REST GET calls
 - 26/7/24   Use database for projection

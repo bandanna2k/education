@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AccountDao
 {
@@ -52,12 +53,12 @@ public class AccountDao
                 """,
                 new MapSqlParameterSource()
                         .addValue("accountId", withdrawal.accountId)
-                        .addValue("amount", withdrawal.amount));
+                        .addValue("amount", BigDecimal.ZERO.subtract(withdrawal.amount)));
     }
 
     public Balances getBalances()
     {
-        ArrayList<Balance> balances = new ArrayList<>();
+        List<Balance> balances = new ArrayList<>();
         jdbc.query(STR."""
                 select `account_id`, `balance`
                 from `common`.`balances`
@@ -69,5 +70,24 @@ public class AccountDao
                     balances.add(new Balance(null, accountId, balance));
                 });
         return new Balances(null, balances);
+    }
+
+    public Balance getBalance(long accountId)
+    {
+        List<Balance> balances = new ArrayList<>();
+        jdbc.query(STR."""
+                select `account_id`, `balance`
+                from `common`.`balances`
+                where account_id = :accountId
+                """,
+                new MapSqlParameterSource("accountId", accountId),
+                rs -> {
+                    balances.add(new Balance(null,
+                            rs.getLong("account_id"),
+                            rs.getBigDecimal("balance")));
+                });
+        if(balances.size() == 0) return null;
+        if(balances.size() == 1) return balances.get(0);
+        throw new RuntimeException("Too many results");
     }
 }
