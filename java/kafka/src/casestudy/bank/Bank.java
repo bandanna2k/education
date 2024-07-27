@@ -1,8 +1,7 @@
 package casestudy.bank;
 
-import casestudy.bank.projections.Account;
 import casestudy.bank.projections.AccountDao;
-import casestudy.bank.projections.AccountRepository;
+import casestudy.bank.handling.DepositWithdrawalHandler;
 import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.serde.requests.RequestSerde;
 import casestudy.bank.serde.response.ResponseSerializer;
@@ -38,7 +37,7 @@ import static java.util.Collections.singletonList;
 public class Bank implements Closeable
 {
     private RequestRegistry requestRegistry;
-    private AccountRepository accountRepository;
+    private DepositWithdrawalHandler depositWithdrawalHandler;
     private ResponsePublisher publisher;
 
     private KafkaStreams kafkaStreams;
@@ -103,13 +102,11 @@ public class Bank implements Closeable
 
     private void initBank()
     {
-        accountRepository = new AccountRepository(publisher, accountDao);
-        accountRepository.addAccount(new Account(1));
-        accountRepository.addAccount(new Account(2));
+        depositWithdrawalHandler = new DepositWithdrawalHandler(publisher, accountDao);
 
         requestRegistry = new RequestRegistry();
-        requestRegistry.subscribe((RequestRegistry.DepositListener) accountRepository);
-        requestRegistry.subscribe((RequestRegistry.WithdrawalListener) accountRepository);
+        requestRegistry.subscribe((RequestRegistry.DepositListener) depositWithdrawalHandler);
+        requestRegistry.subscribe((RequestRegistry.WithdrawalListener) depositWithdrawalHandler);
     }
 
     private void initKafkaStreams()
@@ -158,18 +155,18 @@ public class Bank implements Closeable
         do
         {
             System.out.println("Menu");
-            System.out.println("1 - Display accounts");
+//            System.out.println("1 - Display accounts");
             System.out.println("0 - Exit");
             final String input = reader.readLine();
             menuChoice = Integer.parseInt(input);
 
-            switch (menuChoice)
-            {
-                case 1:
-                    System.out.println("-- Accounts --");
-                    accountRepository.foreach(System.out::println);
-                    break;
-            }
+//            switch (menuChoice)
+//            {
+//                case 1:
+//                    System.out.println("-- Accounts --");
+//                    accountHandler.foreach(System.out::println);
+//                    break;
+//            }
         }
         while (menuChoice > 0);
     }

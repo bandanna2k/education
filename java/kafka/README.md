@@ -63,11 +63,15 @@ You have this command, what if this fails?
 
 # Todo
 
-- Separate code into handling and projection
 - Snapshotting example
+- Vertx Kafka code
+- Removing message
+  - Event store requirements. 
+    - Delete up to a certain message
 
 ## Done
 
+- 27/7/24   Separate code into handling and projection
 - 27/7/24   DAO tests
 - 27/7/24   Bug, why does 2 updates always give a result of 100?
 - 27/7/24   Create REST GET calls

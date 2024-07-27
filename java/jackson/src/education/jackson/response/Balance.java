@@ -1,7 +1,5 @@
 package education.jackson.response;
 
-import education.jackson.requests.RequestVisitor;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -9,7 +7,7 @@ import static education.jackson.NoAccountId.NO_ACCOUNT_ID;
 
 public class Balance extends Response
 {
-    public BigDecimal amount;
+    public BigDecimal balance;
     public long accountId;
 
     public Balance()
@@ -23,7 +21,7 @@ public class Balance extends Response
     public Balance(UUID uuid, long accountId, BigDecimal value)
     {
         super(uuid);
-        this.amount = value;
+        this.balance = value;
         this.accountId = accountId;
     }
 
@@ -37,7 +35,7 @@ public class Balance extends Response
     public String toString()
     {
         return "Balance{" +
-                "amount=" + amount +
+                "balance=" + balance +
                 ", accountId=" + accountId +
                 "} " + super.toString();
     }

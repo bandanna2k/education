@@ -43,6 +43,11 @@ public class Result<S, E>
         }
     }
 
+    public S success()
+    {
+        return successData;
+    }
+
     @Override
     public String toString()
     {

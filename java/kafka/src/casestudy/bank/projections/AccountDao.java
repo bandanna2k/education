@@ -1,5 +1,6 @@
 package casestudy.bank.projections;
 
+import education.common.result.Result;
 import education.jackson.requests.Deposit;
 import education.jackson.requests.Withdrawal;
 import education.jackson.response.Balance;
@@ -13,6 +14,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static education.common.result.Result.success;
+
 public class AccountDao
 {
     private final NamedParameterJdbcOperations jdbc;
@@ -22,28 +25,21 @@ public class AccountDao
         jdbc = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public void deposit(Deposit deposit)
+    public Result<Void, Void> deposit(Deposit deposit)
     {
-        try
-        {
-            System.out.println("DB adding " + deposit);
-            jdbc.update(STR."""
-                            insert into `common`.`balances` (account_id, balance) 
-                            values (:accountId, :amount)
-                            on duplicate key
-                            update `balance` = (balance + :amount)
-                            """,
-                    new MapSqlParameterSource()
-                            .addValue("accountId", deposit.accountId)
-                            .addValue("amount", deposit.amount));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        jdbc.update(STR."""
+                        insert into `common`.`balances` (account_id, balance) 
+                        values (:accountId, :amount)
+                        on duplicate key
+                        update `balance` = (balance + :amount)
+                        """,
+                new MapSqlParameterSource()
+                        .addValue("accountId", deposit.accountId)
+                        .addValue("amount", deposit.amount));
+        return success(null);
     }
 
-    public void withdraw(Withdrawal withdrawal)
+    public Result<Void, Void> withdraw(Withdrawal withdrawal)
     {
         jdbc.update(STR."""
                 insert into `common`.`balances` (account_id, balance) 
@@ -54,6 +50,7 @@ public class AccountDao
                 new MapSqlParameterSource()
                         .addValue("accountId", withdrawal.accountId)
                         .addValue("amount", BigDecimal.ZERO.subtract(withdrawal.amount)));
+        return success(null);
     }
 
     public Balances getBalances()
@@ -72,7 +69,7 @@ public class AccountDao
         return new Balances(null, balances);
     }
 
-    public Balance getBalance(long accountId)
+    public Result<Balance, String> getBalance(long accountId)
     {
         List<Balance> balances = new ArrayList<>();
         jdbc.query(STR."""
@@ -86,8 +83,8 @@ public class AccountDao
                             rs.getLong("account_id"),
                             rs.getBigDecimal("balance")));
                 });
-        if(balances.size() == 0) return null;
-        if(balances.size() == 1) return balances.get(0);
-        throw new RuntimeException("Too many results");
+        if(balances.size() == 0) return Result.failure("Account not found.");
+        if(balances.size() == 1) return success(balances.get(0));
+        return Result.failure("Too many results");
     }
 }
