@@ -63,11 +63,13 @@ You have this command, what if this fails?
 
 # Todo
 
-- Create REST GET calls
+- DAO tests
 - Snapshotting example
 
 ## Done
 
+- 27/7/24   Bug, why does 2 updates always give a result of 100?
+- 27/7/24   Create REST GET calls
 - 26/7/24   Use database for projection
 - 25/7/24   Stream results on response topic
 - 25/7/24   Connect request with response

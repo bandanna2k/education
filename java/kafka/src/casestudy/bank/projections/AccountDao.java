@@ -30,7 +30,7 @@ public class AccountDao
                             insert into `common`.`balances` (account_id, balance) 
                             values (:accountId, :amount)
                             on duplicate key
-                            update `balance` = (values(balance) + :amount)
+                            update `balance` = (balance + :amount)
                             """,
                     new MapSqlParameterSource()
                             .addValue("accountId", deposit.accountId)
@@ -48,7 +48,7 @@ public class AccountDao
                 insert into `common`.`balances` (account_id, balance) 
                 values (:accountId, :amount)
                 on duplicate key
-                update `balance` = values(balance) + :amount
+                update `balance` = (balance + :amount)
                 """,
                 new MapSqlParameterSource()
                         .addValue("accountId", withdrawal.accountId)
