@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/java/java.iml" filepath="$PROJECT_DIR$/java/java.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/kafka/kafka.iml" filepath="$PROJECT_DIR$/java/kafka/kafka.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/kafka-with-spring/kafka-with-spring.iml" filepath="$PROJECT_DIR$/java/kafka-with-spring/kafka-with-spring.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/maths/maths.iml" filepath="$PROJECT_DIR$/java/maths/maths.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/testContainers/testContainers.iml" filepath="$PROJECT_DIR$/java/testContainers/testContainers.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/vertx/vertx.iml" filepath="$PROJECT_DIR$/java/vertx/vertx.iml" />
     </modules>
