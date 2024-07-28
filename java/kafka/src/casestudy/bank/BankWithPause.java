@@ -1,7 +1,7 @@
 package casestudy.bank;
 
-import casestudy.bank.projections.AccountDao;
 import casestudy.bank.handling.DepositWithdrawalHandler;
+import casestudy.bank.projections.AccountDao;
 import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.serde.requests.RequestSerde;
 import casestudy.bank.serde.response.ResponseSerializer;
@@ -34,7 +34,7 @@ import java.util.UUID;
 import static casestudy.bank.Topics.REQUESTS_TOPIC;
 import static java.util.Collections.singletonList;
 
-public class Bank implements Closeable
+public class BankWithPause implements Closeable
 {
     private RequestRegistry requestRegistry;
     private DepositWithdrawalHandler depositWithdrawalHandler;
@@ -47,7 +47,7 @@ public class Bank implements Closeable
     {
         System.out.println("Starting bank (booting up a database container)");
 
-        try(Bank bank = new Bank();
+        try(BankWithPause bank = new BankWithPause();
             GenericContainer genericContainer = new GenericContainer(DockerImageName.parse("mysql:9.0.1"))
                     .withExposedPorts(3306)
                     .withEnv("MYSQL_ROOT_PASSWORD", "password");
@@ -83,6 +83,9 @@ public class Bank implements Closeable
         {
             throw new RuntimeException(e);
         }
+
+        System.out.println("Open bank (press enter)");
+        final String input = reader.readLine();
     }
 
     private void initKafkaProducer()
