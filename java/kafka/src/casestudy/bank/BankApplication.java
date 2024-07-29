@@ -18,6 +18,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -37,6 +38,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.sql.Driver;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -111,18 +113,23 @@ public class BankApplication implements Closeable
         consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString());
 
         KafkaConsumer<String, Request> consumer = new KafkaConsumer<>(consumerProps);
-        consumer.subscribe(Collections.singletonList(REQUESTS_TOPIC));
-//        System.out.printf("Consuming %n%s%n", consumer.listTopics().entrySet().stream()
-//                .map(entry -> entry.getKey() + " " + entry.getValue()).collect(Collectors.joining("\n")));
-        System.out.println("Subscribed to " + REQUESTS_TOPIC);
+
+        TopicPartition topicPartition = new TopicPartition(REQUESTS_TOPIC, 0);
+
+        consumer.assign(singletonList(topicPartition));
+        consumer.seek(topicPartition, 0L);
+
+        System.out.println("Assigned to (Polling) " + REQUESTS_TOPIC);
         while (okToConsumer)
         {
             ConsumerRecords<String, Request> records = consumer.poll(1000);
             for (ConsumerRecord<String, Request> consumerRecord : records)
             {
+                System.out.println(consumerRecord.offset() + " " + consumerRecord);
                 consumerRecord.value().visit(requestRegistry);
             }
         }
+        System.out.println("Finished");
     }
     void initKafkaStreams()
     {
