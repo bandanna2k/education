@@ -28,6 +28,10 @@ curl -X POST "http://localhost:8888/withdraw?accountId=1&amount=100" | jq
 `curl -X POST "http://localhost:8888/withdraw?accountId=1&amount=100" | jq
 `
 
+`
+curl -X GET "http://localhost:8888/balances" | jq
+`
+
 # My Story
 
 What is Kafka?
@@ -64,7 +68,12 @@ You have this command, what if this fails?
 # Todo
 
 - Snapshotting example
-- Vertx Kafka code
+  - Pause writing
+  - MySql dump
+  - Write offset
+  - Unpause writing
+  - Set new topic
+- Fix vertx bug
 - Removing message
   - Event store requirements. 
     - Delete up to a certain message
