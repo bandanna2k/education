@@ -24,6 +24,7 @@ public class BankWithPause
             bank.initKafkaProducer();
             bank.initBank();
             bank.initKafkaStreams();
+            bank.initKafkaConsumer();
             bank.startMenu(reader);
         }
     }

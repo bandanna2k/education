@@ -22,14 +22,15 @@ docker exec my-kafka /opt/kafka/bin/kafka-topics.sh --describe --topic test-topi
 # Curl Commands
 
 `
-curl -X POST "http://localhost:8888/withdraw?accountId=1&amount=100" | jq
-`
-
-`curl -X POST "http://localhost:8888/withdraw?accountId=1&amount=100" | jq
+curl -sX POST "http://localhost:8888/deposit?accountId=1&amount=100" | jq
 `
 
 `
-curl -X GET "http://localhost:8888/balances" | jq
+curl -sX POST "http://localhost:8888/withdraw?accountId=1&amount=100" | jq
+`
+
+`
+curl -sX GET "http://localhost:8888/balances" | jq
 `
 
 # My Story

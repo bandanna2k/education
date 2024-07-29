@@ -22,8 +22,9 @@ public class Bank
             bank.initDatabase(genericContainer);
             bank.initKafkaProducer();
             bank.initBank();
-            bank.initKafkaStreams();
-            bank.startMenu(reader);
+//            bank.initKafkaStreams();
+//            bank.startMenu(reader);
+            bank.initKafkaConsumer();
         }
     }
 }

@@ -14,10 +14,6 @@ public class ResponseDeserializer implements Deserializer<Response>
 {
     private static final ObjectReader MESSAGE_READER = OBJECT_MAPPER.readerFor(Response.class);
 
-    ResponseDeserializer()
-    {
-    }
-
     @Override
     public void configure(Map<String, ?> configs, boolean isKey)
     {

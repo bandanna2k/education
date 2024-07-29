@@ -14,10 +14,6 @@ public class RequestDeserializer implements Deserializer<Request>
 {
     private static final ObjectReader MESSAGE_READER = OBJECT_MAPPER.readerFor(Request.class);
 
-    RequestDeserializer()
-    {
-    }
-
     @Override
     public void configure(Map<String, ?> configs, boolean isKey)
     {
