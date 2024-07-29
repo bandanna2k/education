@@ -6,11 +6,8 @@ import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.serde.requests.RequestDeserializer;
 import casestudy.bank.serde.requests.RequestSerde;
 import casestudy.bank.serde.response.ResponseSerializer;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import education.jackson.requests.Request;
 import education.jackson.response.Response;
-import example.withJson.Event;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -22,7 +19,6 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.apache.kafka.connect.json.JsonDeserializer;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
@@ -37,11 +33,8 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.sql.Driver;
-import java.util.Collections;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static casestudy.bank.Topics.BOOTSTRAP_SERVERS;
 import static casestudy.bank.Topics.REQUESTS_TOPIC;
@@ -49,13 +42,14 @@ import static java.util.Collections.singletonList;
 
 public class BankApplication implements Closeable
 {
+    private static final Driver DRIVER = getDriver();
+
     private RequestRegistry requestRegistry;
-    private DepositWithdrawalHandler depositWithdrawalHandler;
     private ResponsePublisher publisher;
 
     private KafkaStreams kafkaStreams;
     private AccountDao accountDao;
-    private boolean okToConsumer = true;
+    private boolean okToConsume = true;
 
     void initDatabase(final GenericContainer genericContainer) throws IOException
     {
@@ -68,17 +62,9 @@ public class BankApplication implements Closeable
                 .load();
         flyway.migrate();
 
-        try
-        {
-            Driver driver = (Driver)Class.forName("com.mysql.jdbc.Driver").newInstance();
-            DataSource dataSource = new SimpleDriverDataSource(driver, "jdbc:mysql://localhost:13306", "root", "password");
+        DataSource dataSource = new SimpleDriverDataSource(DRIVER, "jdbc:mysql://localhost:13306", "root", "password");
 
-            accountDao = new AccountDao(dataSource);
-        }
-        catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
-        {
-            throw new RuntimeException(e);
-        }
+        accountDao = new AccountDao(dataSource);
     }
 
     void initKafkaProducer()
@@ -95,7 +81,7 @@ public class BankApplication implements Closeable
 
     void initBank()
     {
-        depositWithdrawalHandler = new DepositWithdrawalHandler(publisher, accountDao);
+        DepositWithdrawalHandler depositWithdrawalHandler = new DepositWithdrawalHandler(publisher, accountDao);
 
         requestRegistry = new RequestRegistry();
         requestRegistry.subscribe((RequestRegistry.DepositListener) depositWithdrawalHandler);
@@ -120,12 +106,11 @@ public class BankApplication implements Closeable
         consumer.seek(topicPartition, 0L);
 
         System.out.println("Assigned to (Polling) " + REQUESTS_TOPIC);
-        while (okToConsumer)
+        while (okToConsume)
         {
             ConsumerRecords<String, Request> records = consumer.poll(1000);
             for (ConsumerRecord<String, Request> consumerRecord : records)
             {
-                System.out.println(consumerRecord.offset() + " " + consumerRecord);
                 consumerRecord.value().visit(requestRegistry);
             }
         }
@@ -203,5 +188,17 @@ public class BankApplication implements Closeable
     {
         System.out.println("Open bank (press enter)");
         final String input = reader.readLine();
+    }
+
+    private static Driver getDriver()
+    {
+        try
+        {
+            return (Driver)Class.forName("com.mysql.jdbc.Driver").newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }
