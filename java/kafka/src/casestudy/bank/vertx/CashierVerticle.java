@@ -124,9 +124,4 @@ public class CashierVerticle extends AbstractVerticle
     {
         return executor.execute(withdrawal.uuid, uuid -> publisher.publishRequest(withdrawal));
     }
-
-    @Override
-    public void stop(final Promise<Void> promise)
-    {
-    }
 }
