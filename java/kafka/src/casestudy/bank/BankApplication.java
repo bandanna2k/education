@@ -32,13 +32,11 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.MountableFile;
 
 import javax.sql.DataSource;
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Driver;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -57,7 +55,7 @@ public class BankApplication implements Closeable
     private KafkaStreams kafkaStreams;
     private AccountDao accountDao;
 
-    void initDatabase(final GenericContainer genericContainer, BufferedReader reader) throws IOException, InterruptedException
+    void initDatabase(final GenericContainer genericContainer, Optional<BufferedReader> maybeReader) throws IOException, InterruptedException
     {
         genericContainer.setPortBindings(singletonList("13306:3306"));
         genericContainer.start();
@@ -65,9 +63,12 @@ public class BankApplication implements Closeable
         File file = new File("mysqldump.bank.sql");
         if(file.exists())
         {
-            System.out.println("Press enter to restore from backup.");
-            pause(reader);
-            mysqlDumpImport(genericContainer);
+            if(maybeReader.isPresent())
+            {
+                System.out.println("Press enter to restore from backup.");
+                pause(maybeReader.get());
+                mysqlDumpImport(genericContainer);
+            }
         }
 
         String url = "jdbc:mysql://localhost:13306/common?createDatabaseIfNotExist=true";
@@ -80,8 +81,11 @@ public class BankApplication implements Closeable
 
         accountDao = new AccountDao(dataSource);
 
-        System.out.println("Database migrated. Press enter to start application.");
-        pause(reader);
+        if(maybeReader.isPresent())
+        {
+            System.out.println("Database migrated. Press enter to start application.");
+            pause(maybeReader.get());
+        }
     }
 
     void initKafkaProducer()

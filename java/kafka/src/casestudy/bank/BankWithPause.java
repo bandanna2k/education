@@ -6,6 +6,7 @@ import org.testcontainers.utility.DockerImageName;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BankWithPause
@@ -21,7 +22,7 @@ public class BankWithPause
                     .withEnv("MYSQL_ROOT_PASSWORD", "password");
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)))
         {
-            bank.initDatabase(genericContainer, reader);
+            bank.initDatabase(genericContainer, Optional.of(reader));
             bank.initKafkaProducer();
             bank.initBank();
 //            bank.initKafkaStreams();

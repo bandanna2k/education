@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.util.Optional.empty;
+
 public class Bank
 {
     public static void main(String[] args) throws IOException, InterruptedException
@@ -21,7 +23,7 @@ public class Bank
                     .withEnv("MYSQL_ROOT_PASSWORD", "password");
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)))
         {
-            bank.initDatabase(genericContainer, reader);
+            bank.initDatabase(genericContainer, empty());
             bank.initKafkaProducer();
             bank.initBank();
 //            bank.initKafkaStreams();
