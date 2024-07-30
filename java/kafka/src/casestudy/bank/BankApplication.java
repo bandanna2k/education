@@ -26,12 +26,18 @@ import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.kstream.KStream;
 import org.flywaydb.core.Flyway;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.testcontainers.containers.Container;
+import org.testcontainers.containers.ExecConfig;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.utility.MountableFile;
 
 import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Driver;
 import java.util.Properties;
 import java.util.UUID;
@@ -51,12 +57,18 @@ public class BankApplication implements Closeable
     private KafkaStreams kafkaStreams;
     private AccountDao accountDao;
 
-    void initDatabase(final GenericContainer genericContainer) throws IOException
+    void initDatabase(final GenericContainer genericContainer, BufferedReader reader) throws IOException, InterruptedException
     {
         genericContainer.setPortBindings(singletonList("13306:3306"));
         genericContainer.start();
 
-        // Restore from backup goes here.
+        File file = new File("mysqldump.bank.sql");
+        if(file.exists())
+        {
+            System.out.println("Press enter to restore from backup.");
+            pause(reader);
+            mysqlDumpImport(genericContainer);
+        }
 
         String url = "jdbc:mysql://localhost:13306/common?createDatabaseIfNotExist=true";
         Flyway flyway = Flyway.configure()
@@ -67,6 +79,9 @@ public class BankApplication implements Closeable
         DataSource dataSource = new SimpleDriverDataSource(DRIVER, "jdbc:mysql://localhost:13306", "root", "password");
 
         accountDao = new AccountDao(dataSource);
+
+        System.out.println("Database migrated. Press enter to start application.");
+        pause(reader);
     }
 
     void initKafkaProducer()
@@ -158,7 +173,7 @@ public class BankApplication implements Closeable
         kafkaStreams.start();
     }
 
-    void startMenu(final BufferedReader reader, AtomicBoolean exitApp)
+    void startMenuInThread(final BufferedReader reader, AtomicBoolean exitApp)
     {
         new Thread(() -> {
             try
@@ -191,10 +206,9 @@ public class BankApplication implements Closeable
         if(kafkaStreams != null) kafkaStreams.close();
     }
 
-    public void pause(BufferedReader reader) throws IOException
+    public String pause(BufferedReader reader) throws IOException
     {
-        System.out.println("Open bank (press enter)");
-        final String input = reader.readLine();
+        return reader.readLine();
     }
 
     private static Driver getDriver()
@@ -207,5 +221,30 @@ public class BankApplication implements Closeable
         {
             throw new RuntimeException(e);
         }
+    }
+
+    public void mysqlDumpExport(GenericContainer genericContainer) throws IOException, InterruptedException
+    {
+        ExecConfig execConfig = ExecConfig.builder()
+                .command(new String[] {"/usr/bin/mysqldump", "-h127.0.0.1", "-uroot", "-ppassword", "--databases", "common"} )
+                .build();
+        Container.ExecResult execResult = genericContainer.execInContainer(execConfig);
+
+        Files.writeString(Path.of("mysqldump.bank.sql"), execResult.getStdout());
+    }
+
+    public void mysqlDumpImport(GenericContainer genericContainer) throws IOException, InterruptedException
+    {
+        genericContainer.copyFileToContainer(MountableFile.forHostPath("mysqldump.bank.sql"), "/mysqldump.bank.sql");
+        ExecConfig execConfig = ExecConfig.builder()
+                .command(new String[] {
+                    "/bin/sh", "-c",
+                    "/usr/bin/mysql -h127.0.0.1 -uroot -ppassword < /mysqldump.bank.sql"
+                })
+                .build();
+        Container.ExecResult execResult = genericContainer.execInContainer(execConfig);
+
+//        System.out.println(execResult.getStdout());
+        System.err.println(execResult.getStderr());
     }
 }

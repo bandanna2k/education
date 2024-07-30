@@ -28,3 +28,5 @@ docker exec my-kafka-bank /opt/kafka/bin/kafka-topics.sh --bootstrap-server loca
 # Clear All Messages
 # docker exec my-kafka-bank /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --topic bank-requests  --delete
 # docker exec my-kafka-bank /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --topic bank-responses --delete
+
+rm -v mysqldump.bank.sql

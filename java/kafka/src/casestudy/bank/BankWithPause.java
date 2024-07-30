@@ -1,7 +1,6 @@
 package casestudy.bank;
 
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 import org.testcontainers.utility.DockerImageName;
 
 import java.io.BufferedReader;
@@ -11,23 +10,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BankWithPause
 {
-    public static void main(String[] args) throws IOException
+    public static void main(String[] args) throws IOException, InterruptedException
     {
         System.out.println("Starting bank (booting up a database container)");
 
+        AtomicBoolean exitApp = new AtomicBoolean(false);
         try(BankApplication bank = new BankApplication();
             GenericContainer genericContainer = new GenericContainer(DockerImageName.parse("mysql:9.0.1"))
                     .withExposedPorts(3306)
                     .withEnv("MYSQL_ROOT_PASSWORD", "password");
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)))
         {
-            bank.initDatabase(genericContainer);
-            bank.pause(reader);
+            bank.initDatabase(genericContainer, reader);
             bank.initKafkaProducer();
             bank.initBank();
-            bank.initKafkaStreams();
-//            bank.initKafkaConsumer(exitApp);
-            bank.startMenu(reader, new AtomicBoolean());
+//            bank.initKafkaStreams();
+            bank.startMenuInThread(reader, exitApp);
+            bank.initKafkaConsumer(exitApp);
+
+            bank.mysqlDumpExport(genericContainer);
         }
     }
 }
