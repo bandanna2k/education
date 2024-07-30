@@ -1,6 +1,7 @@
 package example;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -16,7 +17,7 @@ public class MyProducer {
     private final static String BOOTSTRAP_SERVERS = "localhost:9092";
     private final static String TOPIC = "test-topic";
 
-    private org.apache.kafka.clients.producer.Producer<String, String> producer;
+    private Producer<String, String> producer;
 
     public static void main(String[] args)
     {
@@ -33,7 +34,7 @@ public class MyProducer {
             do {
                 System.out.println("Menu");
                 System.out.println("1 - Add event");
-                System.out.println("1 - Add lots of events");
+                System.out.println("2 - Add lots of events");
                 System.out.println("0 - Exit");
                 final String input = reader.readLine();
                 menuChoice = Integer.parseInt(input);
