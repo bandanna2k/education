@@ -73,14 +73,13 @@ You have this command, what if this fails?
   - MySql dump
   - Write offset
   - Unpause writing
-  - Set new topic
-- Fix vertx bug
 - Removing message
   - Event store requirements. 
     - Delete up to a certain message
 
 ## Done
 
+- 29/7/24   Fix vertx bug
 - 27/7/24   Separate code into handling and projection
 - 27/7/24   DAO tests
 - 27/7/24   Bug, why does 2 updates always give a result of 100?

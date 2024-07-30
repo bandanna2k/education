@@ -1,11 +1,13 @@
 package casestudy.bank;
 
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 import org.testcontainers.utility.DockerImageName;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BankWithPause
 {
@@ -24,8 +26,8 @@ public class BankWithPause
             bank.initKafkaProducer();
             bank.initBank();
             bank.initKafkaStreams();
-            bank.initKafkaConsumer();
-            bank.startMenu(reader);
+//            bank.initKafkaConsumer(exitApp);
+            bank.startMenu(reader, new AtomicBoolean());
         }
     }
 }

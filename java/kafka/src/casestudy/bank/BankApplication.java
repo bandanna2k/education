@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.sql.Driver;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static casestudy.bank.Topics.BOOTSTRAP_SERVERS;
 import static casestudy.bank.Topics.REQUESTS_TOPIC;
@@ -49,12 +50,13 @@ public class BankApplication implements Closeable
 
     private KafkaStreams kafkaStreams;
     private AccountDao accountDao;
-    private boolean okToConsume = true;
 
     void initDatabase(final GenericContainer genericContainer) throws IOException
     {
         genericContainer.setPortBindings(singletonList("13306:3306"));
         genericContainer.start();
+
+        // Restore from backup goes here.
 
         String url = "jdbc:mysql://localhost:13306/common?createDatabaseIfNotExist=true";
         Flyway flyway = Flyway.configure()
@@ -88,7 +90,7 @@ public class BankApplication implements Closeable
         requestRegistry.subscribe((RequestRegistry.WithdrawalListener) depositWithdrawalHandler);
     }
 
-    public void initKafkaConsumer()
+    public void initKafkaConsumer(AtomicBoolean exitApp)
     {
         // Kafka consumer configuration
         Properties consumerProps = new Properties();
@@ -106,7 +108,7 @@ public class BankApplication implements Closeable
         consumer.seek(topicPartition, 0L);
 
         System.out.println("Assigned to (Polling) " + REQUESTS_TOPIC);
-        while (okToConsume)
+        while (!exitApp.get())
         {
             ConsumerRecords<String, Request> records = consumer.poll(1000);
             for (ConsumerRecord<String, Request> consumerRecord : records)
@@ -156,26 +158,31 @@ public class BankApplication implements Closeable
         kafkaStreams.start();
     }
 
-    void startMenu(final BufferedReader reader) throws IOException
+    void startMenu(final BufferedReader reader, AtomicBoolean exitApp)
     {
-        int menuChoice;
-        do
-        {
-            System.out.println("Menu");
-//            System.out.println("1 - Display accounts");
-            System.out.println("0 - Exit");
-            final String input = reader.readLine();
-            menuChoice = Integer.parseInt(input);
+        new Thread(() -> {
+            try
+            {
+                int menuChoice;
+                do
+                {
+                    System.out.println("Menu");
+                    System.out.println("0 - Exit");
+                    final String input = reader.readLine();
+                    menuChoice = Integer.parseInt(input);
 
-//            switch (menuChoice)
-//            {
-//                case 1:
-//                    System.out.println("-- Accounts --");
-//                    accountHandler.foreach(System.out::println);
-//                    break;
-//            }
-        }
-        while (menuChoice > 0);
+                    switch (menuChoice)
+                    {
+                        case 0 -> exitApp.set(true);
+                    }
+                }
+                while (!exitApp.get());
+            }
+            catch(IOException ex)
+            {
+                System.err.println("Error " + ex.getMessage());
+            }
+        }).start();
     }
 
     @Override
