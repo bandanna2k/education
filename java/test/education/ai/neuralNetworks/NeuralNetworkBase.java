@@ -1,8 +1,8 @@
 package education.ai.neuralNetworks;
 
-import com.lmax.simpledsl.DslParams;
-import com.lmax.simpledsl.OptionalParam;
-import com.lmax.simpledsl.RequiredParam;
+import com.lmax.simpledsl.api.DslParams;
+import com.lmax.simpledsl.api.OptionalArg;
+import com.lmax.simpledsl.api.RequiredArg;
 import org.assertj.core.data.Offset;
 
 import java.util.Arrays;
@@ -22,11 +22,11 @@ public class NeuralNetworkBase
 
     protected void buildNeuralNetwork(final String... args)
     {
-        DslParams params = new DslParams(args,
-                new RequiredParam("name"),
-                new RequiredParam("layout"),
-                new OptionalParam("weights"),
-                new OptionalParam("seed").setDefault("1")
+        DslParams params = DslParams.create(args,
+                new RequiredArg("name"),
+                new RequiredArg("layout"),
+                new OptionalArg("weights"),
+                new OptionalArg("seed").setDefault("1")
         );
 
         final int[] layout = Arrays.stream(params.value("layout").split(", ")).mapToInt(Integer::parseInt).toArray();
@@ -43,9 +43,9 @@ public class NeuralNetworkBase
 
     protected void input(final String... args)
     {
-        DslParams params = new DslParams(args,
-                new RequiredParam("name"),
-                new RequiredParam("input")
+        DslParams params = DslParams.create(args,
+                new RequiredArg("name"),
+                new RequiredArg("input")
         );
 
         final double[] input = Arrays.stream(params.value("input").split(", ")).mapToDouble(Double::parseDouble).toArray();
@@ -57,10 +57,10 @@ public class NeuralNetworkBase
 
     protected void verifyOutput(final String... args)
     {
-        DslParams params = new DslParams(args,
-                new RequiredParam("name"),
-                new OptionalParam("output"),
-                new OptionalParam("tolerance")
+        DslParams params = DslParams.create(args,
+                new RequiredArg("name"),
+                new OptionalArg("output"),
+                new OptionalArg("tolerance")
         );
 
         final NeuralNetwork nn = nameToNeuralNetwork.get(params.value("name"));

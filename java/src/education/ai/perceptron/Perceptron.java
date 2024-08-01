@@ -1,6 +1,6 @@
 package education.ai.perceptron;
 
-import utilities.StringGenerator;
+import education.common.strings.StringGenerator;
 
 import java.util.*;
 import java.util.stream.Collectors;

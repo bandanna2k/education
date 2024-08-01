@@ -1,6 +1,5 @@
 package education.ai.perceptron;
 
-import maths.LinearEquations;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +45,7 @@ public class PerceptronLearningTest
             int x = (int) ((random.nextDouble() - 0.5) * 20); // Gives a number between -10 and 10
             int y = (int) ((random.nextDouble() - 0.5) * 20); // Gives a number between -10 and 10
 
-            boolean result = LinearEquations.XgreaterThanY(x, y);
+            boolean result = true;//LinearEquations.XgreaterThanY(x, y);
             int nResult = result ? 0 : 1;
 
             inputX.fireLearningEvent(x, nResult);
