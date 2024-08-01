@@ -55,7 +55,7 @@ public class BankApplication implements Closeable
     private KafkaStreams kafkaStreams;
     private AccountDao accountDao;
 
-    void initDatabase(final GenericContainer genericContainer, Optional<BufferedReader> maybeReader) throws IOException, InterruptedException
+    public void initDatabase(final GenericContainer genericContainer, Optional<BufferedReader> maybeReader) throws IOException, InterruptedException
     {
         genericContainer.setPortBindings(singletonList("13306:3306"));
         genericContainer.start();
@@ -88,7 +88,7 @@ public class BankApplication implements Closeable
         }
     }
 
-    void initKafkaProducer()
+    public void initKafkaProducer()
     {
         Properties producerProps = new Properties();
         producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
@@ -100,7 +100,7 @@ public class BankApplication implements Closeable
         publisher = new ResponsePublisher(producer);
     }
 
-    void initBank()
+    public void initBank()
     {
         DepositWithdrawalHandler depositWithdrawalHandler = new DepositWithdrawalHandler(publisher, accountDao);
 
@@ -177,7 +177,7 @@ public class BankApplication implements Closeable
         kafkaStreams.start();
     }
 
-    void startMenuInThread(final BufferedReader reader, AtomicBoolean exitApp)
+    public void startMenuInThread(final BufferedReader reader, AtomicBoolean exitApp)
     {
         new Thread(() -> {
             try

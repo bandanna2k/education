@@ -1,5 +1,6 @@
-package casestudy.bank;
+package casestudy.bank.entrypoints;
 
+import casestudy.bank.BankApplication;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
