@@ -1,0 +1,14 @@
+title Event Sourcing for Dummies
+
+participantspacing 8
+
+participant Cashier
+participant Kafka
+participant Bank
+
+parallel on
+
+Cashier->Kafka:Deposit / Withdraw POJO (JSON)
+Kafka->Bank:Deposit / Withdraw POJO (JSON)
+
+parallel off

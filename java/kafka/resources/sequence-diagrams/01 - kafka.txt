@@ -1,0 +1,14 @@
+title Learning Event Sourcing
+
+participantspacing 8
+
+participant Producer
+participant Kafka
+participant Consumer
+
+parallel on
+
+Producer->Kafka:Message
+Kafka->Consumer:Message
+
+parallel off
