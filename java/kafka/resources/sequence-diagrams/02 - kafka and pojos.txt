@@ -1,0 +1,14 @@
+title Event Sourcing for Dummies
+
+participantspacing 8
+
+participant Producer
+participant Kafka
+participant Consumer
+
+parallel on
+
+Producer->Kafka:POJO (JSON)
+Kafka->Consumer:POJO (JSON)
+
+parallel off

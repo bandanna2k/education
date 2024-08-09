@@ -1,0 +1,25 @@
+title Event Sourcing for Dummies
+
+participantspacing 8
+
+participant Customer
+participant Kafka
+participant Bank
+database Database
+
+parallel on
+
+Customer->Kafka:Deposit / Withdraw POJO (JSON)
+Kafka->Bank:Deposit / Withdraw POJO (JSON)
+
+parallel off
+
+group #pink Projection
+
+note over Bank: AccountDao
+
+Bank->Database:balance update
+
+Customer<-Database:GET /balance (REST)
+
+end

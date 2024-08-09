@@ -1,0 +1,56 @@
+title Learning Event Sourcing
+
+participantspacing 8
+
+participant Cashier
+participant Kafka
+participant Bank
+
+
+group #pink Command
+
+parallel on
+
+Cashier->Kafka:POST deposit (PUT or DELETE)
+
+Kafka->Bank:json POJO\ndeposit request
+
+parallel off
+
+
+group Handling
+note over Bank: Validation
+end
+
+parallel on
+
+Cashier<-Kafka:json POJO\nresponse
+
+Kafka<-Bank:json POJO\nresponse
+
+parallel off
+
+
+end
+
+
+group Projection
+
+
+group #lightblue Query
+
+note over Bank:Account Dao\n============\naccount.deposit
+
+note over Bank:Database\n===========\naccount_id, balance
+
+Customer<->Bank: GET balance (REST)
+
+end
+
+end
+
+
+# What is a projection really
+
+# Where is line of CQS
+
