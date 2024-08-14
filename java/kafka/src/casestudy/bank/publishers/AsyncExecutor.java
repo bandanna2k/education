@@ -1,5 +1,6 @@
 package casestudy.bank.publishers;
 
+import education.jackson.response.Error;
 import education.jackson.response.Response;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -16,16 +17,15 @@ import java.util.function.Consumer;
 public class AsyncExecutor
 {
     private final Vertx vertx;
+    private final ResponsePublisher responsePublisher;
 
     private final Map<UUID, RequestTracking> requests = new HashMap<>();
 
-    private volatile Throwable timeoutResponse;
-    private volatile String timeoutMessage;
 
-
-    public AsyncExecutor(final Vertx vertx)
+    public AsyncExecutor(final Vertx vertx, final ResponsePublisher responsePublisher)
     {
         this.vertx = vertx;
+        this.responsePublisher = responsePublisher;
     }
 
     public Future<Response> execute(UUID uuid, final Consumer<UUID> asyncRequest)
@@ -70,15 +70,9 @@ public class AsyncExecutor
         final RequestTracking requestTracking = requests.remove(uuid);
         if (requestTracking != null)
         {
-            if (timeoutResponse != null)
-            {
-                runOnContext(requestTracking, v -> requestTracking.promise.tryFail(timeoutResponse));
-            }
-            else
-            {
-                runOnContext(requestTracking, v -> requestTracking.promise.tryFail(
-                        Objects.requireNonNullElse(timeoutMessage, "Request timed out with uuid id - " + uuid)));
-            }
+            final Error error = new Error(uuid, "Request timed out");
+            runOnContext(requestTracking, v -> requestTracking.promise.complete(error));
+            responsePublisher.publishResponse(error);
         }
     }
 

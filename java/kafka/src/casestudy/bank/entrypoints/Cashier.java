@@ -3,8 +3,10 @@ package casestudy.bank.entrypoints;
 import casestudy.bank.projections.AccountDao;
 import casestudy.bank.publishers.AsyncExecutor;
 import casestudy.bank.publishers.RequestPublisher;
+import casestudy.bank.publishers.ResponsePublisher;
 import casestudy.bank.serde.requests.RequestSerializer;
 import casestudy.bank.serde.response.ResponseSerde;
+import casestudy.bank.serde.response.ResponseSerializer;
 import casestudy.bank.vertx.CashierVerticle;
 import education.jackson.requests.Deposit;
 import education.jackson.requests.Request;
@@ -23,6 +25,7 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.kstream.KStream;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import javax.sql.DataSource;
@@ -54,7 +57,7 @@ public class Cashier implements Closeable
         try(final Cashier cashier = new Cashier())
         {
             cashier.initDataSource();
-            cashier.initKafkaProducer();
+            cashier.initKafkaProducers();
             cashier.initVertx();
             cashier.initKafkaStreams();
             cashier.startMenu();
@@ -81,16 +84,26 @@ public class Cashier implements Closeable
         }
     }
 
-    private void initKafkaProducer()
+    private void initKafkaProducers()
+    {
+        requestPublisher = new RequestPublisher(getRequestProducer());
+        executor = new AsyncExecutor(vertx, new ResponsePublisher(getResponseProducer()));
+    }
+    private static KafkaProducer<String, Request> getRequestProducer()
     {
         Properties producerProps = new Properties();
         producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, RequestSerializer.class.getName());
-        final KafkaProducer<String, Request> producer = new KafkaProducer<>(producerProps);
-
-        requestPublisher = new RequestPublisher(producer);
-        executor = new AsyncExecutor(vertx);
+        return new KafkaProducer<>(producerProps);
+    }
+    private static KafkaProducer<String, Response> getResponseProducer()
+    {
+        Properties producerProps = new Properties();
+        producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ResponseSerializer.class.getName());
+        return new KafkaProducer<>(producerProps);
     }
 
     private void initVertx()
