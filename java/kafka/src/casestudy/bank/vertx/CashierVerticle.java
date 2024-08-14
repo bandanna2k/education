@@ -47,6 +47,10 @@ public class CashierVerticle extends AbstractVerticle
         router.route(POST, "/deposit").handler(this::depositHandler);
         router.route(POST, "/withdraw").handler(this::withdrawalHandler);
 
+        System.out.println("Endpoints available:");
+        System.out.println("POST /deposit?accountId=<accountId>&amount=<amount>");
+        System.out.println("POST /withdraw?accountId=<accountId>&amount=<amount>");
+
         queryRouter.addRoutes(router);
 
         vertx.createHttpServer().requestHandler(router).listen(PORT, http ->

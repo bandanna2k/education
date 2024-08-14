@@ -29,6 +29,8 @@ public class QueryRouter
 
     public void addRoutes(Router router)
     {
+        System.out.println("GET /balances");
+
         router.route(GET, "/balances").handler(context ->
         {
             vertx.executeBlocking(future ->

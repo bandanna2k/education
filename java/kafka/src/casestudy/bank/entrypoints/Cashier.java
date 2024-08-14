@@ -1,4 +1,4 @@
-package casestudy.bank;
+package casestudy.bank.entrypoints;
 
 import casestudy.bank.projections.AccountDao;
 import casestudy.bank.publishers.AsyncExecutor;
@@ -161,9 +161,6 @@ public class Cashier implements Closeable
         {
             do
             {
-                System.out.println("Menu");
-                System.out.println("1 - Add deposit for " + accountId);
-                System.out.println("2 - Add withdrawal for " + accountId);
                 System.out.println("0 - Exit");
                 final String input = reader.readLine();
                 menuChoice = Integer.parseInt(input);
