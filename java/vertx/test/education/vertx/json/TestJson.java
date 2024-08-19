@@ -3,8 +3,9 @@ package education.vertx.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import education.vertx.json.subtypes.unannotated.response.Balance;
-import education.vertx.json.subtypes.unannotated.response.Response;
+import education.vertx.json.registersubtypes.response.Balance;
+import education.vertx.json.registersubtypes.response.Error;
+import education.vertx.json.registersubtypes.response.Response;
 import org.junit.Test;
 
 import java.util.UUID;
@@ -31,5 +32,42 @@ public class TestJson
             Response response = mapper.readValue(json, Response.class);
             assertThat(response).isInstanceOf(Balance.class);
         }
+    }
+
+    @Test
+    public void testDecodingStrings() throws JsonProcessingException
+    {
+        ObjectMapper mapper = getExtendedObjectMapper();
+        {
+            String balanceJson = STR."""
+                {
+                    "type": "Balance",
+                    "uuid": "60964922-fb96-45a0-af98-c26d87b78044",
+                    "balance":10.0,
+                    "accountId":1
+                }
+                """;
+            Response response = mapper.readValue(balanceJson, Response.class);
+            assertThat(response).isInstanceOf(Balance.class);
+        }
+        {
+            String errorJson = STR."""
+                {
+                    "type": "Error",
+                    "uuid": "60964922-fb96-45a0-af98-c26d87b78044",
+                    "error": "Not found."
+                }
+                """;
+            Response response = mapper.readValue(errorJson, Response.class);
+            assertThat(response).isInstanceOf(Error.class);
+        }
+    }
+
+    private static ObjectMapper getExtendedObjectMapper()
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerSubtypes(new NamedType(Balance.class));
+        mapper.registerSubtypes(new NamedType(Error.class));
+        return mapper;
     }
 }

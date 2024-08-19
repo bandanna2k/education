@@ -1,4 +1,4 @@
-package education.vertx.json.subtypes.unannotated.response;
+package education.vertx.json.registersubtypes.response;
 
 import java.math.BigDecimal;
 import java.util.UUID;
