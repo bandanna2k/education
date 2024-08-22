@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Test1
+public class MathsTest
 {
     @Test
     public void shouldTestAdditionAxiom()

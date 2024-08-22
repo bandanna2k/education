@@ -20,5 +20,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" scope="TEST" name="assertj.core" level="project" />
+    <orderEntry type="library" scope="TEST" name="reflections" level="project" />
   </component>
 </module>
