@@ -5,14 +5,14 @@ import org.junit.runner.RunWith;
 
 @RunWith(ClasspathSuite.class)
 @ClasspathSuite.ClasspathProperty("education.tests")
-public class TakariTest
+public class TakariRunAllTest
 {
     static
     {
         System.out.println("Takari static constructor");
     }
 
-    public TakariTest()
+    public TakariRunAllTest()
     {
         System.out.println("Takari constructor");
     }
