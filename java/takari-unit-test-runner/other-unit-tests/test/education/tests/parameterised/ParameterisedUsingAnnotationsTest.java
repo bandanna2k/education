@@ -10,32 +10,25 @@ import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public class ParameterisedViaConstructorTest
+public class ParameterisedUsingAnnotationsTest
 {
-    private final int inputNumber;
-    private final boolean expectedResult;
-    private final PrimeNumberChecker primeNumberChecker;
+    @Parameterized.Parameter(0) public int inputNumber;
+    @Parameterized.Parameter(1) public boolean expectedResult;
+
+    private final PrimeNumberChecker primeNumberChecker = new PrimeNumberChecker();
 
     // Each parameter should be placed as an argument here
     // Every time runner triggers, it will pass the arguments
     // from parameters we defined in primeNumbers() method
 
-    public ParameterisedViaConstructorTest(int inputNumber, boolean expectedResult)
-    {
-        this.inputNumber = inputNumber;
-        this.expectedResult = expectedResult;
-        this.primeNumberChecker = new PrimeNumberChecker();
-    }
-
     @Test
     public void testPrimeNumberChecker() {
         System.out.println("Parameterized Number is : " + inputNumber);
-        assertEquals(expectedResult,
-                primeNumberChecker.validate(inputNumber));
+        assertEquals(expectedResult, primeNumberChecker.validate(inputNumber));
     }
 
-    @Parameterized.Parameters
-    public static Collection primeNumbers()
+    @Parameterized.Parameters(name = "{index}: Input: {0}, Expected: {1}")
+    public static Collection<Object[]> primeNumbers()
     {
         return Arrays.asList(new Object[][]{
                 {2, true},
