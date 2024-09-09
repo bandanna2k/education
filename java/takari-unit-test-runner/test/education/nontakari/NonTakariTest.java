@@ -30,7 +30,7 @@ public class NonTakariTest
         this.testClasses = testClasses;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{index}: Exchange: {0}, Euclid: {1}")
     public static Collection<Object[]> arguments()
     {
         Reflections reflections = new Reflections("education.tests", new SubTypesScanner(false));
