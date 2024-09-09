@@ -14,6 +14,7 @@
       <module fileurl="file://$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" filepath="$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/testContainers/testContainers.iml" filepath="$PROJECT_DIR$/java/testContainers/testContainers.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/vertx/vertx.iml" filepath="$PROJECT_DIR$/java/vertx/vertx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
     </modules>
   </component>
 </project>
