@@ -12,28 +12,30 @@ import org.testcontainers.utility.DockerImageName;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
 
-public class ContainerWithPortMappingTest
+public class MySqlContainerTest
 {
     @Test
-    public void testFixedPortMapping()
+    public void testMySql()
     {
-        try(final GenericContainer<?> genericContainer = new GenericContainer<>(DockerImageName.parse("nginx:1.27.1"))
+        double start = System.currentTimeMillis();
+        try(final GenericContainer<?> genericContainer = new GenericContainer<>(DockerImageName.parse("mysql"))
+//                .withTmpFs(Map.of("/var/lib/mysql", "rw"))
                 .withCreateContainerCmdModifier(cmd -> cmd
-                        .withName("nginx")
+                        .withEnv("MYSQL_ROOT_PASSWORD=mysql")
+                        .withName("mysql")
                         .withHostConfig(
-                            new HostConfig().withPortBindings(
-                                new PortBinding(Ports.Binding.bindPort(9980), new ExposedPort(80)))
-                ));
+                                new HostConfig().withPortBindings(
+                                        new PortBinding(Ports.Binding.bindPort(3306), new ExposedPort(3306))))
+                );
             final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))
         )
         {
             genericContainer.start();
 
-            // Copy file
-            byte[] bytes = this.getClass().getResourceAsStream("/html/index.html").readAllBytes();
-            Transferable transferable = Transferable.of(bytes);
-            genericContainer.copyFileToContainer(transferable, "/usr/share/nginx/html/index.html");
+            double duration = System.currentTimeMillis() - start;
+            System.out.printf("Duration: %.2f%n", duration / 1000);
 
             System.out.println("Press enter.");
             reader.readLine();
