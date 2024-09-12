@@ -10,11 +10,19 @@
     <body>
 
         <h3>Before</h3>
-        <div id="myElement">Error</div>
+
+        <details>
+            <summary>Summary</summary>
+            <div id="myTable">Error</div>
+        </details>
+
         <h3>After</h3>
+
+        <div id="myDetails">Error</div>
+        <script>$( "#myDetails" ).load( "myDetails.html" );</script>
 
     </body>
 
-    <script>$( "#myElement" ).load( "content.html" );</script>
+    <script>$( "#myTable" ).load( "myTable.html" );</script>
 
 </html>
