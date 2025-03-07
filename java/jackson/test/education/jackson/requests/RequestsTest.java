@@ -48,26 +48,12 @@ public class RequestsTest
     {
         TestRequestVisitor tester = new TestRequestVisitor(UUID);
         {
-            String json = STR."""
-                    {
-                        "type": "deposit",
-                        "uuid" : "\{UUID}",
-                        "accountId" : "1",
-                        "amount" : "50.25"
-                    }
-                    """;
+            String json = "{\n    \"type\": \"deposit\",\n    \"uuid\" : \"" + UUID + "\",\n    \"accountId\" : \"1\",\n    \"amount\" : \"50.25\"\n}\n";
             Request request = MESSAGE_READER.readValue(json);
             request.visit(tester);
         }
         {
-            String json = STR."""
-                    {
-                        "type": "withdrawal",
-                        "uuid" : "\{UUID}",
-                        "accountId" : "1",
-                        "amount" : "44.77"
-                    }
-                    """;
+            String json = "{\n    \"type\": \"withdrawal\",\n    \"uuid\" : \"" + UUID + "\",\n    \"accountId\" : \"1\",\n    \"amount\" : \"44.77\"\n}\n";
             Request request = MESSAGE_READER.readValue(json);
             request.visit(tester);
         }
@@ -76,14 +62,7 @@ public class RequestsTest
     @Test
     public void testDeserialisationCasting() throws JsonProcessingException
     {
-        String json = STR."""
-                {
-                    "type": "deposit",
-                    "uuid" : "\{UUID}",
-                    "accountId" : "1",
-                    "amount" : "50.25"
-                }
-                """;
+        String json = "{\n    \"type\": \"deposit\",\n    \"uuid\" : \"" + UUID + "\",\n    \"accountId\" : \"1\",\n    \"amount\" : \"50.25\"\n}\n";
         Request request = OBJECT_MAPPER.readerFor(Request.class).readValue(json);
         assertThat(request).isInstanceOf(Deposit.class);
 

@@ -13,13 +13,13 @@ public class JsonEqualityTest
     @Test
     public void areObjectsEqual() throws JsonProcessingException
     {
-        String object2 = STR."""
+        String object2 = """
                 {
                     "name": "bob",
                     "age": 20
                 }
                 """;
-        String object1 = STR."""
+        String object1 = """
                 {
                     "age": 20,
                     "name": "bob"
