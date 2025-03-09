@@ -8,13 +8,30 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
 public class TestVersioning
 {
+    private static final String JSON_WITH_NAME = """
+            {
+                "type": "UpsertCustomer",
+                "customerId": "67",
+                "source": "FIAT",
+                "name": "Tom SAWYER"
+            }
+            """;
+    private static final String JSON_WITH_FIRST_AND_SECOND_NAME = """
+            {
+                "type": "UpsertCustomer",
+                "customerId": "67",
+                "source": "FIAT",
+                "firstName": "Tom",
+                "secondName": "SAWYER"
+            }
+            """;
+
     public static class ConverterVersion1 extends Module
     {
         @Override
@@ -119,38 +136,33 @@ public class TestVersioning
     }
 
     @Test
-    public void shouldDeserialise() throws JsonProcessingException
+    public void testVersion1() throws JsonProcessingException
     {
-        ConverterVersion1 converterVersion1 = new ConverterVersion1();
-
         ObjectMapper mapper = new ObjectMapper()
                 .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
                 .registerModule(new ConverterVersion1());
-
-        final String jsonVersion1 = """
-                {
-                    "type": "UpsertCustomer",
-                    "customerId": "67",
-                    "source": "FIAT",
-                    "name": "Tom SAWYER"
-                }
-                """;
-        final String jsonVersion2 = """
-                {
-                    "type": "UpsertCustomer",
-                    "customerId": "67",
-                    "source": "FIAT",
-                    "firstName": "Tom",
-                    "secondName": "SAWYER"
-                }
-                """;
-
         {
-            UpsertCustomer upsertCustomer = mapper.readValue(jsonVersion1, UpsertCustomer.class);
+            UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_NAME, UpsertCustomer.class);
             assertThat(upsertCustomer.firstName).isEqualTo("Tom");
         }
         {
-            UpsertCustomer upsertCustomer = mapper.readValue(jsonVersion2, UpsertCustomer.class);
+            UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME, UpsertCustomer.class);
+            assertThat(upsertCustomer.firstName).isEqualTo("Tom");
+        }
+    }
+
+    @Test
+    public void testVersion2() throws JsonProcessingException
+    {
+        ObjectMapper mapper = new ObjectMapper()
+                .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+                .registerModule(new ConverterVersion2());
+        {
+            UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_NAME, UpsertCustomer.class);
+            assertThat(upsertCustomer.firstName).isEqualTo("Tom");
+        }
+        {
+            UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME, UpsertCustomer.class);
             assertThat(upsertCustomer.firstName).isEqualTo("Tom");
         }
     }
