@@ -61,19 +61,36 @@ public class TestVersioning
     {
         public String customerId;
         public String source;
-        public String address;
+        public String firstName;
+        public String secondName;
 
         @Override
         public String getType() {
             return this.getClass().getSimpleName();
         }
 
+        public void setName(String name)
+        {
+            int indexOf = name.indexOf(" ");
+            if(indexOf < 0)
+            {
+                this.firstName = name;
+            }
+            else
+            {
+                this.firstName = name.substring(0, indexOf);
+                this.secondName = name.substring(indexOf + 1);
+            }
+        }
+
         @Override
-        public String toString() {
+        public String toString()
+        {
             return "UpsertCustomer{" +
                     "customerId='" + customerId + '\'' +
                     ", source='" + source + '\'' +
-                    ", address='" + address + '\'' +
+                    ", firstName='" + firstName + '\'' +
+                    ", secondName='" + secondName + '\'' +
                     '}';
         }
     }
@@ -83,7 +100,8 @@ public class TestVersioning
         @JsonCreator
         UpsertCustomerMixIn(
                 @JsonProperty("customerId") final String customerId,
-                @JsonProperty("source") final String source)
+                @JsonProperty("source") final String source,
+                @JsonProperty("name") final String name)
         {
         }
     }
@@ -94,7 +112,8 @@ public class TestVersioning
         UpsertCustomerMixInVersion2(
                 @JsonProperty("customerId") final String customerId,
                 @JsonProperty("source") final String source,
-                @JsonProperty("address") final String address) // New field for version 2
+                @JsonProperty("firstName") final String firstName,
+                @JsonProperty("secondName") final String secondName)
         {
         }
     }
@@ -112,7 +131,8 @@ public class TestVersioning
                 {
                     "type": "UpsertCustomer",
                     "customerId": "67",
-                    "source": "FIAT"
+                    "source": "FIAT",
+                    "name": "Tom SAWYER"
                 }
                 """;
         final String jsonVersion2 = """
@@ -120,17 +140,18 @@ public class TestVersioning
                     "type": "UpsertCustomer",
                     "customerId": "67",
                     "source": "FIAT",
-                    "address": "Accacia Avenue"
+                    "firstName": "Tom",
+                    "secondName": "SAWYER"
                 }
                 """;
 
         {
             UpsertCustomer upsertCustomer = mapper.readValue(jsonVersion1, UpsertCustomer.class);
-            assertThat(upsertCustomer.address).isNull();
+            assertThat(upsertCustomer.firstName).isEqualTo("Tom");
         }
         {
             UpsertCustomer upsertCustomer = mapper.readValue(jsonVersion2, UpsertCustomer.class);
-            assertThat(upsertCustomer.address).isNull();
+            assertThat(upsertCustomer.firstName).isEqualTo("Tom");
         }
     }
 }
