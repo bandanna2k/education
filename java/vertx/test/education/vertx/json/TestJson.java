@@ -39,7 +39,7 @@ public class TestJson
     {
         ObjectMapper mapper = getExtendedObjectMapper();
         {
-            String balanceJson = STR."""
+            String balanceJson = """
                 {
                     "type": "Balance",
                     "uuid": "60964922-fb96-45a0-af98-c26d87b78044",
@@ -51,7 +51,7 @@ public class TestJson
             assertThat(response).isInstanceOf(Balance.class);
         }
         {
-            String errorJson = STR."""
+            String errorJson = """
                 {
                     "type": "Error",
                     "uuid": "60964922-fb96-45a0-af98-c26d87b78044",

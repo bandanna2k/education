@@ -12,7 +12,7 @@ import static io.vertx.core.http.HttpMethod.GET;
 public class VertxHelloWorld
 {
     private static final int PORT = 8888;
-    private static final String HELLO_WORLD = STR."""
+    private static final String HELLO_WORLD = """
             {
                 "message", "hello-world"
             }
