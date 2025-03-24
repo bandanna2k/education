@@ -2,12 +2,10 @@ package education.jackson.versioning;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.DeserializationConfig;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
@@ -16,7 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class TestVersioning
 {
-    private static final String JSON_WITH_NAME = """
+    private static final String JSON_WITH_NAME_V1 = """
             {
                 "type": "UpsertCustomer",
                 "customerId": "67",
@@ -24,7 +22,7 @@ public class TestVersioning
                 "name": "Tom SAWYER"
             }
             """;
-    private static final String JSON_WITH_FIRST_AND_SECOND_NAME = """
+    private static final String JSON_WITH_FIRST_AND_SECOND_NAME_V2 = """
             {
                 "type": "UpsertCustomer",
                 "customerId": "67",
@@ -78,28 +76,42 @@ public class TestVersioning
 
     public static class UpsertCustomer implements Request
     {
-        public String customerId;
-        public String source;
-        public String firstName;
-        public String secondName;
+        private final String customerId;
+        private final String source;
+        private final String firstName;
+        private final String secondName;
+
+        public UpsertCustomer(String customerId, String source, String name)    // Input version 1, Output version 2
+        {
+            this.customerId = customerId;
+            this.source = source;
+
+            {   // Upgrade name to first name and last name
+                int indexOf = name.indexOf(" ");
+                if (indexOf < 0)
+                {
+                    this.firstName = name;
+                    this.secondName = null;
+                }
+                else
+                {
+                    this.firstName = name.substring(0, indexOf);
+                    this.secondName = name.substring(indexOf + 1);
+                }
+            }
+        }
+
+        public UpsertCustomer(String customerId, String source, String firstName, String secondName)    // Input version 2, output version 2
+        {
+            this.customerId = customerId;
+            this.source = source;
+            this.firstName = firstName;
+            this.secondName = secondName;
+        }
 
         @Override
         public String getType() {
             return this.getClass().getSimpleName();
-        }
-
-        public void setName(String name)
-        {
-            int indexOf = name.indexOf(" ");
-            if(indexOf < 0)
-            {
-                this.firstName = name;
-            }
-            else
-            {
-                this.firstName = name.substring(0, indexOf);
-                this.secondName = name.substring(indexOf + 1);
-            }
         }
 
         @Override
@@ -118,9 +130,9 @@ public class TestVersioning
     {
         @JsonCreator
         UpsertCustomerMixIn(
-                @JsonProperty("customerId") final String customerId,
-                @JsonProperty("source") final String source,
-                @JsonProperty("name") final String name)
+                @JsonProperty(value = "customerId", required = true) final String customerId,
+                @JsonProperty(value = "source", required = true) final String source,
+                @JsonProperty(value = "name", required = true) final String name)
         {
         }
     }
@@ -129,44 +141,46 @@ public class TestVersioning
     {
         @JsonCreator
         UpsertCustomerMixInVersion2(
-                @JsonProperty("customerId") final String customerId,
-                @JsonProperty("source") final String source,
-                @JsonProperty("firstName") final String firstName,
-                @JsonProperty("secondName") final String secondName)
+                @JsonProperty(value = "customerId", required = true) final String customerId,
+                @JsonProperty(value = "source", required = true) final String source,
+                @JsonProperty(value = "firstName", required = true) final String firstName,
+                @JsonProperty(value = "secondName", required = true) final String secondName)
         {
         }
     }
 
     @Test
-    public void testVersion1() throws JsonProcessingException
+    public void givenVersion1ProtocolVersion1Works() throws JsonProcessingException
     {
         ObjectMapper mapper = new ObjectMapper()
-                .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
                 .registerModule(new ConverterVersion1());
-        {
-            UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_NAME, UpsertCustomer.class);
-            assertThat(upsertCustomer.firstName).isEqualTo("Tom");
-        }
-        {
-            UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME, UpsertCustomer.class);
-            assertThat(upsertCustomer.firstName).isEqualTo("Tom");
-        }
+        UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_NAME_V1, UpsertCustomer.class);
+        assertThat(upsertCustomer.firstName).isEqualTo("Tom");
+    }
+    @Test
+    public void givenVersion1ProtocolVersion2DoesNotWork() throws JsonProcessingException
+    {
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new ConverterVersion1());
+        assertThatExceptionOfType(JsonMappingException.class)
+                .isThrownBy(() -> mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, UpsertCustomer.class));
     }
 
     @Test
-    public void testVersion2() throws JsonProcessingException
+    public void givenVersion2ProtocolVersion1DoesNotWork() throws JsonProcessingException
     {
         ObjectMapper mapper = new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
-                .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
                 .registerModule(new ConverterVersion2());
-        {
-            UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_NAME, UpsertCustomer.class);
-            assertThat(upsertCustomer.firstName).isEqualTo("Tom");
-        }
-        {
-            UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME, UpsertCustomer.class);
-            assertThat(upsertCustomer.firstName).isEqualTo("Tom");
-        }
+        assertThatExceptionOfType(JsonMappingException.class)
+                .isThrownBy(() -> mapper.readValue(JSON_WITH_NAME_V1, UpsertCustomer.class));
+    }
+    @Test
+    public void givenVersion2ProtocolVersion2Works() throws JsonProcessingException
+    {
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new ConverterVersion2());
+
+        UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, UpsertCustomer.class);
+        assertThat(upsertCustomer.firstName).isEqualTo("Tom");
     }
 }
