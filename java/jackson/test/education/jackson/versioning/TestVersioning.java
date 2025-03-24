@@ -78,6 +78,7 @@ public class TestVersioning
     {
         private final String customerId;
         private final String source;
+//        private final String name; // Version 1;
         private final String firstName;
         private final String secondName;
 
@@ -85,6 +86,7 @@ public class TestVersioning
         {
             this.customerId = customerId;
             this.source = source;
+//            this.name = name; // Version 1
 
             {   // Upgrade name to first name and last name
                 int indexOf = name.indexOf(" ");
