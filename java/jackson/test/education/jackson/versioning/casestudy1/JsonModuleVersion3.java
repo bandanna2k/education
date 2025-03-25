@@ -13,6 +13,6 @@ public class JsonModuleVersion3 extends JsonModuleVersion2
     @Override
     protected void addMixInForUpsertCustomer(SetupContext setupContext)
     {
-        setupContext.setMixInAnnotations(UpsertCustomer.class, TestVersioning2.UpsertCustomerMixInVersion3.class);
+        setupContext.setMixInAnnotations(UpsertCustomer.class, UpsertCustomerMixInVersion3.class);
     }
 }

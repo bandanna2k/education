@@ -31,6 +31,6 @@ public class JsonModuleVersion1 extends Module
 
     protected void addMixInForUpsertCustomer(SetupContext setupContext)
     {
-        setupContext.setMixInAnnotations(UpsertCustomer.class, TestVersioning2.UpsertCustomerMixIn.class);
+        setupContext.setMixInAnnotations(UpsertCustomer.class, UpsertCustomerMixIn.class);
     }
 }

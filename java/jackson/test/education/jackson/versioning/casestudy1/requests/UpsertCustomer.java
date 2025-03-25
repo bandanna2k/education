@@ -1,8 +1,5 @@
 package education.jackson.versioning.casestudy1.requests;
 
-/**
- * Replacing name with first name and last name
- */
 public class UpsertCustomer implements Request
 {
     public final String customerId;

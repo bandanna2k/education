@@ -1,8 +1,9 @@
 package education.jackson.versioning.casestudy1;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import education.jackson.versioning.casestudy1.requests.UpsertCustomer;
@@ -41,44 +42,15 @@ public class TestVersioning2
             }
             """;
 
-    public abstract static class UpsertCustomerMixIn
+    private static ObjectMapper newBaseMapper()
     {
-        @JsonCreator
-        UpsertCustomerMixIn(
-                @JsonProperty(value = "customerId", required = true) final String customerId,
-                @JsonProperty(value = "source", required = true) final String source,
-                @JsonProperty(value = "name", required = true) final String name)
-        {
-        }
-    }
-    public abstract static class UpsertCustomerMixInVersion2
-    {
-        @JsonCreator
-        UpsertCustomerMixInVersion2(
-                @JsonProperty(value = "customerId", required = true) final String customerId,
-                @JsonProperty(value = "source", required = true) final String source,
-                @JsonProperty(value = "firstName", required = true) final String firstName,
-                @JsonProperty(value = "secondName", required = true) final String secondName)
-        {
-        }
-    }
-    public abstract static class UpsertCustomerMixInVersion3
-    {
-        @JsonCreator
-        UpsertCustomerMixInVersion3(
-                @JsonProperty(value = "customerId", required = true) final String customerId,
-                @JsonProperty(value = "source", required = true) final String source,
-                @JsonProperty(value = "firstName", required = true) final String firstName,
-                @JsonProperty(value = "secondName", required = true) final String secondName,
-                @JsonProperty(value = "address") final String address)
-        {
-        }
+        return new ObjectMapper();
     }
 
     @Test
     public void givenVersion1ProtocolVersion1Works() throws JsonProcessingException
     {
-        ObjectMapper mapper = new ObjectMapper()
+        ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion1());
         UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_NAME_V1, UpsertCustomer.class);
         assertThat(upsertCustomer.firstName).isEqualTo("Tom");
@@ -86,7 +58,7 @@ public class TestVersioning2
     @Test
     public void givenVersion1ProtocolVersion2DoesNotWork() throws JsonProcessingException
     {
-        ObjectMapper mapper = new ObjectMapper()
+        ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion1());
         assertThatExceptionOfType(JsonMappingException.class)
                 .isThrownBy(() -> mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, UpsertCustomer.class));
@@ -94,17 +66,17 @@ public class TestVersioning2
     @Test
     public void givenVersion1ProtocolVersion3DoesNotWork() throws JsonProcessingException
     {
-        ObjectMapper mapper = new ObjectMapper()
+        ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion1());
         assertThatExceptionOfType(JsonMappingException.class)
-                .isThrownBy(() -> mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, UpsertCustomer.class));
+                .isThrownBy(() -> mapper.readValue(JSON_WITH_ADDRESS_V3, UpsertCustomer.class));
     }
 
 
     @Test
     public void givenVersion2ProtocolVersion1DoesNotWork() throws JsonProcessingException
     {
-        ObjectMapper mapper = new ObjectMapper()
+        ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion2());
         assertThatExceptionOfType(JsonMappingException.class)
                 .isThrownBy(() -> mapper.readValue(JSON_WITH_NAME_V1, UpsertCustomer.class));
@@ -112,7 +84,7 @@ public class TestVersioning2
     @Test
     public void givenVersion2ProtocolVersion2Works() throws JsonProcessingException
     {
-        ObjectMapper mapper = new ObjectMapper()
+        ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion2());
 
         UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, UpsertCustomer.class);
@@ -121,17 +93,16 @@ public class TestVersioning2
     @Test
     public void givenVersion2ProtocolVersion3DoesNotWork() throws JsonProcessingException
     {
-        ObjectMapper mapper = new ObjectMapper()
+        ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion2());
         assertThatExceptionOfType(JsonMappingException.class)
-                .isThrownBy(() -> mapper.readValue(JSON_WITH_NAME_V1, UpsertCustomer.class));
+                .isThrownBy(() -> System.out.println(mapper.readValue(JSON_WITH_ADDRESS_V3, UpsertCustomer.class)));
     }
-
 
     @Test
     public void givenVersion3Protocol_RequestVersion1DoesNotWork() throws JsonProcessingException
     {
-        ObjectMapper mapper = new ObjectMapper()
+        ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion3());
         assertThatExceptionOfType(JsonMappingException.class)
                 .isThrownBy(() -> mapper.readValue(JSON_WITH_NAME_V1, UpsertCustomer.class));
@@ -139,7 +110,7 @@ public class TestVersioning2
     @Test
     public void givenVersion3Protocol_RequestVersion2Works() throws JsonProcessingException
     {
-        ObjectMapper mapper = new ObjectMapper()
+        ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion3());
         UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, UpsertCustomer.class);
         assertThat(upsertCustomer.address).isEqualTo(null);
@@ -147,7 +118,7 @@ public class TestVersioning2
     @Test
     public void givenVersion3Protocol_RequestVersion3Works() throws JsonProcessingException
     {
-        ObjectMapper mapper = new ObjectMapper()
+        ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion3());
         UpsertCustomer upsertCustomer = mapper.readValue(JSON_WITH_ADDRESS_V3, UpsertCustomer.class);
         assertThat(upsertCustomer.address).isEqualTo("999 Letsbe Avenue");
