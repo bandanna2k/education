@@ -16,7 +16,7 @@ public abstract class UpsertCustomerMixInVersion3
             @JsonProperty(value = "source", required = true) final String source,
             @JsonProperty(value = "firstName", required = true) final String firstName,
             @JsonProperty(value = "secondName", required = true) final String secondName,
-            @JsonProperty(value = "address") final String address)
+            @JsonProperty(value = "address", required = true) final String address)
     {
     }
 }

@@ -1,6 +1,7 @@
 package education.jackson.versioning.casestudy1;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import education.jackson.versioning.casestudy1.requests.Request;
@@ -45,13 +46,14 @@ public class TestVersioningCaseStudy
 
     private static ObjectMapper newBaseMapper()
     {
-        return new ObjectMapper();
+        return new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
     }
 
     public static class TestJsonModuleVersion1
     {
         @Test
-        public void givenVersion1ProtocolVersion1Works() throws JsonProcessingException
+        public void givenVersion1Protocol_RequestVersion1Works() throws JsonProcessingException
         {
             ObjectMapper mapper = newBaseMapper()
                     .registerModule(new JsonModuleVersion1());
@@ -59,7 +61,7 @@ public class TestVersioningCaseStudy
             assertThat(upsertCustomer.firstName).isEqualTo("Tom");
         }
         @Test
-        public void givenVersion1ProtocolVersion2DoesNotWork() throws JsonProcessingException
+        public void givenVersion1Protocol_RequestVersion2DoesNotWork() throws JsonProcessingException
         {
             ObjectMapper mapper = newBaseMapper()
                     .registerModule(new JsonModuleVersion1());
@@ -67,7 +69,7 @@ public class TestVersioningCaseStudy
                     .isThrownBy(() -> mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, Request.class));
         }
         @Test
-        public void givenVersion1ProtocolVersion3DoesNotWork() throws JsonProcessingException
+        public void givenVersion1Protocol_RequestVersion3DoesNotWork() throws JsonProcessingException
         {
             ObjectMapper mapper = newBaseMapper()
                     .registerModule(new JsonModuleVersion1());
@@ -79,7 +81,7 @@ public class TestVersioningCaseStudy
     public static class TestJsonModuleVersion2
     {
         @Test
-        public void givenVersion2ProtocolVersion1DoesNotWork() throws JsonProcessingException
+        public void givenVersion2Protocol_RequestVersion1DoesNotWork() throws JsonProcessingException
         {
             ObjectMapper mapper = newBaseMapper()
                     .registerModule(new JsonModuleVersion2());
@@ -87,7 +89,7 @@ public class TestVersioningCaseStudy
                     .isThrownBy(() -> mapper.readValue(JSON_WITH_NAME_V1, Request.class));
         }
         @Test
-        public void givenVersion2ProtocolVersion2Works() throws JsonProcessingException
+        public void givenVersion2Protocol_RequestVersion2Works() throws JsonProcessingException
         {
             ObjectMapper mapper = newBaseMapper()
                     .registerModule(new JsonModuleVersion2());
@@ -96,7 +98,7 @@ public class TestVersioningCaseStudy
             assertThat(upsertCustomer.firstName).isEqualTo("Tom");
         }
         @Test
-        public void givenVersion2ProtocolVersion3DoesNotWork() throws JsonProcessingException
+        public void givenVersion2Protocol_RequestVersion3DoesNotWork() throws JsonProcessingException
         {
             ObjectMapper mapper = newBaseMapper()
                     .registerModule(new JsonModuleVersion2());
@@ -120,8 +122,8 @@ public class TestVersioningCaseStudy
         {
             ObjectMapper mapper = newBaseMapper()
                     .registerModule(new JsonModuleVersion3());
-            UpsertCustomer upsertCustomer = (UpsertCustomer) mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, Request.class);
-            assertThat(upsertCustomer.address).isEqualTo(null);
+            assertThatExceptionOfType(JsonMappingException.class)
+                    .isThrownBy(() -> mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, Request.class));
         }
         @Test
         public void givenVersion3Protocol_RequestVersion3Works() throws JsonProcessingException
