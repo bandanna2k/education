@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import education.jackson.versioning.casestudyByBuilder.pojos.AnotherRequest;
 import education.jackson.versioning.casestudyByBuilder.converters.AnotherRequestBuilder;
 import education.jackson.versioning.casestudyByBuilder.converters.UpsertCustomerBuilder;
-import education.jackson.versioning.casestudyByBuilder.requests.Request;
+import education.jackson.versioning.casestudyByBuilder.converters.Request;
 import education.jackson.versioning.casestudyByBuilder.pojos.UpsertCustomer;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;

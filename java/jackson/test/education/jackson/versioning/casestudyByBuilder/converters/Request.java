@@ -1,9 +1,7 @@
-package education.jackson.versioning.casestudyByBuilder.requests;
+package education.jackson.versioning.casestudyByBuilder.converters;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import education.jackson.versioning.casestudyByBuilder.converters.AnotherRequestBuilder;
-import education.jackson.versioning.casestudyByBuilder.converters.UpsertCustomerBuilder;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

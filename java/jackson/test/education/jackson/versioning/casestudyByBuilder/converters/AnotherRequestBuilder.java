@@ -1,7 +1,6 @@
 package education.jackson.versioning.casestudyByBuilder.converters;
 
 import education.jackson.versioning.casestudyByBuilder.pojos.AnotherRequest;
-import education.jackson.versioning.casestudyByBuilder.requests.Request;
 
 public class AnotherRequestBuilder implements Builder<AnotherRequest>, Request
 {

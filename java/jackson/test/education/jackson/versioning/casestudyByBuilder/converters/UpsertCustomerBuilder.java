@@ -1,7 +1,6 @@
 package education.jackson.versioning.casestudyByBuilder.converters;
 
 import education.jackson.versioning.casestudyByBuilder.pojos.UpsertCustomer;
-import education.jackson.versioning.casestudyByBuilder.requests.Request;
 
 public class UpsertCustomerBuilder implements Builder<UpsertCustomer>, Request
 {
