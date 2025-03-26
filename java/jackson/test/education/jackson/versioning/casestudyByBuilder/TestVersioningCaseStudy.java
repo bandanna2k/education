@@ -4,15 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import education.jackson.versioning.casestudyByBuilder.pojos.UpsertCustomerBuilder;
+import education.jackson.versioning.casestudyByBuilder.pojos.AnotherRequest;
+import education.jackson.versioning.casestudyByBuilder.converters.AnotherRequestBuilder;
+import education.jackson.versioning.casestudyByBuilder.converters.UpsertCustomerBuilder;
 import education.jackson.versioning.casestudyByBuilder.requests.Request;
 import education.jackson.versioning.casestudyByBuilder.pojos.UpsertCustomer;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(Enclosed.class)
 public class TestVersioningCaseStudy
@@ -53,27 +55,24 @@ public class TestVersioningCaseStudy
 
     public static class TestJsonModuleVersion1
     {
+        private ObjectMapper mapper = newBaseMapper()
+                .registerModule(new JsonModuleVersion1());
+
         @Test
         public void givenVersion1Protocol_RequestVersion1Works() throws JsonProcessingException
         {
-            ObjectMapper mapper = newBaseMapper()
-                    .registerModule(new JsonModuleVersion1());
             UpsertCustomer upsertCustomer = ((UpsertCustomerBuilder)mapper.readValue(JSON_WITH_NAME_V1, Request.class)).build();
             assertThat(upsertCustomer.firstName).isEqualTo("Tom");
         }
         @Test
         public void givenVersion1Protocol_RequestVersion2DoesNotWork() throws JsonProcessingException
         {
-            ObjectMapper mapper = newBaseMapper()
-                    .registerModule(new JsonModuleVersion1());
             assertThatExceptionOfType(JsonMappingException.class)
                     .isThrownBy(() -> mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, Request.class));
         }
         @Test
         public void givenVersion1Protocol_RequestVersion3DoesNotWork() throws JsonProcessingException
         {
-            ObjectMapper mapper = newBaseMapper()
-                    .registerModule(new JsonModuleVersion1());
             assertThatExceptionOfType(JsonMappingException.class)
                     .isThrownBy(() -> mapper.readValue(JSON_WITH_ADDRESS_V3, Request.class));
         }
@@ -81,28 +80,24 @@ public class TestVersioningCaseStudy
 
     public static class TestJsonModuleVersion2
     {
+        private ObjectMapper mapper = newBaseMapper()
+                .registerModule(new JsonModuleVersion2());
+
         @Test
         public void givenVersion2Protocol_RequestVersion1DoesNotWork() throws JsonProcessingException
         {
-            ObjectMapper mapper = newBaseMapper()
-                    .registerModule(new JsonModuleVersion2());
             assertThatExceptionOfType(JsonMappingException.class)
                     .isThrownBy(() -> mapper.readValue(JSON_WITH_NAME_V1, Request.class));
         }
         @Test
         public void givenVersion2Protocol_RequestVersion2Works() throws JsonProcessingException
         {
-            ObjectMapper mapper = newBaseMapper()
-                    .registerModule(new JsonModuleVersion2());
-
             UpsertCustomer upsertCustomer = ((UpsertCustomerBuilder)mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, Request.class)).build();
             assertThat(upsertCustomer.firstName).isEqualTo("Tom");
         }
         @Test
         public void givenVersion2Protocol_RequestVersion3DoesNotWork() throws JsonProcessingException
         {
-            ObjectMapper mapper = newBaseMapper()
-                    .registerModule(new JsonModuleVersion2());
             assertThatExceptionOfType(JsonMappingException.class)
                     .isThrownBy(() -> System.out.println(mapper.readValue(JSON_WITH_ADDRESS_V3, Request.class)));
         }
@@ -110,29 +105,43 @@ public class TestVersioningCaseStudy
 
     public static class TestJsonModuleVersion3
     {
+        private ObjectMapper mapper = newBaseMapper()
+                .registerModule(new JsonModuleVersion3());
+
         @Test
         public void givenVersion3Protocol_RequestVersion1DoesNotWork() throws JsonProcessingException
         {
-            ObjectMapper mapper = newBaseMapper()
-                    .registerModule(new JsonModuleVersion3());
             assertThatExceptionOfType(JsonMappingException.class)
                     .isThrownBy(() -> mapper.readValue(JSON_WITH_NAME_V1, Request.class));
         }
         @Test
         public void givenVersion3Protocol_RequestVersion2Works() throws JsonProcessingException
         {
-            ObjectMapper mapper = newBaseMapper()
-                    .registerModule(new JsonModuleVersion3());
-            assertThatExceptionOfType(JsonMappingException.class)
-                    .isThrownBy(() -> mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, Request.class));
+            UpsertCustomer upsertCustomer = ((UpsertCustomerBuilder)mapper.readValue(JSON_WITH_FIRST_AND_SECOND_NAME_V2, Request.class)).build();
+            assertThat(upsertCustomer.address).isEqualTo(null);
         }
         @Test
         public void givenVersion3Protocol_RequestVersion3Works() throws JsonProcessingException
         {
-            ObjectMapper mapper = newBaseMapper()
-                    .registerModule(new JsonModuleVersion3());
             UpsertCustomer upsertCustomer = ((UpsertCustomerBuilder)mapper.readValue(JSON_WITH_ADDRESS_V3, Request.class)).build();
             assertThat(upsertCustomer.address).isEqualTo("999 Letsbe Avenue");
+        }
+    }
+
+    public static class TestAnotherRequest
+    {
+        @Test
+        public void canAlsoDeserialiseOtherRequests () throws JsonProcessingException
+        {
+            String exampleJson = """
+                    {
+                        "type": "AnotherRequest"
+                    }
+                    """;
+            ObjectMapper mapper = newBaseMapper()
+                    .registerModule(new JsonModuleVersion3());
+            AnotherRequest anotherRequest = ((AnotherRequestBuilder) mapper.readValue(exampleJson, Request.class)).build();
+            Assertions.assertThat(anotherRequest).isNotNull();
         }
     }
 }

@@ -2,7 +2,10 @@ package education.jackson.versioning.casestudyByBuilder;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.Module;
-import education.jackson.versioning.casestudyByBuilder.pojos.UpsertCustomerBuilder;
+import education.jackson.versioning.casestudyByBuilder.converters.AnotherRequestBuilder;
+import education.jackson.versioning.casestudyByBuilder.converters.AnotherRequestMixIn;
+import education.jackson.versioning.casestudyByBuilder.converters.UpsertCustomerBuilder;
+import education.jackson.versioning.casestudyByBuilder.converters.UpsertCustomerMixIn;
 
 public class JsonModuleVersion1 extends Module
 {
@@ -27,10 +30,15 @@ public class JsonModuleVersion1 extends Module
     public void setupModule(SetupContext setupContext)
     {
         addMixInForUpsertCustomer(setupContext);
+        addMixInForAnotherRequest(setupContext);
     }
 
     protected void addMixInForUpsertCustomer(SetupContext setupContext)
     {
         setupContext.setMixInAnnotations(UpsertCustomerBuilder.class, UpsertCustomerMixIn.class);
+    }
+    protected void addMixInForAnotherRequest(SetupContext setupContext)
+    {
+        setupContext.setMixInAnnotations(AnotherRequestBuilder.class, AnotherRequestMixIn.class);
     }
 }

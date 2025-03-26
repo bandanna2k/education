@@ -1,6 +1,7 @@
 package education.jackson.versioning.casestudyByBuilder;
 
-import education.jackson.versioning.casestudyByBuilder.pojos.UpsertCustomerBuilder;
+import education.jackson.versioning.casestudyByBuilder.converters.UpsertCustomerBuilder;
+import education.jackson.versioning.casestudyByBuilder.converters.UpsertCustomerMixIn_V2;
 
 public class JsonModuleVersion2 extends JsonModuleVersion1
 {
