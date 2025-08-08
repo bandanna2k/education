@@ -31,16 +31,16 @@ public class FastPFOR {
     }
 
     @Test
-    public void name() {
+    public void testBasic() {
         IntegratedIntCompressor iic = new IntegratedIntCompressor();
 
-        System.out.print("Raw:");
         int[] array = INITIAL_DATA.stream().mapToInt(Number::intValue).toArray();
+        System.out.printf("Raw (%d):", array.length);
         Arrays.stream(array).forEach(x -> System.out.printf("%d,", x));
         System.out.println();
 
-        System.out.print("Compressed:");
         int[] compressed = iic.compress(array); // compressed array
+        System.out.printf("Compressed (%d):", compressed.length);
         Arrays.stream(compressed).forEach(x -> System.out.printf("%d,", x));
         System.out.println();
     }

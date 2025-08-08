@@ -1,6 +1,7 @@
 package education.maths;
 
 import education.maths.compressors.Compressor;
+import education.maths.compressors.FastPFORCompression;
 import education.maths.compressors.LzmaCompression;
 import education.maths.compressors.NoCompression;
 import org.assertj.core.api.Assertions;
@@ -25,7 +26,8 @@ public class SortedIntegers {
 
     private final List<Compressor> compressors = List.of(
         new NoCompression(),
-        new LzmaCompression()
+        new FastPFORCompression()
+        //new LzmaCompression()
     );
 
     @Test
