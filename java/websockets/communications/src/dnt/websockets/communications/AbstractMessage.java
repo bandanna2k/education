@@ -1,4 +1,4 @@
-package dnt.websockets.server.infrastructure;
+package dnt.websockets.communications;
 
 public class AbstractMessage
 {

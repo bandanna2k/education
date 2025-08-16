@@ -1,4 +1,4 @@
-package dnt.websockets.server;
+package dnt.websockets.client;
 
 import dnt.websockets.communications.MessagePublisher;
 import dnt.websockets.communications.OptionsRequest;

@@ -3,8 +3,8 @@ package dnt.websockets.server;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import dnt.websockets.server.infrastructure.AbstractRequest;
-import dnt.websockets.server.infrastructure.MessagePublisher;
+import dnt.websockets.communications.AbstractRequest;
+import dnt.websockets.communications.MessagePublisher;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
@@ -12,7 +12,7 @@ import io.vertx.core.http.ServerWebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static dnt.websockets.VertxFactory.newVertx;
+import static dnt.websockets.vertx.VertxFactory.newVertx;
 
 public class Server
 {
@@ -24,23 +24,22 @@ public class Server
     private Vertx vertx;
     private HttpServer httpServer;
 
-    public static void main(String[] args)
-    {
-        new Server().go();
-    }
-
-    public Future<HttpServer> go()
+    public Future<HttpServer> run()
     {
         vertx = newVertx();
         httpServer = vertx.createHttpServer();
         return httpServer
                 .webSocketHandler(this::handle)
-                .listen(7777);
+                .listen(7777)
+                .onSuccess(httpServer -> {
+                    LOGGER.info("Server started on port {}", httpServer.actualPort());
+                })
+                .onFailure(t -> LOGGER.error("Failed to start server", t));
     }
 
     private void handle(ServerWebSocket serverWebSocket)
     {
-        if(!"v1/websocket".equals(serverWebSocket.path()))
+        if(!"/v1/websocket".equals(serverWebSocket.path()))
         {
             LOGGER.warn("Failed to connect websocket");
             serverWebSocket.close(WEBSOCKET_CODE_FAILED_TO_CONNECT);

@@ -1,4 +1,4 @@
-package dnt.websockets.client.requests;
+package dnt.websockets.client;
 
 public interface Requests
 {

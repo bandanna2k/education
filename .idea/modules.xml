@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/java/websockets/testing/acceptance/acceptance.iml" filepath="$PROJECT_DIR$/java/websockets/testing/acceptance/acceptance.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/websockets/client/client.iml" filepath="$PROJECT_DIR$/java/websockets/client/client.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/common/common.iml" filepath="$PROJECT_DIR$/java/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/websockets/communications/communications.iml" filepath="$PROJECT_DIR$/java/websockets/communications/communications.iml" />
       <module fileurl="file://$PROJECT_DIR$/education.iml" filepath="$PROJECT_DIR$/education.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/jackson/jackson.iml" filepath="$PROJECT_DIR$/java/jackson/jackson.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/java.iml" filepath="$PROJECT_DIR$/java/java.iml" />
@@ -13,9 +16,11 @@
       <module fileurl="file://$PROJECT_DIR$/java/syntax/syntax.iml" filepath="$PROJECT_DIR$/java/syntax/syntax.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" filepath="$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/testContainers/testContainers.iml" filepath="$PROJECT_DIR$/java/testContainers/testContainers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/websockets/testing/testing.iml" filepath="$PROJECT_DIR$/java/websockets/testing/testing.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/vertx/vertx.iml" filepath="$PROJECT_DIR$/java/vertx/vertx.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/websockets/websockets.iml" filepath="$PROJECT_DIR$/java/websockets/websockets.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/websockets/websockets-vertx/websockets-vertx.iml" filepath="$PROJECT_DIR$/java/websockets/websockets-vertx/websockets-vertx.iml" />
     </modules>
   </component>
 </project>

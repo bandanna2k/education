@@ -1,4 +1,4 @@
-package dnt.websockets.server.infrastructure;
+package dnt.websockets.communications;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

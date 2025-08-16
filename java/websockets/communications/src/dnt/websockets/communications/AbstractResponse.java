@@ -1,36 +1,37 @@
-package dnt.websockets.server.infrastructure;
+package dnt.websockets.communications;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = OptionsRequest.class, name = "OptionsRequest"),
+        @JsonSubTypes.Type(value = OptionsResponse.class, name = "OptionsResponse"),
 })
-public abstract class AbstractRequest extends AbstractMessage
+public abstract class AbstractResponse extends AbstractMessage
 {
     public static final long NO_CORRELATION_ID = -1;
 
     public long correlationId = NO_CORRELATION_ID;
     public String type;
 
-    public AbstractRequest()
+    public AbstractResponse()
     {
     }
-    public AbstractRequest(long correlationId)
+
+    public AbstractResponse(long correlationId)
     {
         this.correlationId = correlationId;
         this.type = this.getClass().getSimpleName();
     }
 
-    public abstract void visit(RequestVisitor visitor);
+    public abstract void visit(ResponseVisitor visitor);
 
     @Override
     public String toString()
     {
-        return "AbstractRequest{" +
+        return "AbstractResponse{" +
                 "correlationId=" + correlationId +
                 ", type='" + type + '\'' +
-                '}';
+                "} " + super.toString();
     }
 }

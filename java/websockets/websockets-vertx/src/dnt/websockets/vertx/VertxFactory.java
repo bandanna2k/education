@@ -1,4 +1,4 @@
-package dnt.websockets;
+package dnt.websockets.vertx;
 
 import io.vertx.core.Vertx;
 import org.slf4j.Logger;
