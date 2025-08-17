@@ -1,22 +1,19 @@
 package dnt.websockets.server;
 
-import dnt.websockets.communications.MessagePublisher;
-import dnt.websockets.communications.OptionsRequest;
-import dnt.websockets.communications.OptionsResponse;
-import dnt.websockets.communications.RequestVisitor;
+import dnt.websockets.communications.*;
 
 public class RequestProcessor implements RequestVisitor
 {
-    private final MessagePublisher messagePublisher;
+    private final Publisher publisher;
 
-    public RequestProcessor(MessagePublisher messagePublisher)
+    public RequestProcessor(Publisher publisher)
     {
-        this.messagePublisher = messagePublisher;
+        this.publisher = publisher;
     }
 
     @Override
     public void visit(OptionsRequest optionsRequest)
     {
-        messagePublisher.send(new OptionsResponse(optionsRequest.correlationId));
+        publisher.send(new OptionsResponse(publisher.getNextCorrelationId()));
     }
 }

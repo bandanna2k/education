@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.http.WebSocketBase;
 
-public class MessagePublisher
+public class MessagePublisher implements Publisher
 {
     private static final short WEBSOCKET_CODE_FAILED_TO_SEND_RESPONSE = 102;
 
@@ -18,6 +18,7 @@ public class MessagePublisher
         this.objectMapper = objectMapper;
     }
 
+    @Override
     public void send(AbstractMessage message)
     {
         try
@@ -31,6 +32,7 @@ public class MessagePublisher
         }
     }
 
+    @Override
     public synchronized long getNextCorrelationId()
     {
         return nextCorrelationId++;
