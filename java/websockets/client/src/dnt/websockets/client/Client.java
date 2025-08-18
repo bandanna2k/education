@@ -24,9 +24,8 @@ public class Client
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.ALWAYS);
     private static final ObjectReader MESSAGE_READER = OBJECT_MAPPER.readerFor(AbstractResponse.class);
 
-    private Requests requests;
-    private int correlationId = 1;
     private Vertx vertx;
+    private MessagePublisher messagePublisher;
 
     public Future<WebSocket> run()
     {
@@ -40,8 +39,7 @@ public class Client
                 .setTimeout(3000);
         return httpClient.webSocket(options)
                 .onSuccess(webSocket -> {
-                    MessagePublisher messagePublisher = new MessagePublisher(webSocket, OBJECT_MAPPER);
-                    requests = correlationId -> messagePublisher.send(new OptionsRequest(messagePublisher.getNextCorrelationId()));
+                    messagePublisher = new MessagePublisher(webSocket, OBJECT_MAPPER);
                     WebSocketTextMessageHandler messageHandler = new WebSocketTextMessageHandler(MESSAGE_READER);
                     webSocket.textMessageHandler(messageHandler);
                 })
@@ -50,7 +48,7 @@ public class Client
 
     public void requestOptions()
     {
-        requests.requestOptions(correlationId++);
+        messagePublisher.send(new OptionsRequest(messagePublisher.getNextCorrelationId()));
     }
 
     public void close()

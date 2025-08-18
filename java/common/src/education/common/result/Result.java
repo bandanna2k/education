@@ -1,6 +1,7 @@
 package education.common.result;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Result<S, E>
 {
@@ -31,7 +32,7 @@ public class Result<S, E>
         return new Result<>(null, data, State.Error);
     }
 
-    public void fold(Consumer<S> successConsumer, Consumer<E> errorConsumer)
+    public void consume(Consumer<S> successConsumer, Consumer<E> errorConsumer)
     {
         if(isSuccess())
         {
@@ -40,6 +41,18 @@ public class Result<S, E>
         else
         {
             errorConsumer.accept(errorData);
+        }
+    }
+
+    public <NewE> Result<S, NewE> mapError(Function<E, NewE> errorFunction)
+    {
+        if(isSuccess())
+        {
+            return success(successData);
+        }
+        else
+        {
+            return failure(errorFunction.apply(errorData));
         }
     }
 

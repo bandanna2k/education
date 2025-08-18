@@ -16,11 +16,12 @@ public abstract class AbstractRequest extends AbstractMessage
 
     public AbstractRequest()
     {
+        this.type = this.getClass().getSimpleName();
     }
     public AbstractRequest(long correlationId)
     {
+        this();
         this.correlationId = correlationId;
-        this.type = this.getClass().getSimpleName();
     }
 
     public abstract void visit(RequestVisitor visitor);
@@ -31,6 +32,6 @@ public abstract class AbstractRequest extends AbstractMessage
         return "AbstractRequest{" +
                 "correlationId=" + correlationId +
                 ", type='" + type + '\'' +
-                '}';
+                "} " + super.toString();
     }
 }

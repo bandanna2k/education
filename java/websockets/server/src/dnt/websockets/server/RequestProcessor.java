@@ -14,6 +14,6 @@ public class RequestProcessor implements RequestVisitor
     @Override
     public void visit(OptionsRequest optionsRequest)
     {
-        publisher.send(new OptionsResponse(publisher.getNextCorrelationId()));
+        publisher.send(new OptionsResponse(optionsRequest.correlationId));
     }
 }

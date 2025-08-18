@@ -13,4 +13,10 @@ public class OptionsResponse extends AbstractResponse
     {
         visitor.visit(this);
     }
+
+    @Override
+    public String toString()
+    {
+        return super.toString();
+    }
 }

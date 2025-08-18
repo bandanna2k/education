@@ -30,9 +30,9 @@ public class DepositWithdrawalHandler implements RequestRegistry.DepositListener
     {
 //        System.out.println("Deposit " + deposit);
 
-        dao.getBalance(deposit.accountId).fold(
+        dao.getBalance(deposit.accountId).consume(
                 currentBalance ->
-                    dao.deposit(deposit).fold(
+                    dao.deposit(deposit).consume(
                             success ->
                             {
                                 BigDecimal balanceAfterDeposit = currentBalance.balance.add(deposit.amount);
@@ -50,11 +50,11 @@ public class DepositWithdrawalHandler implements RequestRegistry.DepositListener
     {
 //        System.out.println("Withdrawal " + withdrawal);
 //
-        dao.getBalance(withdrawal.accountId).fold(
+        dao.getBalance(withdrawal.accountId).consume(
                 currentBalance ->
-                        validateWithdrawal(currentBalance, withdrawal).fold(
+                        validateWithdrawal(currentBalance, withdrawal).consume(
                                 balanceAfterWithdrawal ->
-                                        dao.withdraw(withdrawal).fold(
+                                        dao.withdraw(withdrawal).consume(
                                                 success -> publisher.publishResponse(new Balance(withdrawal.uuid, withdrawal.accountId, balanceAfterWithdrawal)),
                                                 unused -> { throw new RuntimeException("Code unreachable"); }),
                                 error -> publisher.publishResponse(new Error(withdrawal.uuid, error))),
