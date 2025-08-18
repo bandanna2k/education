@@ -2,40 +2,46 @@ package education.common.result;
 
 import org.junit.Test;
 
-import static education.common.result.Result.failure;
-import static education.common.result.Result.success;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class ResultTest
 {
-    private final Result<Integer, String> success1 = success(1);
-    private final Result<Integer, String> success2 = success(2);
-    private final Result<Void, String> failure3 = failure("3");
-    private final Result<Void, String> failure4 = failure("4");
-
     @Test
     public void testMap()
     {
         {
-            Result<Integer, String> result = success1.map(success -> success2);
-            assertTrue(result.isSuccess());
-            assertThat(result.success()).isEqualTo(2);
+            Result<String, String> original = Result.success("1");
+            assertThat(original.success()).isInstanceOf(String.class);
+            Result<Integer, Integer> mapped = original.map(Integer::parseInt, Integer::parseInt);
+            assertThat(mapped.success()).isInstanceOf(Integer.class);
         }
         {
-            Result<Void, String> result = success1.map(success -> failure3);
-            assertTrue(result.hasFailed());
-            assertThat(result.error()).isEqualTo("3");
+            Result<String, String> original = Result.failure("2");
+            assertThat(original.error()).isInstanceOf(String.class);
+            Result<Integer, Integer> mapped = original.map(Integer::parseInt, Integer::parseInt);
+            assertThat(mapped.error()).isInstanceOf(Integer.class);
         }
+    }
+
+    @Test
+    public void testMapSuccess()
+    {
         {
-            Result<Integer, String> result = failure4.map(success -> success1);
-            assertTrue(result.hasFailed());
-            assertThat(result.error()).isEqualTo("4");
+            Result<Integer, Integer> original = Result.success(1);
+            assertThat(original.success()).isInstanceOf(Integer.class);
+            Result<String, Integer> mapped = original.map(String::valueOf);
+            assertThat(mapped.success()).isInstanceOf(String.class);
         }
+    }
+
+    @Test
+    public void testMapError()
+    {
         {
-            Result<Void, String> result = failure4.map(success -> failure3);
-            assertTrue(result.hasFailed());
-            assertThat(result.error()).isEqualTo("4");
+            Result<Integer, Integer> original = Result.failure(1);
+            assertThat(original.error()).isInstanceOf(Integer.class);
+            Result<Integer, String> mapped = original.mapError(String::valueOf);
+            assertThat(mapped.error()).isInstanceOf(String.class);
         }
     }
 }

@@ -44,6 +44,30 @@ public class Result<S, E>
         }
     }
 
+    public <NewS, NewE> Result<NewS, NewE> map(Function<S, NewS> successFunction, Function<E, NewE> errorFunction)
+    {
+        if(isSuccess())
+        {
+            return success(successFunction.apply(successData));
+        }
+        else
+        {
+            return failure(errorFunction.apply(errorData));
+        }
+    }
+
+    public <NewS> Result<NewS, E> map(Function<S, NewS> successFunction)
+    {
+        if(isSuccess())
+        {
+            return success(successFunction.apply(successData));
+        }
+        else
+        {
+            return failure(errorData);
+        }
+    }
+
     public <NewE> Result<S, NewE> mapError(Function<E, NewE> errorFunction)
     {
         if(isSuccess())
@@ -56,15 +80,15 @@ public class Result<S, E>
         }
     }
 
-    public <N> Result<N, E> map(Mapping<S, N, E> result)
-    {
-        if(hasFailed())
-        {
-            return failure(errorData);
-        }
-        return result.map(success());
-    }
-
+    //    public <N> Result<N, E> map(Mapping<S, N, E> result)
+//    {
+//        if(hasFailed())
+//        {
+//            return failure(errorData);
+//        }
+//        return result.map(success());
+//    }
+//
     public S success()
     {
         assert isSuccess() : "Result not successful";
