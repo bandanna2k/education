@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/java/websockets/testing/acceptance/acceptance.iml" filepath="$PROJECT_DIR$/java/websockets/testing/acceptance/acceptance.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/websockets/client/client.iml" filepath="$PROJECT_DIR$/java/websockets/client/client.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/common/common.iml" filepath="$PROJECT_DIR$/java/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/websockets/communications/communications.iml" filepath="$PROJECT_DIR$/java/websockets/communications/communications.iml" />

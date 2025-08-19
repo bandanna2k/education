@@ -12,10 +12,12 @@ class WebSocketTextMessageHandler implements Handler<String>
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketTextMessageHandler.class);
 
     private final ObjectReader messageReader;
+    private final WebSocketExecutorLayer executorLayer;
 
-    WebSocketTextMessageHandler(ObjectReader messageReader)
+    WebSocketTextMessageHandler(ObjectReader messageReader, WebSocketExecutorLayer executorLayer)
     {
         this.messageReader = messageReader;
+        this.executorLayer = executorLayer;
     }
 
     @Override
@@ -24,7 +26,7 @@ class WebSocketTextMessageHandler implements Handler<String>
         LOGGER.debug("Raw input {}", maybeJson);
         try
         {
-            ResponseVisitor processor = new ResponseProcessor();
+            ResponseVisitor processor = new ResponseProcessor(executorLayer);
             AbstractResponse request = messageReader.readValue(maybeJson);
             request.visit(processor);
         }

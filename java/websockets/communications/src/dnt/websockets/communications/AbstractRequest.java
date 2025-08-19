@@ -34,4 +34,10 @@ public abstract class AbstractRequest extends AbstractMessage
                 ", type='" + type + '\'' +
                 "} " + super.toString();
     }
+
+    public AbstractMessage attachCorrelationId(long correlationId)
+    {
+        this.correlationId = correlationId;
+        return this;
+    }
 }

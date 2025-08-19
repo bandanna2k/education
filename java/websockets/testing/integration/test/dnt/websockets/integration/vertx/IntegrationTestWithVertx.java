@@ -1,15 +1,19 @@
-package acceptance;
+package dnt.websockets.integration.vertx;
 
 import dnt.websockets.client.Client;
+import dnt.websockets.communications.OptionsResponse;
 import dnt.websockets.server.Server;
+import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.http.WebSocket;
 import org.junit.Test;
 
-public class AcceptanceTest
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class IntegrationTestWithVertx
 {
     @Test
-    public void shouldSendAndReceive() throws InterruptedException
+    public void shouldSendAndReceive()
     {
         Server server = new Server();
         server.run()
@@ -17,14 +21,14 @@ public class AcceptanceTest
 
         Client client = new Client();
         Future<WebSocket> future = client.run()
-                .onSuccess(unused ->
-                {
-                    client.requestOptions();
-                })
                 .onFailure(t -> System.out.println("ERROR:" + t.getMessage()));
         future.toCompletionStage().toCompletableFuture().join();
 
-        Thread.sleep(1000);
+        Result<OptionsResponse, String> result = client.requestOptions()
+                .onFailure(t -> System.out.println("ERROR:" + t.getMessage()))
+                .toCompletionStage().toCompletableFuture().join();
+        System.out.println(result);
+        assertThat(result).isNotNull();
 
         client.close();
         server.close();

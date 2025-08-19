@@ -3,10 +3,11 @@ package dnt.websockets.client;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import dnt.websockets.communications.AbstractRequest;
 import dnt.websockets.communications.AbstractResponse;
 import dnt.websockets.communications.MessagePublisher;
 import dnt.websockets.communications.OptionsRequest;
+import dnt.websockets.communications.OptionsResponse;
+import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 
-public class Client
+public class Client implements Requests
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
@@ -25,7 +26,7 @@ public class Client
     private static final ObjectReader MESSAGE_READER = OBJECT_MAPPER.readerFor(AbstractResponse.class);
 
     private Vertx vertx;
-    private MessagePublisher messagePublisher;
+    private WebSocketExecutorLayer executorLayer;
 
     public Future<WebSocket> run()
     {
@@ -39,16 +40,19 @@ public class Client
                 .setTimeout(3000);
         return httpClient.webSocket(options)
                 .onSuccess(webSocket -> {
-                    messagePublisher = new MessagePublisher(webSocket, OBJECT_MAPPER);
-                    WebSocketTextMessageHandler messageHandler = new WebSocketTextMessageHandler(MESSAGE_READER);
+                    MessagePublisher messagePublisher = new MessagePublisher(webSocket, OBJECT_MAPPER);
+                    executorLayer = new WebSocketExecutorLayer(vertx, messagePublisher);
+
+                    WebSocketTextMessageHandler messageHandler = new WebSocketTextMessageHandler(MESSAGE_READER, executorLayer);
                     webSocket.textMessageHandler(messageHandler);
                 })
                 .onFailure(t -> LOGGER.error("Failed to start client.", t));
     }
 
-    public void requestOptions()
+    @Override
+    public Future<Result<OptionsResponse, String>> requestOptions()
     {
-        messagePublisher.send(new OptionsRequest(messagePublisher.getNextCorrelationId()));
+        return executorLayer.send(new OptionsRequest());
     }
 
     public void close()

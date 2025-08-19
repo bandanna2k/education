@@ -15,19 +15,21 @@ class WebsocketTextMessageHandler implements Handler<String>
 
     private final ObjectReader messageReader;
     private final MessagePublisher messagePublisher;
+    private final RequestVisitor processor;
 
     WebsocketTextMessageHandler(ObjectReader messageReader, MessagePublisher messagePublisher)
     {
         this.messageReader = messageReader;
         this.messagePublisher = messagePublisher;
+        this.processor = new RequestProcessor(messagePublisher);
     }
 
     @Override
     public void handle(String maybeJson)
     {
+        LOGGER.debug("Receiving {}", maybeJson);
         try
         {
-            RequestVisitor processor = new RequestProcessor(messagePublisher);
             AbstractRequest request = messageReader.readValue(maybeJson);
             request.visit(processor);
         }

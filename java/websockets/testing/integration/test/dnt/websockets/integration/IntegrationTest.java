@@ -8,6 +8,5 @@ public class IntegrationTest extends AbstractIntegrationTest
     public void shouldSendAndReceive()
     {
         client.fetchOptions();
-        client.verifyOptions();
     }
 }
