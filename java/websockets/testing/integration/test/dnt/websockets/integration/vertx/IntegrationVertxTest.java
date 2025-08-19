@@ -1,6 +1,5 @@
 package dnt.websockets.integration.vertx;
 
-import dnt.websockets.integration.AbstractIntegrationTest;
 import org.junit.Test;
 
 public class IntegrationVertxTest extends AbstractIntegrationVertxTest
@@ -10,5 +9,13 @@ public class IntegrationVertxTest extends AbstractIntegrationVertxTest
     {
         client.fetchOptions();
         client.fetchOptions();
+    }
+
+    @Test
+    public void shouldPushMessage()
+    {
+        server.broadcastMessage();
+
+        client.verifyMessage("PushMessage");
     }
 }

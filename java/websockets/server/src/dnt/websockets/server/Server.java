@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
+import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.AbstractRequest;
 import dnt.websockets.communications.MessagePublisher;
 import dnt.websockets.communications.OptionsRequest;
@@ -14,6 +15,10 @@ import io.vertx.core.http.ServerWebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 
 public class Server
@@ -23,9 +28,7 @@ public class Server
 
     private final ObjectMapper objectMapper;
     private final ObjectReader messageReader;
-
-    private Vertx vertx;
-    private HttpServer httpServer;
+    private final List<WebsocketTextMessageHandler> websocketTextMessageHandlers = new ArrayList<>();
 
     public Server()
     {
@@ -36,9 +39,8 @@ public class Server
 
     public Future<HttpServer> run()
     {
-        vertx = newVertx();
-        httpServer = vertx.createHttpServer();
-        return httpServer
+        Vertx vertx = newVertx();
+        return vertx.createHttpServer()
                 .webSocketHandler(this::handle)
                 .listen(7777)
                 .onSuccess(httpServer -> {
@@ -49,7 +51,7 @@ public class Server
 
     private void handle(ServerWebSocket serverWebSocket)
     {
-        if(!"/v1/websocket".equals(serverWebSocket.path()))
+        if (!"/v1/websocket".equals(serverWebSocket.path()))
         {
             LOGGER.warn("Failed to connect websocket");
             serverWebSocket.close(WEBSOCKET_CODE_FAILED_TO_CONNECT);
@@ -59,11 +61,25 @@ public class Server
         MessagePublisher messagePublisher = new MessagePublisher(serverWebSocket, objectMapper);
         WebsocketTextMessageHandler textMessageHandler = new WebsocketTextMessageHandler(messageReader, messagePublisher);
         serverWebSocket.textMessageHandler(textMessageHandler);
+        websocketTextMessageHandlers.add(textMessageHandler);
     }
 
-    public void close()
+    public void broadcastMessage(AbstractMessage message)
     {
-        httpServer.close();
-        vertx.close();
+        Iterator<WebsocketTextMessageHandler> iterator = websocketTextMessageHandlers.iterator();
+        while (iterator.hasNext())
+        {
+            WebsocketTextMessageHandler next;
+            try
+            {
+                next = iterator.next();
+                next.write(message);
+            }
+            catch (Exception e)
+            {
+                iterator.remove();
+                LOGGER.error("Error writing message", e);
+            }
+        }
     }
 }

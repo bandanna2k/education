@@ -18,7 +18,7 @@ public class RequestsTest
     @Test
     public void testSerde() throws JsonProcessingException
     {
-        OptionsRequest original = new OptionsRequest(1);
+        OptionsRequest original = new OptionsRequest().attachCorrelationId(1);
         final String json = OBJECT_MAPPER.writeValueAsString(original);
 
         AbstractRequest decoded = MESSAGE_READER.readValue(json);

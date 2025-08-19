@@ -1,6 +1,7 @@
 package dnt.websockets.integration.vertx.dsl;
 
 import dnt.websockets.client.Client;
+import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.OptionsResponse;
 import education.common.result.Result;
 import io.vertx.core.Future;
@@ -21,5 +22,10 @@ public class ClientVertxDriver
     {
         return client.requestOptions()
                 .onFailure(t -> System.out.println("ERROR:" + t.getMessage()));
+    }
+
+    public AbstractMessage popLastMessage()
+    {
+        return client.popLastMessage();
     }
 }

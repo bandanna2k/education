@@ -2,10 +2,9 @@ package dnt.websockets.communications;
 
 public class OptionsRequest extends AbstractRequest
 {
-    public OptionsRequest() {}
-    public OptionsRequest(long correlationId)
+    public OptionsRequest()
     {
-        super(correlationId);
+        super();
     }
 
     @Override

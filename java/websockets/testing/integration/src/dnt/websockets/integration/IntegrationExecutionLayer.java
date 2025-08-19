@@ -18,7 +18,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public <T extends AbstractResponse> Future<Result<T, String>> send(AbstractRequest request)
+    public <T extends AbstractResponse> Future<Result<T, String>> sendClientToServer(AbstractRequest request)
     {
         return Future.succeededFuture()
                 .map(unused ->
@@ -35,6 +35,17 @@ public class IntegrationExecutionLayer implements ExecutionLayer
         {
             requestProcessor.visit((OptionsRequest) message);
         }
+    }
+
+    @Override
+    public void broadcastServerToClient(AbstractMessage message)
+    {
+        publisher.send(message);
+    }
+
+    public AbstractMessage getLastMessage()
+    {
+        return publisher.getLastMessage();
     }
 
     public interface RequestProcessorFactory

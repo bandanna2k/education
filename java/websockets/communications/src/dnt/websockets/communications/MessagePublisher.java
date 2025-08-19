@@ -27,12 +27,14 @@ public class MessagePublisher implements Publisher
         LOGGER.debug("Sending {}", message);
         try
         {
-            serverWebSocket.writeTextMessage(objectMapper.writeValueAsString(message));
+            String s = objectMapper.writeValueAsString(message);
+            System.out.println(s);
+            serverWebSocket.writeTextMessage(s);
         }
         catch (JsonProcessingException e)
         {
             serverWebSocket.close(WEBSOCKET_CODE_FAILED_TO_SEND_RESPONSE);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to serialize message", e);
         }
     }
 

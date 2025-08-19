@@ -2,6 +2,7 @@ package dnt.websockets.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
+import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.AbstractRequest;
 import dnt.websockets.communications.MessagePublisher;
 import dnt.websockets.communications.RequestVisitor;
@@ -37,5 +38,10 @@ class WebsocketTextMessageHandler implements Handler<String>
         {
             LOGGER.warn("Failed to decode json. Error: {}, '{}'", e.getMessage(), maybeJson);
         }
+    }
+
+    public void write(AbstractMessage message)
+    {
+        messagePublisher.send(message);
     }
 }

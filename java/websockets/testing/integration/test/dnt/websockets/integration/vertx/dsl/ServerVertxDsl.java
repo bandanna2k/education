@@ -1,13 +1,16 @@
 package dnt.websockets.integration.vertx.dsl;
 
-import io.vertx.core.Future;
-
 public class ServerVertxDsl
 {
-    private final ServerVertxDriver serverDriver = new ServerVertxDriver();
+    private final ServerVertxDriver serverDriver;
 
-    private <R> R join(Future<R> future)
+    public ServerVertxDsl(ServerVertxDriver serverDriver)
     {
-        return future.toCompletionStage().toCompletableFuture().join();
+        this.serverDriver = serverDriver;
+    }
+
+    public void broadcastMessage()
+    {
+        serverDriver.broadcastMessage();
     }
 }
