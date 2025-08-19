@@ -1,8 +1,8 @@
 package dnt.websockets.integration;
 
-import dnt.websockets.integration.dsl.IntegrationDsl;
+import dnt.websockets.integration.dsl.ClientDsl;
 
 public abstract class AbstractIntegrationTest
 {
-    protected final IntegrationDsl client = new IntegrationDsl();
+    protected final ClientDsl client = new ClientDsl();
 }

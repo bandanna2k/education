@@ -1,27 +1,20 @@
 package dnt.websockets.integration.dsl;
 
 import dnt.websockets.client.ExecutionLayer;
+import dnt.websockets.communications.AbstractResponse;
 import dnt.websockets.communications.OptionsRequest;
 import dnt.websockets.communications.OptionsResponse;
 import dnt.websockets.integration.IntegrationExecutionLayer;
 import dnt.websockets.server.RequestProcessor;
 import education.common.result.Result;
 import io.vertx.core.Future;
-import org.assertj.core.api.Assertions;
 
-public class IntegrationDsl
+public class ClientDriver
 {
     private final ExecutionLayer executionLayer = new IntegrationExecutionLayer(RequestProcessor::new);
 
-    public void fetchOptions()
+    public Future<Result<OptionsResponse, String>> fetchOptions()
     {
-        Result<OptionsResponse, String> result = join(executionLayer.send(new OptionsRequest()));
-        Assertions.assertThat(result.isSuccess()).isTrue();
-        System.out.println(result);
-    }
-
-    private <R> R join(Future<R> future)
-    {
-        return future.toCompletionStage().toCompletableFuture().join();
+        return executionLayer.send(new OptionsRequest());
     }
 }
