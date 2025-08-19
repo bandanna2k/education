@@ -28,7 +28,7 @@ public class IntegrationTestWithVertx
                 .onFailure(t -> System.out.println("ERROR:" + t.getMessage()))
                 .toCompletionStage().toCompletableFuture().join();
         System.out.println(result);
-        assertThat(result).isNotNull();
+        assertThat(result.isSuccess()).isTrue();
 
         client.close();
         server.close();

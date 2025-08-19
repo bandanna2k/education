@@ -3,6 +3,7 @@ package dnt.websockets.client;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import dnt.websockets.communications.AbstractResponse;
 import dnt.websockets.communications.MessagePublisher;
 import dnt.websockets.communications.OptionsRequest;
@@ -22,11 +23,18 @@ public class Client implements Requests
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.ALWAYS);
-    private static final ObjectReader MESSAGE_READER = OBJECT_MAPPER.readerFor(AbstractResponse.class);
+    private final ObjectMapper mapper;
+    private final ObjectReader messageReader;
 
     private Vertx vertx;
     private WebSocketExecutorLayer executorLayer;
+
+    public Client()
+    {
+        mapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.ALWAYS);
+        mapper.registerSubtypes(new NamedType(OptionsResponse.class, OptionsResponse.class.getSimpleName()));
+        messageReader = mapper.readerFor(AbstractResponse.class);
+    }
 
     public Future<WebSocket> run()
     {
@@ -40,10 +48,10 @@ public class Client implements Requests
                 .setTimeout(3000);
         return httpClient.webSocket(options)
                 .onSuccess(webSocket -> {
-                    MessagePublisher messagePublisher = new MessagePublisher(webSocket, OBJECT_MAPPER);
+                    MessagePublisher messagePublisher = new MessagePublisher(webSocket, mapper);
                     executorLayer = new WebSocketExecutorLayer(vertx, messagePublisher);
 
-                    WebSocketTextMessageHandler messageHandler = new WebSocketTextMessageHandler(MESSAGE_READER, executorLayer);
+                    WebSocketTextMessageHandler messageHandler = new WebSocketTextMessageHandler(messageReader, executorLayer);
                     webSocket.textMessageHandler(messageHandler);
                 })
                 .onFailure(t -> LOGGER.error("Failed to start client.", t));
