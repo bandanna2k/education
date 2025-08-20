@@ -1,9 +1,7 @@
-package dnt.websockets.integration.vertx;
+package dnt.websockets.integration.vertx.dsl;
 
-import dnt.websockets.integration.vertx.dsl.ClientVertxDriver;
-import dnt.websockets.integration.vertx.dsl.ClientVertxDsl;
-import dnt.websockets.integration.vertx.dsl.ServerVertxDriver;
-import dnt.websockets.integration.vertx.dsl.ServerVertxDsl;
+import dnt.websockets.integration.vertx.ClientVertxDriver;
+import dnt.websockets.integration.vertx.ServerVertxDriver;
 
 public abstract class AbstractIntegrationVertxTest
 {

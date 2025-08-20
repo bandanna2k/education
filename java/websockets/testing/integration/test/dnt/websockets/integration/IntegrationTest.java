@@ -1,5 +1,6 @@
 package dnt.websockets.integration;
 
+import dnt.websockets.integration.dsl.AbstractIntegrationTest;
 import org.junit.Test;
 
 public class IntegrationTest extends AbstractIntegrationTest

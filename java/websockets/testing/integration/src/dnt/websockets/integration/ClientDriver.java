@@ -1,9 +1,8 @@
-package dnt.websockets.integration.dsl;
+package dnt.websockets.integration;
 
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.OptionsRequest;
 import dnt.websockets.communications.OptionsResponse;
-import dnt.websockets.integration.IntegrationExecutionLayer;
 import education.common.result.Result;
 import io.vertx.core.Future;
 

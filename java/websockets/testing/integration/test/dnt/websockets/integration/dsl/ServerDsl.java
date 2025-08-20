@@ -1,6 +1,7 @@
 package dnt.websockets.integration.dsl;
 
 import dnt.websockets.client.ExecutionLayer;
+import dnt.websockets.integration.ServerDriver;
 
 public class ServerDsl
 {

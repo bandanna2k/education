@@ -1,4 +1,4 @@
-package dnt.websockets.integration.dsl;
+package dnt.websockets.integration;
 
 import dnt.websockets.client.ExecutionLayer;
 import dnt.websockets.communications.PushMessage;

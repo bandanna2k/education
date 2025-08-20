@@ -1,5 +1,7 @@
 package dnt.websockets.integration.vertx.dsl;
 
+import dnt.websockets.integration.vertx.ServerVertxDriver;
+
 public class ServerVertxDsl
 {
     private final ServerVertxDriver serverDriver;

@@ -2,10 +2,9 @@ package dnt.websockets.integration.vertx.dsl;
 
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.OptionsResponse;
+import dnt.websockets.integration.vertx.ClientVertxDriver;
 import education.common.result.Result;
 import io.vertx.core.Future;
-import io.vertx.core.eventbus.Message;
-import org.assertj.core.api.Assertions;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +50,7 @@ public class ClientVertxDsl
             }
         });
 
-        Assertions.assertThat(completableFuture)
+        assertThat(completableFuture)
                 .succeedsWithin(5, TimeUnit.SECONDS);
     }
 }

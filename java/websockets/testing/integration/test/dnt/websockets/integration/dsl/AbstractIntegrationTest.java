@@ -1,7 +1,6 @@
-package dnt.websockets.integration;
+package dnt.websockets.integration.dsl;
 
-import dnt.websockets.integration.dsl.ClientDsl;
-import dnt.websockets.integration.dsl.ServerDsl;
+import dnt.websockets.integration.IntegrationExecutionLayer;
 import dnt.websockets.server.RequestProcessor;
 
 public abstract class AbstractIntegrationTest

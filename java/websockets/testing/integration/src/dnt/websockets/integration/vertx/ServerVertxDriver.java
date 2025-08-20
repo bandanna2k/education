@@ -1,4 +1,4 @@
-package dnt.websockets.integration.vertx.dsl;
+package dnt.websockets.integration.vertx;
 
 import dnt.websockets.communications.PushMessage;
 import dnt.websockets.server.Server;

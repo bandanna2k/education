@@ -1,4 +1,4 @@
-package dnt.websockets.integration.vertx.dsl;
+package dnt.websockets.integration.vertx;
 
 import dnt.websockets.client.Client;
 import dnt.websockets.communications.AbstractMessage;
