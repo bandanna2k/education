@@ -1,11 +1,9 @@
-package dnt.websockets.serialisation;
+package dnt.websockets.communications;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import dnt.websockets.communications.AbstractRequest;
-import dnt.websockets.communications.OptionsRequest;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

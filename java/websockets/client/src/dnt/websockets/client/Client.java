@@ -14,9 +14,7 @@ import io.vertx.core.http.WebSocketConnectOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import static dnt.websockets.vertx.VertxFactory.newVertx;
@@ -48,8 +46,8 @@ public class Client implements Requests
         WebSocketConnectOptions options = new WebSocketConnectOptions()
                 .setURI("/v1/websocket")
                 .setHost("localhost")
-                .setPort(7777)
-                .setTimeout(3000);
+                .setPort(7777);
+        options.setTimeout(3000);
         return httpClient.webSocket(options)
                 .onSuccess(webSocket -> {
                     MessagePublisher messagePublisher = new MessagePublisher(webSocket, mapper);
