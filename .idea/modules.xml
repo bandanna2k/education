@@ -20,6 +20,7 @@
       <module fileurl="file://$PROJECT_DIR$/java/websockets/testing/testing.iml" filepath="$PROJECT_DIR$/java/websockets/testing/testing.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/vertx/vertx.iml" filepath="$PROJECT_DIR$/java/vertx/vertx.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../websocket-integration-test/websocket-integration-tests.iml" filepath="$PROJECT_DIR$/../websocket-integration-test/websocket-integration-tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/websockets/websockets.iml" filepath="$PROJECT_DIR$/java/websockets/websockets.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/websockets/websockets-vertx/websockets-vertx.iml" filepath="$PROJECT_DIR$/java/websockets/websockets-vertx/websockets-vertx.iml" />
     </modules>
