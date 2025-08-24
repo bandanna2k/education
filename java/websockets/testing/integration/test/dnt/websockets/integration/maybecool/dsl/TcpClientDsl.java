@@ -1,4 +1,4 @@
-package dnt.websockets.integration.vertx.dsl;
+package dnt.websockets.integration.maybecool.dsl;
 
 import com.lmax.simpledsl.api.DslParams;
 import com.lmax.simpledsl.api.OptionalArg;
@@ -6,7 +6,7 @@ import com.lmax.simpledsl.api.RequiredArg;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
 import dnt.websockets.communications.SetPropertyResponse;
-import dnt.websockets.integration.vertx.VertxClientDriver;
+import dnt.websockets.integration.maybecool.TcpClientDriver;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import org.awaitility.Awaitility;
@@ -15,13 +15,29 @@ import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ClientVertxDsl
+public class TcpClientDsl
 {
-    private final VertxClientDriver clientDriver;
+    private final TcpClientDriver clientDriver;
 
-    public ClientVertxDsl(VertxClientDriver clientDriver)
+    public TcpClientDsl(TcpClientDriver clientDriver)
     {
         this.clientDriver = clientDriver;
+    }
+
+    public void getProperty(String... args)
+    {
+        final DslParams params = DslParams.create(args,
+                new RequiredArg("key"),
+                new OptionalArg("expectedValue"),
+                new OptionalArg("expectSuccess").setDefault("true"));
+        boolean expectSuccess = params.valueAsBoolean("expectSuccess");
+
+        String key = params.value("key");
+        Result<GetPropertyResponse, String> result = join(clientDriver.getProperty(key));
+
+        assertThat(result.isSuccess()).isEqualTo(expectSuccess);
+        params.valueAsOptional("expectedValue").ifPresent(expectedValue ->
+                assertThat(result.success().value).isEqualTo(expectedValue));
     }
 
     public void setProperty(String... args)
@@ -37,21 +53,6 @@ public class ClientVertxDsl
 
         Result<SetPropertyResponse, String> result = join(clientDriver.setProperty(key, value));
         assertThat(result.isSuccess()).isEqualTo(expectSuccess);
-    }
-
-    public void getProperty(String... args)
-    {
-        final DslParams params = DslParams.create(args,
-                new RequiredArg("key"),
-                new OptionalArg("expectedValue"),
-                new OptionalArg("expectSuccess").setDefault("true"));
-        boolean expectSuccess = params.valueAsBoolean("expectSuccess");
-
-        String key = params.value("key");
-        Result<GetPropertyResponse, String> result = join(clientDriver.getProperty(key));
-        assertThat(result.isSuccess()).isEqualTo(expectSuccess);
-        params.valueAsOptional("expectedValue").ifPresent(expectedValue ->
-                assertThat(result.success().value).isEqualTo(expectedValue));
     }
 
     private <R> R join(Future<R> future)
@@ -73,7 +74,7 @@ public class ClientVertxDsl
                 });
     }
 
-    public void verifyNoMoreMessages()
+    public void verifyNoMessage()
     {
         Awaitility
                 .await()

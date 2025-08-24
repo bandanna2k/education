@@ -6,7 +6,7 @@ public abstract class AbstractRequest extends AbstractMessage
 
     public long correlationId = NO_CORRELATION_ID;
 
-    public abstract void visit(RequestVisitor visitor);
+    public abstract void visit(ExecutionLayer executionLayer, RequestVisitor visitor);
 
     @Override
     public String toString() {

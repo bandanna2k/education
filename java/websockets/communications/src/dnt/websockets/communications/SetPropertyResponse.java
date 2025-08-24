@@ -1,9 +1,9 @@
 package dnt.websockets.communications;
 
-public class OptionsResponse extends AbstractResponse
+public class SetPropertyResponse extends AbstractResponse
 {
-    public OptionsResponse() {}
-    public OptionsResponse(long correlationId)
+    public SetPropertyResponse() {}
+    public SetPropertyResponse(long correlationId)
     {
         super(correlationId);
     }

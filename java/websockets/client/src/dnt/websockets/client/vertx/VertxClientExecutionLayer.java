@@ -1,4 +1,4 @@
-package dnt.websockets.client;
+package dnt.websockets.client.vertx;
 
 import dnt.websockets.communications.*;
 import dnt.websockets.vertx.VertxAsyncExecutor;
@@ -8,14 +8,14 @@ import io.vertx.core.Vertx;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class WebSocketExecutorLayer
+public class VertxClientExecutionLayer implements ExecutionLayer
 {
-    private final MessagePublisher messagePublisher;
+    private final Publisher publisher;
     private final VertxAsyncExecutor<AbstractResponse> executor;
 
-    public WebSocketExecutorLayer(Vertx vertx, MessagePublisher messagePublisher)
+    public VertxClientExecutionLayer(Vertx vertx, Publisher publisher)
     {
-        this.messagePublisher = messagePublisher;
+        this.publisher = publisher;
         VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
         {
             private final AtomicLong nextCorrelationId = new AtomicLong(1);
@@ -29,9 +29,10 @@ public class WebSocketExecutorLayer
         this.executor = new VertxAsyncExecutor<>(vertx, uniqueIdGenerator);
     }
 
-    public <T extends AbstractResponse> Future<Result<T, String>> send(AbstractRequest request)
+    @Override
+    public <T extends AbstractResponse> Future<Result<T, String>> request(AbstractRequest request)
     {
-        return executor.execute(correlationId -> messagePublisher.send(request.attachCorrelationId(correlationId)))
+        return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
                 .map(Result::success)
                 .recover(throwable ->
                         Future.succeededFuture(Result.failure(throwable.getMessage())))
@@ -39,8 +40,15 @@ public class WebSocketExecutorLayer
                         result.map(s -> (T)s, Object::toString));
     }
 
-    public void onResponseReceived(long correlationId, OptionsResponse optionsResponse)
+    @Override
+    public void respond(AbstractResponse response)
     {
-        executor.onResponseReceived(correlationId, optionsResponse);
+        executor.onResponseReceived(response.correlationId, response);
+    }
+
+    @Override
+    public void send(AbstractMessage message)
+    {
+        throw new UnsupportedOperationException("Client doesn't send unsolicited messages to server.");
     }
 }

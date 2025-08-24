@@ -1,22 +1,23 @@
 package dnt.websockets.integration.vertx;
 
 import dnt.websockets.communications.PushMessage;
-import dnt.websockets.server.Server;
+import dnt.websockets.server.vertx.VertxServer;
+import io.vertx.core.Vertx;
 
-public class ServerVertxDriver
+public class VertxServerDriver
 {
-    private final Server server;
+    private final VertxServer server;
 
-    public ServerVertxDriver()
+    public VertxServerDriver(Vertx vertx)
     {
-        server = new Server();
-        server.run()
+        server = new VertxServer(vertx);
+        server.start()
                 .onFailure(t -> System.out.println("ERROR:" + t.getMessage()))
                 .toCompletionStage().toCompletableFuture().join();
     }
 
     public void broadcastMessage()
     {
-        server.broadcastMessage(new PushMessage());
+        server.broadcast(new PushMessage());
     }
 }

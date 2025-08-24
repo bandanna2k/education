@@ -1,27 +1,28 @@
 package dnt.websockets.integration;
 
-import dnt.websockets.communications.AbstractMessage;
-import dnt.websockets.communications.OptionsRequest;
-import dnt.websockets.communications.OptionsResponse;
+import dnt.websockets.client.Requests;
+import dnt.websockets.communications.*;
 import education.common.result.Result;
 import io.vertx.core.Future;
 
-public class ClientDriver
+public class ClientDriver implements Requests
 {
-    private final IntegrationExecutionLayer executionLayer;
+    private final ExecutionLayer executionLayer;
 
-    public ClientDriver(IntegrationExecutionLayer executionLayer)
+    public ClientDriver(ExecutionLayer executionLayer)
     {
         this.executionLayer = executionLayer;
     }
 
-    public Future<Result<OptionsResponse, String>> fetchOptions()
+    @Override
+    public Future<Result<GetPropertyResponse, String>> getProperty(String key)
     {
-        return executionLayer.sendClientToServer(new OptionsRequest());
+        return executionLayer.request(new GetPropertyRequest(key));
     }
 
-    public AbstractMessage getLastMessage()
+    @Override
+    public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
-        return executionLayer.getLastMessage();
+        return executionLayer.request(new SetPropertyRequest(key, value));
     }
 }

@@ -8,6 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="communications" />
+    <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="websockets-vertx" />
     <orderEntry type="library" name="slf4j.api" level="project" />
     <orderEntry type="library" name="slf4j.simple" level="project" />
