@@ -31,9 +31,8 @@ public class EventBusPublisher implements Publisher
         LOGGER.debug("Sending {}", message);
         try
         {
-            String s = OBJECT_MAPPER.writeValueAsString(message);
-            System.out.println(s);
-            eventBus.send(topic, s, deliveryOptions);
+            String json = OBJECT_MAPPER.writeValueAsString(message);
+            eventBus.send(topic, json, deliveryOptions);
         }
         catch (JsonProcessingException e)
         {

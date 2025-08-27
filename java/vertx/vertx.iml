@@ -12,5 +12,7 @@
     <orderEntry type="library" scope="TEST" name="assertj.core" level="project" />
     <orderEntry type="library" name="fasterxml.jackson.core.databind" level="project" />
     <orderEntry type="library" name="fasterxml.jackson.core.annotations" level="project" />
+    <orderEntry type="library" name="io.vertx.core" level="project" />
+    <orderEntry type="library" name="io.vertx.web" level="project" />
   </component>
 </module>

@@ -22,5 +22,7 @@
     <orderEntry type="library" name="mysql.connector.java" level="project" />
     <orderEntry type="library" scope="TEST" name="assertj.core" level="project" />
     <orderEntry type="library" scope="TEST" name="slf4j.simple" level="project" />
+    <orderEntry type="library" name="io.vertx.core" level="project" />
+    <orderEntry type="library" name="io.vertx.web" level="project" />
   </component>
 </module>

@@ -26,7 +26,6 @@ public class EventBusClient implements Requests
     private final Vertx vertx;
 
     private EventBus eventBus;
-    private String topic;
     private ClientTextMessageHandler textMessageHandler;
     private ExecutionLayer executorLayer;
 
@@ -38,14 +37,16 @@ public class EventBusClient implements Requests
 
     public void start()
     {
-        String senderId = String.valueOf(UUID.randomUUID());
-        NetClient netClient = vertx.createNetClient();
+        final String senderId = String.valueOf(UUID.randomUUID());
+        final String clientIncomingTopic = "client.incoming." + senderId;
+        final String serverOutgoingTopic = "server.outgoing." + senderId;
+
+        final NetClient netClient = vertx.createNetClient();
         netClient.connect(7779, "localhost")
                 .onSuccess(ns ->
                 {
                     LOGGER.info("TCP connection established.");
                     this.eventBus = vertx.eventBus();
-                    this.topic = "client." + senderId;
 
                     // Register
                     DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
@@ -53,7 +54,7 @@ public class EventBusClient implements Requests
                             .onSuccess(reply ->
                             {
                                 LOGGER.info("Registration confirmed. " + senderId);
-                                subscribe(senderId);
+                                subscribe(senderId, clientIncomingTopic, serverOutgoingTopic);
                             }).onFailure(t ->
                             {
                                 LOGGER.warn("Failed to register. " + senderId);
@@ -67,15 +68,15 @@ public class EventBusClient implements Requests
         waitForClientToBeReady();
     }
 
-    private void subscribe(String senderId)
+    private void subscribe(String senderId, String clientIncomingTopic, String serverOutgoingTopic)
     {
-        vertx.eventBus().consumer(topic, message ->
+        vertx.eventBus().consumer(serverOutgoingTopic, message ->
         {
             textMessageHandler.handle(message.body().toString());
         });
 
         DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
-        EventBusPublisher publisher = new EventBusPublisher(eventBus, topic, deliveryOptions);
+        EventBusPublisher publisher = new EventBusPublisher(eventBus, clientIncomingTopic, deliveryOptions);
         executorLayer = new ClientExecutionLayer(newExecutor(vertx), publisher);
         textMessageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
     }

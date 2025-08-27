@@ -12,11 +12,11 @@ import io.vertx.core.Vertx;
 public class EventBusClientDriver
 {
     private final EventBusClient client;
-    private final MessageCollector collector = new MessageCollector();
+    private final MessageCollector clientMessageCollector = new MessageCollector();
 
     public EventBusClientDriver(Vertx vertx)
     {
-        client = new EventBusClient(vertx, collector);
+        client = new EventBusClient(vertx, clientMessageCollector);
         client.start();
     }
 
@@ -34,7 +34,7 @@ public class EventBusClientDriver
 
     public AbstractMessage popLastMessage()
     {
-        return collector.getLastMessage();
+        return clientMessageCollector.getLastMessage();
     }
 
     public void pushPrice(String symbol, double price, long sequence)

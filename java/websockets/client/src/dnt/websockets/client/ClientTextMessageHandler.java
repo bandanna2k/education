@@ -10,6 +10,8 @@ import io.vertx.core.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 public class ClientTextMessageHandler implements Handler<String>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientTextMessageHandler.class);

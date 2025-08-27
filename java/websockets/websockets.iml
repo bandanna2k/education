@@ -17,5 +17,6 @@
     <orderEntry type="library" name="slf4j.api" level="project" />
     <orderEntry type="library" scope="TEST" name="assertj.core" level="project" />
     <orderEntry type="library" scope="TEST" name="junit" level="project" />
+    <orderEntry type="library" name="io.vertx.tcp.eventbus.bridge" level="project" />
   </component>
 </module>

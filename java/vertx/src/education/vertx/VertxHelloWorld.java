@@ -1,10 +1,6 @@
 package education.vertx;
 
-import io.vertx.core.Context;
-import io.vertx.core.Promise;
-import io.vertx.core.Verticle;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
+import io.vertx.core.*;
 import io.vertx.ext.web.Router;
 
 import static io.vertx.core.http.HttpMethod.GET;
@@ -37,10 +33,19 @@ public class VertxHelloWorld
             @Override
             public void init(final Vertx vertx, final Context context)
             {
-
             }
 
             @Override
+            public Future<?> deploy(Context context) throws Exception {
+                return null;
+            }
+
+            @Override
+            public Future<?> undeploy(Context context) throws Exception {
+                return Verticle.super.undeploy(context);
+            }
+
+                    @Override
             public void start(final Promise<Void> startPromise)
             {
                 final Router router = Router.router(vertx);
@@ -49,18 +54,12 @@ public class VertxHelloWorld
                         .putHeader("Content-Type", "application/json")
                         .send(HELLO_WORLD)
                 );
-                getVertx().createHttpServer().requestHandler(router).listen(PORT, http ->
-                {
-                    if (http.succeeded())
-                    {
-                        startPromise.complete();
-                        System.out.println("Vertx started on " + PORT);
-                    }
-                    else
-                    {
-                        startPromise.fail(http.cause());
-                    }
-                });
+                getVertx().createHttpServer().requestHandler(router).listen(PORT)
+                        .onSuccess(unused -> {
+                            System.out.println("Vertx started on " + PORT);
+                            startPromise.complete();
+                        })
+                        .onFailure(startPromise::fail);
             }
 
             @Override

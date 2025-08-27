@@ -9,6 +9,8 @@ import dnt.websockets.server.ServerTextMessageHandler;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.ext.bridge.BridgeOptions;
+import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.eventbus.bridge.tcp.TcpEventBusBridge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,21 +34,18 @@ public class EventBusServer
 
     public void start()
     {
-//        BridgeOptions options = new BridgeOptions()
-//                .addInboundPermitted(new PermittedOptions().setAddress("client.register"))
-//                .addInboundPermitted(new PermittedOptions().setAddress("client.request"))
-//                .addOutboundPermitted(new PermittedOptions().setAddressRegex("client\\..*"));
+        BridgeOptions options = new BridgeOptions()
+                .addInboundPermitted(new PermittedOptions().setAddress("client.register"))
+                .addOutboundPermitted(new PermittedOptions().setAddressRegex("client\\..*"));
+
 
         TcpEventBusBridge.create(vertx, options)
-                .listen(7779, result -> {
-                    if (result.succeeded())
-                    {
-                        LOGGER.info("TCP Event Bus Bridge listening.");
-                    }
-                    else
-                    {
-                        throw new RuntimeException("Failed to start bridge: " + result.cause());
-                    }
+                .listen(7779)
+                .onSuccess(unused -> {
+                    LOGGER.info("TCP Event Bus Bridge listening.");
+                })
+                .onFailure(throwable -> {
+                    throw new RuntimeException("Failed to start bridge: " + throwable.getMessage());
                 });
 
         // Handle client registrations
@@ -60,26 +59,27 @@ public class EventBusServer
             }
 
             String senderId = message.headers().get("senderId");
-            String clientTopic = "client." + senderId;
-            registeredClients.put(senderId, clientTopic);
+            String clientIncomingTopic = "client.incoming." + senderId;
+            String serverOutgoingTopic = "server.outgoing." + senderId;
+            registeredClients.put(senderId, serverOutgoingTopic);
 
-            LOGGER.info("Client registered: " + senderId + " -> " + clientTopic);
+            LOGGER.info("Client registered: " + senderId + " -> " + serverOutgoingTopic);
 
-            eventBus.send(clientTopic, "Welcome. Thank you.");
+            eventBus.send(serverOutgoingTopic, "Welcome. Thank you.");
             message.reply("Registered. Thank you.");
 
             DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
-            Publisher publisher = new EventBusPublisher(eventBus, clientTopic, deliveryOptions);
+            Publisher publisher = new EventBusPublisher(eventBus, serverOutgoingTopic, deliveryOptions);
             ExecutionLayer executionLayer = new ServerExecutionLayer(publisher);
             ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
             textMessageHandlers.add(textMessageHandler);
             senderIdToTextMessageHandler.put(senderId, textMessageHandler);
 
-            eventBus.consumer(clientTopic, message2 ->
+            eventBus.consumer(clientIncomingTopic, message2 ->
             {
                 String maybeJson = message2.body().toString();
-                System.out.println(senderId);
-                System.out.println(maybeJson);
+                System.out.println("1 " +senderId);
+                System.out.println("2 " +maybeJson);
                 senderIdToTextMessageHandler.get(senderId).handle(maybeJson);
             });
         });

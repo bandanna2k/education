@@ -53,18 +53,12 @@ public class CashierVerticle extends AbstractVerticle
 
         queryRouter.addRoutes(router);
 
-        vertx.createHttpServer().requestHandler(router).listen(PORT, http ->
-        {
-            if (http.succeeded())
-            {
-                startPromise.complete();
-                System.out.println("Vertx started on " + PORT);
-            }
-            else
-            {
-                startPromise.fail(http.cause());
-            }
-        });
+        vertx.createHttpServer().requestHandler(router).listen(PORT)
+                .onSuccess(unused -> {
+                    startPromise.complete();
+                    System.out.println("Vertx started on " + PORT);
+                })
+                .onFailure(startPromise::fail);
     }
 
     private void depositHandler(RoutingContext event)

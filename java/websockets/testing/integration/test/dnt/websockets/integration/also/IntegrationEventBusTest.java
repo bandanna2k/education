@@ -19,7 +19,7 @@ public class IntegrationEventBusTest extends AbstractIntegrationEventBusTest
 
         server.broadcastMessage();
 
-        client.verifyMessage("PushMessage");
+        client.verifyMessage("ServerPushMessage");
 //        client.verifyNoMoreMessages();
     }
 
