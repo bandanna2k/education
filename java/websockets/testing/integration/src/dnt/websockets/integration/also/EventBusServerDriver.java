@@ -1,6 +1,6 @@
 package dnt.websockets.integration.also;
 
-import dnt.websockets.communications.PushMessage;
+import dnt.websockets.communications.ServerPushMessage;
 import dnt.websockets.server.also.EventBusServer;
 import io.vertx.core.Vertx;
 
@@ -16,6 +16,6 @@ public class EventBusServerDriver
 
     public void broadcastMessage()
     {
-        server.broadcast(new PushMessage());
+        server.broadcast(new ServerPushMessage());
     }
 }

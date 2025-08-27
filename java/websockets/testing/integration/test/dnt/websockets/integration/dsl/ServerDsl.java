@@ -3,7 +3,7 @@ package dnt.websockets.integration.dsl;
 import com.lmax.simpledsl.api.DslParams;
 import com.lmax.simpledsl.api.RequiredArg;
 import dnt.websockets.communications.ExecutionLayer;
-import dnt.websockets.communications.PushMessage;
+import dnt.websockets.communications.ServerPushMessage;
 import dnt.websockets.integration.ServerDriver;
 import dnt.websockets.server.RequestProcessor;
 
@@ -20,7 +20,7 @@ public class ServerDsl
 
     public void broadcastMessage()
     {
-        serverDriver.broadcastMessage(new PushMessage());
+        serverDriver.broadcastMessage(new ServerPushMessage());
     }
 
     public void verifyProperty(String... args)

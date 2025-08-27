@@ -76,15 +76,14 @@ public class EventBusServer
             ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
             textMessageHandlers.add(textMessageHandler);
             senderIdToTextMessageHandler.put(senderId, textMessageHandler);
-        });
 
-        eventBus.consumer("client.request", message ->
-        {
-            String senderId = message.headers().get("senderId");
-            String maybeJson = message.body().toString();
-            System.out.println(senderId);
-            System.out.println(maybeJson);
-            senderIdToTextMessageHandler.get(senderId).handle(maybeJson);
+            eventBus.consumer(clientTopic, message2 ->
+            {
+                String maybeJson = message2.body().toString();
+                System.out.println(senderId);
+                System.out.println(maybeJson);
+                senderIdToTextMessageHandler.get(senderId).handle(maybeJson);
+            });
         });
 
         waitForServerToStart();

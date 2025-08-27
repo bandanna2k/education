@@ -32,5 +32,7 @@ public interface ExecutionLayer
 
     void respond(AbstractResponse response);
 
-    void send(AbstractMessage message);
+    void serverSend(AbstractMessage message);
+
+    void clientSend(AbstractMessage message);
 }

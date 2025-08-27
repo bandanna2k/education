@@ -4,7 +4,7 @@ import dnt.websockets.client.also.EventBusClient;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
 import dnt.websockets.communications.SetPropertyResponse;
-import dnt.websockets.integration.PushMessageCollector;
+import dnt.websockets.integration.MessageCollector;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -12,7 +12,7 @@ import io.vertx.core.Vertx;
 public class EventBusClientDriver
 {
     private final EventBusClient client;
-    private final PushMessageCollector collector = new PushMessageCollector();
+    private final MessageCollector collector = new MessageCollector();
 
     public EventBusClientDriver(Vertx vertx)
     {
@@ -35,5 +35,10 @@ public class EventBusClientDriver
     public AbstractMessage popLastMessage()
     {
         return collector.getLastMessage();
+    }
+
+    public void pushPrice(String symbol, double price, long sequence)
+    {
+        client.pushPrice(symbol, price, sequence);
     }
 }

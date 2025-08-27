@@ -12,9 +12,9 @@ public abstract class AbstractMessage
         this.type = this.getClass().getSimpleName();
     }
 
-    public void visit(PushMessageVisitor visitor)
+    public void visit(ExecutionLayer executionLayer, MessageVisitor visitor)
     {
-        visitor.visit(this);
+        visitor.visit(executionLayer, this);
     }
 
     @Override

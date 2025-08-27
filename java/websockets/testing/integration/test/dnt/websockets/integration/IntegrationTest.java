@@ -23,6 +23,12 @@ public class IntegrationTest extends AbstractIntegrationTest
     }
 
     @Test
+    public void serverShouldRequestRespond()
+    {
+        client.pushPrice("symbol: NZD/USD", "price: 0.7500", "sequence: 1");
+    }
+
+    @Test
     public void serverShouldFutureFailNextMessage()
     {
         client.setProperty("key: name", "value: sam");

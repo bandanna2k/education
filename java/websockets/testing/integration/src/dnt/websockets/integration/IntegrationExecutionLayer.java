@@ -23,7 +23,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
 
     private final ServerTextMessageHandler serverTextMessageHandler;
     private final ClientTextMessageHandler clientTextMessageHandler;
-    private final PushMessageCollector collector;
+    private final MessageCollector collector;
 
     private Optional<String> maybeFailNextMessage = Optional.empty();
     private boolean throwOnNextMessage = false;
@@ -31,9 +31,9 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     private final Queue<DeferredFuture<?>> deferredFutures = new LinkedList<>();
     private boolean pauseProcessing;
 
-    public IntegrationExecutionLayer(RequestProcessor requestProcessor, PushMessageCollector collector)
+    public IntegrationExecutionLayer(RequestProcessor requestProcessor, MessageCollector collector)
     {
-        this.publisher = new IntegrationPublisher(collector);
+        this.publisher = new IntegrationPublisher(this, collector);
         this.collector = collector;
 
         this.serverTextMessageHandler = new ServerTextMessageHandler(this, requestProcessor);
@@ -99,11 +99,24 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public void send(AbstractMessage message)
+    public void serverSend(AbstractMessage message)
     {
         try
         {
-            clientTextMessageHandler.handle(ClientTextMessageHandler.OBJECT_MAPPER.writeValueAsString(message)); // Prove our serde works.
+            clientTextMessageHandler.handle(ServerTextMessageHandler.OBJECT_MAPPER.writeValueAsString(message)); // Prove our serde works.
+        }
+        catch (JsonProcessingException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void clientSend(AbstractMessage message)
+    {
+        try
+        {
+            serverTextMessageHandler.handle(ClientTextMessageHandler.OBJECT_MAPPER.writeValueAsString(message)); // Prove our serde works.
         }
         catch (JsonProcessingException e)
         {

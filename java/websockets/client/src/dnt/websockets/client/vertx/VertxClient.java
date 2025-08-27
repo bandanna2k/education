@@ -23,16 +23,16 @@ public class VertxClient implements Requests
     private static final Logger LOGGER = LoggerFactory.getLogger(VertxClient.class);
 
     private final URI uri;
-    private final PushMessageVisitor pushMessageVisitor;
+    private final MessageVisitor messageVisitor;
     private final Vertx vertx;
 
     private ClientExecutionLayer executorLayer;
 
-    public VertxClient(Vertx vertx, String source, PushMessageVisitor pushMessageVisitor)
+    public VertxClient(Vertx vertx, String source, MessageVisitor messageVisitor)
     {
         this.vertx = vertx;
         this.uri = URI.create("/v1/websocket/").resolve(source);
-        this.pushMessageVisitor = pushMessageVisitor;
+        this.messageVisitor = messageVisitor;
     }
 
     public Future<WebSocket> run()
@@ -54,7 +54,7 @@ public class VertxClient implements Requests
         Publisher publisher = new VertxPublisher(webSocket);
         executorLayer = new ClientExecutionLayer(newExecutor(vertx), publisher);
 
-        ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, pushMessageVisitor);
+        ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
         webSocket.textMessageHandler(messageHandler);
     }
 

@@ -26,8 +26,13 @@ public class ServerExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public void send(AbstractMessage message)
+    public void serverSend(AbstractMessage message)
     {
         publisher.send(message);
+    }
+
+    @Override
+    public void clientSend(AbstractMessage message)
+    {
     }
 }

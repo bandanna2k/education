@@ -1,7 +1,7 @@
 package dnt.websockets.integration;
 
 import dnt.websockets.communications.ExecutionLayer;
-import dnt.websockets.communications.PushMessage;
+import dnt.websockets.communications.ServerPushMessage;
 import dnt.websockets.server.RequestProcessor;
 
 public class ServerDriver
@@ -13,7 +13,7 @@ public class ServerDriver
         server = new IntegrationServer(executionLayer, requestProcessor);
     }
 
-    public void broadcastMessage(final PushMessage message)
+    public void broadcastMessage(final ServerPushMessage message)
     {
         server.push(message);
     }

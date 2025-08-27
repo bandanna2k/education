@@ -37,8 +37,13 @@ public class ClientExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public void send(AbstractMessage message)
+    public void serverSend(AbstractMessage message)
     {
-        throw new UnsupportedOperationException("Client doesn't send unsolicited messages to server.");
+        publisher.send(message);
+    }
+
+    @Override
+    public void clientSend(AbstractMessage message)
+    {
     }
 }

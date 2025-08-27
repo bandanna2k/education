@@ -1,6 +1,6 @@
 package dnt.websockets.integration.vertx;
 
-import dnt.websockets.communications.PushMessage;
+import dnt.websockets.communications.ServerPushMessage;
 import dnt.websockets.server.vertx.VertxServer;
 import io.vertx.core.Vertx;
 
@@ -18,6 +18,6 @@ public class VertxServerDriver
 
     public void broadcastMessage()
     {
-        server.broadcast(new PushMessage());
+        server.broadcast(new ServerPushMessage());
     }
 }

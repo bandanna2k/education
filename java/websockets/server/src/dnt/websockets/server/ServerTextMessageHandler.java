@@ -17,11 +17,11 @@ public class ServerTextMessageHandler implements Handler<String>
     public static final ObjectMapper OBJECT_MAPPER = newServerObjectMapper();
     private static final ObjectReader MESSAGE_READER = getServerMessageReader(OBJECT_MAPPER);
 
-    private final RequestVisitor processor;
+    private final MessageVisitor processor;
 
     private final ExecutionLayer executionLayer;
 
-    public ServerTextMessageHandler(ExecutionLayer executionLayer, RequestVisitor requestProcessor)
+    public ServerTextMessageHandler(ExecutionLayer executionLayer, MessageVisitor requestProcessor)
     {
         this.processor = requestProcessor;
         this.executionLayer = executionLayer;
@@ -33,7 +33,7 @@ public class ServerTextMessageHandler implements Handler<String>
         LOGGER.debug("Receiving {}", maybeJson);
         try
         {
-            handle(MESSAGE_READER.<AbstractRequest>readValue(maybeJson));
+            handle(MESSAGE_READER.<AbstractMessage>readValue(maybeJson));
         }
         catch (JsonProcessingException e)
         {
@@ -41,7 +41,7 @@ public class ServerTextMessageHandler implements Handler<String>
         }
     }
 
-    public void handle(AbstractRequest request)
+    public void handle(AbstractMessage request)
     {
         request.visit(executionLayer, processor);
     }
@@ -49,7 +49,7 @@ public class ServerTextMessageHandler implements Handler<String>
     public void send(AbstractMessage message)
     {
         LOGGER.debug("Sending {}", message);
-        executionLayer.send(message);
+        executionLayer.serverSend(message);
     }
 
     private static ObjectMapper newServerObjectMapper()
@@ -57,6 +57,7 @@ public class ServerTextMessageHandler implements Handler<String>
         ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.ALWAYS);
         objectMapper.registerSubtypes(new NamedType(GetPropertyRequest.class, GetPropertyRequest.class.getSimpleName()));
         objectMapper.registerSubtypes(new NamedType(SetPropertyRequest.class, SetPropertyRequest.class.getSimpleName()));
+        objectMapper.registerSubtypes(new NamedType(ClientPushPrice.class, ClientPushPrice.class.getSimpleName()));
         return objectMapper;
     }
 

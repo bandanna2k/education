@@ -1,5 +1,6 @@
 package dnt.websockets.client.also;
 
+import dnt.websockets.client.ClientExecutionLayer;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.client.Requests;
 import dnt.websockets.communications.*;
@@ -14,11 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
+import static dnt.websockets.vertx.VertxAsyncExecutor.*;
+
 public class EventBusClient implements Requests
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventBusClient.class);
 
-    private final PushMessageVisitor pushMessageVisitor;
+    private final MessageVisitor messageVisitor;
     private final Vertx vertx;
 
     private EventBus eventBus;
@@ -26,10 +29,10 @@ public class EventBusClient implements Requests
     private ClientTextMessageHandler textMessageHandler;
     private ExecutionLayer executorLayer;
 
-    public EventBusClient(Vertx vertx, PushMessageVisitor pushMessageVisitor)
+    public EventBusClient(Vertx vertx, MessageVisitor messageVisitor)
     {
         this.vertx = vertx;
-        this.pushMessageVisitor = pushMessageVisitor;
+        this.messageVisitor = messageVisitor;
     }
 
     public void start()
@@ -74,9 +77,9 @@ public class EventBusClient implements Requests
         });
 
         DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
-        EventBusPublisher publisher = new EventBusPublisher(eventBus, "client.request", deliveryOptions);
-        executorLayer = new EventBusClientExecutionLayer(vertx, publisher);
-        textMessageHandler = new ClientTextMessageHandler(executorLayer, pushMessageVisitor);
+        EventBusPublisher publisher = new EventBusPublisher(eventBus, topic, deliveryOptions);
+        executorLayer = new ClientExecutionLayer(newExecutor(vertx), publisher);
+        textMessageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
     }
 
     private void waitForClientToBeReady()
@@ -101,5 +104,10 @@ public class EventBusClient implements Requests
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
         return executorLayer.request(new SetPropertyRequest(key, value));
+    }
+
+    public void pushPrice(String symbol, double price, long sequence)
+    {
+        executorLayer.clientSend(new ClientPushPrice(symbol, price, sequence));
     }
 }

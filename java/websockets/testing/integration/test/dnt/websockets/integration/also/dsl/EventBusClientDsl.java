@@ -85,4 +85,17 @@ public class EventBusClientDsl
                     return abstractMessage == null;
                 });
     }
+
+    public void pushPrice(String... args)
+    {
+        final DslParams params = DslParams.create(args,
+                new RequiredArg("symbol"),
+                new RequiredArg("price"),
+                new RequiredArg("sequence"));
+
+        String symbol = params.value("symbol");
+        double price = params.valueAsDouble("price");
+        long sequence = params.valueAsLong("sequence");
+        clientDriver.pushPrice(symbol, price, sequence);
+    }
 }

@@ -4,7 +4,7 @@ import dnt.websockets.client.vertx.VertxClient;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
 import dnt.websockets.communications.SetPropertyResponse;
-import dnt.websockets.integration.PushMessageCollector;
+import dnt.websockets.integration.MessageCollector;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -12,7 +12,7 @@ import io.vertx.core.Vertx;
 public class VertxClientDriver
 {
     private final VertxClient client;
-    private final PushMessageCollector collector = new PushMessageCollector();
+    private final MessageCollector collector = new MessageCollector();
 
     public VertxClientDriver(Vertx vertx, String source)
     {

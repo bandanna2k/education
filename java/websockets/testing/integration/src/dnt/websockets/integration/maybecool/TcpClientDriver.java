@@ -4,14 +4,14 @@ import dnt.websockets.client.maybecool.TcpClient;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
 import dnt.websockets.communications.SetPropertyResponse;
-import dnt.websockets.integration.PushMessageCollector;
+import dnt.websockets.integration.MessageCollector;
 import education.common.result.Result;
 import io.vertx.core.Future;
 
 public class TcpClientDriver
 {
     private final TcpClient client;
-    private final PushMessageCollector collector = new PushMessageCollector();
+    private final MessageCollector collector = new MessageCollector();
 
     public TcpClientDriver()
     {

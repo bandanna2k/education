@@ -25,13 +25,13 @@ public class TcpClient implements Requests, Runnable
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpClient.class);
     private static final Vertx VERTX = newVertx();
 
-    private final PushMessageVisitor pushMessageVisitor;
+    private final MessageVisitor messageVisitor;
 
     private ExecutionLayer executorLayer;
 
-    public TcpClient(PushMessageVisitor pushMessageVisitor)
+    public TcpClient(MessageVisitor messageVisitor)
     {
-        this.pushMessageVisitor = pushMessageVisitor;
+        this.messageVisitor = messageVisitor;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class TcpClient implements Requests, Runnable
             final Publisher publisher = new TcpPublisher(socket);
             executorLayer = new ClientExecutionLayer(newExecutor(), publisher);
 
-            ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, pushMessageVisitor);
+            ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
             try(final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream())))
             {
                 while(true)

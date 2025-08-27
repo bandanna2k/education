@@ -83,7 +83,7 @@ public class TcpServer implements Runnable
 
     public void broadcast(AbstractMessage message)
     {
-        executionLayers.forEach(executionLayer -> executionLayer.send(message));
+        executionLayers.forEach(executionLayer -> executionLayer.serverSend(message));
     }
 
     public void shutdown()

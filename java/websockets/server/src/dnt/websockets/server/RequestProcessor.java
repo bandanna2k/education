@@ -8,9 +8,15 @@ import java.util.Optional;
 /**
  * Class to handle requests
  */
-public class RequestProcessor implements RequestVisitor
+public class RequestProcessor implements MessageVisitor
 {
     private final HashMap<String, String> properties = new HashMap<>();
+
+    @Override
+    public void visit(ExecutionLayer executionLayer, ClientPushPrice message)
+    {
+        System.out.println("Collect price: " + message);
+    }
 
     @Override
     public void visit(ExecutionLayer executionLayer, GetPropertyRequest request)

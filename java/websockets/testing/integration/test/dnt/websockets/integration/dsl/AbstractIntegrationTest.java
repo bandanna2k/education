@@ -1,12 +1,9 @@
 package dnt.websockets.integration.dsl;
 
 import dnt.websockets.client.ClientTextMessageHandler;
-import dnt.websockets.communications.AbstractMessage;
-import dnt.websockets.communications.GetPropertyResponse;
-import dnt.websockets.communications.PushMessage;
-import dnt.websockets.communications.SetPropertyRequest;
+import dnt.websockets.communications.*;
 import dnt.websockets.integration.IntegrationExecutionLayer;
-import dnt.websockets.integration.PushMessageCollector;
+import dnt.websockets.integration.MessageCollector;
 import dnt.websockets.server.RequestProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
 import org.junit.After;
@@ -18,8 +15,8 @@ import static org.junit.Assert.fail;
 
 public abstract class AbstractIntegrationTest
 {
-    private final PushMessageCollector clientMessageCollector = new PushMessageCollector();
-    private final PushMessageCollector clientMessageCollector2 = new PushMessageCollector();
+    private final MessageCollector clientMessageCollector = new MessageCollector();
+    private final MessageCollector clientMessageCollector2 = new MessageCollector();
 
     private final RequestProcessor requestProcessor = new RequestProcessor();
     private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(requestProcessor,
@@ -56,30 +53,31 @@ public abstract class AbstractIntegrationTest
         }
     }
 
-    private static class TestCollector extends PushMessageCollector
+    private static class TestCollector extends MessageCollector
     {
-        private final PushMessageCollector collector;
-        private final PushMessageCollector collector2;
+        private final MessageCollector collector;
+        private final MessageCollector collector2;
 
-        private TestCollector(PushMessageCollector collector, PushMessageCollector collector2)
+        private TestCollector(MessageCollector collector, MessageCollector collector2)
         {
             this.collector = collector;
             this.collector2 = collector2;
         }
 
         @Override
-        public void visit(AbstractMessage message)
+        public void visit(ExecutionLayer executionLayer, AbstractMessage message)
         {
-            super.visit(message);
-            collector.visit(message);
-            collector2.visit(message);
+            super.visit(executionLayer, message);
+            collector.visit(executionLayer, message);
+            collector2.visit(executionLayer, message);
         }
+
         @Override
-        public void visit(PushMessage message)
+        public void visit(ExecutionLayer executionLayer, ServerPushMessage message)
         {
-            super.visit(message);
-            collector.visit(message);
-            collector2.visit(message);
+            super.visit(executionLayer, message);
+            collector.visit(executionLayer, message);
+            collector2.visit(executionLayer, message);
         }
     }
 }

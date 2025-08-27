@@ -1,21 +1,24 @@
 package dnt.websockets.integration;
 
 import dnt.websockets.communications.AbstractMessage;
+import dnt.websockets.communications.ExecutionLayer;
+import dnt.websockets.communications.MessageVisitor;
 import dnt.websockets.communications.Publisher;
-import dnt.websockets.communications.PushMessageVisitor;
 
 class IntegrationPublisher implements Publisher
 {
-    private final PushMessageVisitor pushMessageVisitor;
+    private final ExecutionLayer executionLayer;
+    private final MessageVisitor messageVisitor;
 
-    IntegrationPublisher(PushMessageVisitor pushMessageVisitor)
+    IntegrationPublisher(ExecutionLayer executionLayer, MessageVisitor messageVisitor)
     {
-        this.pushMessageVisitor = pushMessageVisitor;
+        this.executionLayer = executionLayer;
+        this.messageVisitor = messageVisitor;
     }
 
     @Override
     public void send(AbstractMessage message)
     {
-        message.visit(pushMessageVisitor);
+        message.visit(executionLayer, messageVisitor);
     }
 }

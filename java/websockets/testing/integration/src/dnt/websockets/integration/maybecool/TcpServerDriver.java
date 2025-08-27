@@ -1,6 +1,6 @@
 package dnt.websockets.integration.maybecool;
 
-import dnt.websockets.communications.PushMessage;
+import dnt.websockets.communications.ServerPushMessage;
 import dnt.websockets.server.maybecool.TcpServer;
 
 public class TcpServerDriver
@@ -26,7 +26,7 @@ public class TcpServerDriver
 
     public void broadcastMessage()
     {
-        server.broadcast(new PushMessage());
+        server.broadcast(new ServerPushMessage());
     }
 
     public void close()

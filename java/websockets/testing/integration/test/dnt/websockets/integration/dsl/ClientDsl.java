@@ -5,7 +5,7 @@ import com.lmax.simpledsl.api.OptionalArg;
 import com.lmax.simpledsl.api.RequiredArg;
 import dnt.websockets.communications.*;
 import dnt.websockets.integration.ClientDriver;
-import dnt.websockets.integration.PushMessageCollector;
+import dnt.websockets.integration.MessageCollector;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import org.assertj.core.api.Assertions;
@@ -16,9 +16,9 @@ import static org.junit.Assert.assertTrue;
 public class ClientDsl
 {
     private final ClientDriver clientDriver;
-    private final PushMessageCollector collector;
+    private final MessageCollector collector;
 
-    public ClientDsl(ExecutionLayer executionLayer, PushMessageCollector collector)
+    public ClientDsl(ExecutionLayer executionLayer, MessageCollector collector)
     {
         this.clientDriver = new ClientDriver(executionLayer);
         this.collector = collector;
@@ -92,5 +92,18 @@ public class ClientDsl
     {
         AbstractMessage lastMessage = collector.getLastMessage();
         assertThat(lastMessage).isNull();
+    }
+
+    public void pushPrice(String... args)
+    {
+        final DslParams params = DslParams.create(args,
+                new RequiredArg("symbol"),
+                new RequiredArg("price"),
+                new RequiredArg("sequence"));
+
+        String symbol = params.value("symbol");
+        double price = params.valueAsDouble("price");
+        long sequence = params.valueAsLong("sequence");
+        clientDriver.pushPrice(symbol, price, sequence);
     }
 }

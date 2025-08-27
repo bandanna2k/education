@@ -5,6 +5,7 @@ import io.vertx.core.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class VertxAsyncExecutor<Response>
 {
@@ -137,5 +138,20 @@ public class VertxAsyncExecutor<Response>
     public interface AsyncRequest
     {
         void invoke(long correlationId);
+    }
+
+    public static <T> VertxAsyncExecutor<T> newExecutor(Vertx vertx)
+    {
+        final VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
+        {
+            private final AtomicLong nextCorrelationId = new AtomicLong(1);
+
+            @Override
+            public long generateId()
+            {
+                return nextCorrelationId.getAndIncrement();
+            }
+        };
+        return new VertxAsyncExecutor<>(vertx, uniqueIdGenerator);
     }
 }

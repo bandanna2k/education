@@ -15,7 +15,7 @@ public class GetPropertyRequest extends AbstractRequest
     }
 
     @Override
-    public void visit(ExecutionLayer executionLayer, RequestVisitor visitor)
+    public void visit(ExecutionLayer executionLayer, MessageVisitor visitor)
     {
         visitor.visit(executionLayer, this);
     }
