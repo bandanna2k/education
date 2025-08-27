@@ -2,7 +2,7 @@ package dnt.websockets.integration;
 
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.ExecutionLayer;
-import dnt.websockets.server.RequestProcessor;
+import dnt.websockets.communications.MessageVisitor;
 import dnt.websockets.server.ServerTextMessageHandler;
 
 import java.util.ArrayList;
@@ -12,12 +12,12 @@ import java.util.List;
 public class IntegrationServer
 {
     private final List<ServerTextMessageHandler> textMessageHandlers = new ArrayList<>();
-    private final RequestProcessor requestProcessor;
+    private final MessageVisitor messageVisitor;
 
-    public IntegrationServer(final ExecutionLayer executionLayer, RequestProcessor requestProcessor)
+    public IntegrationServer(final ExecutionLayer executionLayer, MessageVisitor messageVisitor)
     {
-        this.requestProcessor = requestProcessor;
-        this.textMessageHandlers.add(new ServerTextMessageHandler(executionLayer, this.requestProcessor));
+        this.messageVisitor = messageVisitor;
+        this.textMessageHandlers.add(new ServerTextMessageHandler(executionLayer, this.messageVisitor));
     }
 
     public void push(AbstractMessage message)
@@ -36,10 +36,5 @@ public class IntegrationServer
                 iterator.remove();
             }
         }
-    }
-
-    public String getProperty(String key)
-    {
-        return requestProcessor.get(key);
     }
 }

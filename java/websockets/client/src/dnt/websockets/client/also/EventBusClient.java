@@ -10,6 +10,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.net.NetClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,34 +39,31 @@ public class EventBusClient implements Requests
     public void start()
     {
         String senderId = String.valueOf(UUID.randomUUID());
-        vertx.createNetClient()
-                .connect(7779, "localhost",
-                        ar ->
-                        {
-                            if (ar.failed())
+        NetClient netClient = vertx.createNetClient();
+        netClient.connect(7779, "localhost")
+                .onSuccess(ns ->
+                {
+                    LOGGER.info("TCP connection established.");
+                    this.eventBus = vertx.eventBus();
+                    this.topic = "client." + senderId;
+
+                    // Register
+                    DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
+                    vertx.eventBus().request("client.register", "Please can I register.", deliveryOptions)
+                            .onSuccess(reply ->
                             {
-                                LOGGER.info("Failed to connect. " + ar.cause());
-                                return;
-                            }
-
-                            LOGGER.info("TCP connection established.");
-                            this.eventBus = vertx.eventBus();
-                            this.topic = "client." + senderId;
-
-                            // Register
-                            DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
-                            vertx.eventBus().request("client.register", "Please can I register.", deliveryOptions, reply ->
-                            {
-                                if (reply.failed())
-                                {
-                                    LOGGER.warn("Failed to register. " + senderId);
-                                    return;
-                                }
-
                                 LOGGER.info("Registration confirmed. " + senderId);
                                 subscribe(senderId);
+                            }).onFailure(t ->
+                            {
+                                LOGGER.warn("Failed to register. " + senderId);
                             });
-                        });
+                })
+                .onFailure(t -> {
+                    LOGGER.warn("Failed to connect. " + senderId);
+                });
+
+        // TODO Join
         waitForClientToBeReady();
     }
 

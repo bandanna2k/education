@@ -19,7 +19,7 @@ public class IntegrationWebSocketTest extends AbstractIntegrationVertxTest
 
         server.broadcastMessage();
 
-        client.verifyMessage("PushMessage");
+        client.verifyMessage("ServerPushMessage");
         client.verifyNoMoreMessages();
     }
 

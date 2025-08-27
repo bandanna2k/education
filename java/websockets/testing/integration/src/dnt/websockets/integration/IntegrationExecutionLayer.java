@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.communications.ExecutionLayer;
 import dnt.websockets.communications.*;
-import dnt.websockets.server.RequestProcessor;
+import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
 import education.common.result.Result;
 import io.vertx.core.Future;
@@ -31,7 +31,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     private final Queue<DeferredFuture<?>> deferredFutures = new LinkedList<>();
     private boolean pauseProcessing;
 
-    public IntegrationExecutionLayer(RequestProcessor requestProcessor, MessageCollector collector)
+    public IntegrationExecutionLayer(ServerMessageProcessor requestProcessor, MessageCollector collector)
     {
         this.publisher = new IntegrationPublisher(this, collector);
         this.collector = collector;

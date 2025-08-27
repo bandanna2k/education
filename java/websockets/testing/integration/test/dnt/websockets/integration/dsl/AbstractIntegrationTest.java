@@ -4,7 +4,7 @@ import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.communications.*;
 import dnt.websockets.integration.IntegrationExecutionLayer;
 import dnt.websockets.integration.MessageCollector;
-import dnt.websockets.server.RequestProcessor;
+import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -18,11 +18,11 @@ public abstract class AbstractIntegrationTest
     private final MessageCollector clientMessageCollector = new MessageCollector();
     private final MessageCollector clientMessageCollector2 = new MessageCollector();
 
-    private final RequestProcessor requestProcessor = new RequestProcessor();
-    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(requestProcessor,
+    private final TestServerMessageCollector serverMessageCollector = new TestServerMessageCollector();
+    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageCollector,
             new TestCollector(clientMessageCollector, clientMessageCollector2));
 
-    protected final ServerDsl server = new ServerDsl(executionLayer, requestProcessor);
+    protected final ServerDsl server = new ServerDsl(executionLayer, serverMessageCollector);
     protected final ClientDsl client = new ClientDsl(executionLayer, clientMessageCollector);
     protected final IntegrationDsl integration = new IntegrationDsl(executionLayer);
 

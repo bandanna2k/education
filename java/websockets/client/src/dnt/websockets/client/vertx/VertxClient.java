@@ -9,9 +9,7 @@ import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.WebSocket;
-import io.vertx.core.http.WebSocketConnectOptions;
+import io.vertx.core.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,14 +35,14 @@ public class VertxClient implements Requests
 
     public Future<WebSocket> run()
     {
-        HttpClient httpClient = vertx.createHttpClient();
-
         WebSocketConnectOptions options = new WebSocketConnectOptions()
                 .setURI(uri.toString())
                 .setHost("localhost")
                 .setPort(7777);
         options.setTimeout(3000);
-        return httpClient.webSocket(options)
+
+        WebSocketClient wsClient = vertx.createWebSocketClient();
+        return wsClient.connect(options)
                 .onSuccess(this::handle)
                 .onFailure(t -> LOGGER.error("Failed to start client.", t));
     }

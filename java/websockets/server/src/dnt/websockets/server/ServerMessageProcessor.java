@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Class to handle requests
  */
-public class RequestProcessor implements MessageVisitor
+public class ServerMessageProcessor implements MessageVisitor
 {
     private final HashMap<String, String> properties = new HashMap<>();
 

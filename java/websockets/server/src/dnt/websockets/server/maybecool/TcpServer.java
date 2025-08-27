@@ -3,7 +3,7 @@ package dnt.websockets.server.maybecool;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.ExecutionLayer;
 import dnt.websockets.communications.Publisher;
-import dnt.websockets.server.RequestProcessor;
+import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
 import dnt.websockets.server.ServerExecutionLayer;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class TcpServer implements Runnable
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpServer.class);
 
     private final List<ExecutionLayer> executionLayers = new ArrayList<>();
-    private final RequestProcessor requestProcessor = new RequestProcessor();
+    private final ServerMessageProcessor requestProcessor = new ServerMessageProcessor();
 
     private boolean acceptConnections = true;
     private ServerSocket serverSocket;

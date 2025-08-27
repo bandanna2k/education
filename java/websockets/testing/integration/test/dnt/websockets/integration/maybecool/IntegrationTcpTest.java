@@ -17,6 +17,6 @@ public class IntegrationTcpTest extends AbstractIntegrationTcpTest
     {
         server.broadcastMessage();
 
-        client.verifyMessage("PushMessage");
+        client.verifyMessage("ServerPushMessage");
     }
 }

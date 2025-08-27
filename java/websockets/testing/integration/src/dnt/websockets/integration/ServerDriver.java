@@ -2,15 +2,17 @@ package dnt.websockets.integration;
 
 import dnt.websockets.communications.ExecutionLayer;
 import dnt.websockets.communications.ServerPushMessage;
-import dnt.websockets.server.RequestProcessor;
+import dnt.websockets.server.ServerMessageProcessor;
 
 public class ServerDriver
 {
     private final IntegrationServer server;
+    private final ServerMessageProcessor messageProcessor;
 
-    public ServerDriver(final ExecutionLayer executionLayer, RequestProcessor requestProcessor)
+    public ServerDriver(final ExecutionLayer executionLayer, ServerMessageProcessor messageProcessor)
     {
-        server = new IntegrationServer(executionLayer, requestProcessor);
+        this.messageProcessor = messageProcessor;
+        this.server = new IntegrationServer(executionLayer, messageProcessor);
     }
 
     public void broadcastMessage(final ServerPushMessage message)
@@ -20,6 +22,6 @@ public class ServerDriver
 
     public String getProperty(String key)
     {
-        return server.getProperty(key);
+        return messageProcessor.get(key);
     }
 }

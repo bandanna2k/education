@@ -1,7 +1,7 @@
 package dnt.websockets.server.vertx;
 
 import dnt.websockets.communications.*;
-import dnt.websockets.server.RequestProcessor;
+import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerTextMessageHandler;
 import io.vertx.core.Future;
@@ -27,7 +27,7 @@ public class VertxServer
 
     private final List<ServerTextMessageHandler> textMessageHandlers = new ArrayList<>();
     private final Vertx vertx;
-    private final RequestProcessor requestProcessor = new RequestProcessor();
+    private final ServerMessageProcessor requestProcessor = new ServerMessageProcessor();
 
     public VertxServer(Vertx vertx)
     {
@@ -109,7 +109,7 @@ public class VertxServer
     private void restSetProperty(RoutingContext ctx)
     {
         final ServerTextMessageHandler restServerTextMessageHandler = newRestTextMessageHandler(ctx);
-        JsonObject json = ctx.getBodyAsJson();
+        JsonObject json = ctx.body().asJsonObject();
         restServerTextMessageHandler.handle(new SetPropertyRequest(json.getString("key"), json.getString("value")));
     }
     private ServerTextMessageHandler newRestTextMessageHandler(RoutingContext ctx)

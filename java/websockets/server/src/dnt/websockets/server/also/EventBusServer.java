@@ -3,14 +3,12 @@ package dnt.websockets.server.also;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.ExecutionLayer;
 import dnt.websockets.communications.Publisher;
-import dnt.websockets.server.RequestProcessor;
-import dnt.websockets.server.ServerTextMessageHandler;
 import dnt.websockets.server.ServerExecutionLayer;
+import dnt.websockets.server.ServerMessageProcessor;
+import dnt.websockets.server.ServerTextMessageHandler;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
-import io.vertx.ext.bridge.BridgeOptions;
-import io.vertx.ext.bridge.PermittedOptions;
 import io.vertx.ext.eventbus.bridge.tcp.TcpEventBusBridge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,7 @@ public class EventBusServer
 
     private final List<ServerTextMessageHandler> textMessageHandlers = new ArrayList<>();
     private final Vertx vertx;
-    private final RequestProcessor requestProcessor = new RequestProcessor();
+    private final ServerMessageProcessor requestProcessor = new ServerMessageProcessor();
     private final Map<String, String> registeredClients = new HashMap<>();
     private final Map<String, ServerTextMessageHandler> senderIdToTextMessageHandler = new HashMap<>();
 
@@ -34,10 +32,10 @@ public class EventBusServer
 
     public void start()
     {
-        BridgeOptions options = new BridgeOptions()
-                .addInboundPermitted(new PermittedOptions().setAddress("client.register"))
-                .addInboundPermitted(new PermittedOptions().setAddress("client.request"))
-                .addOutboundPermitted(new PermittedOptions().setAddressRegex("client\\..*"));
+//        BridgeOptions options = new BridgeOptions()
+//                .addInboundPermitted(new PermittedOptions().setAddress("client.register"))
+//                .addInboundPermitted(new PermittedOptions().setAddress("client.request"))
+//                .addOutboundPermitted(new PermittedOptions().setAddressRegex("client\\..*"));
 
         TcpEventBusBridge.create(vertx, options)
                 .listen(7779, result -> {

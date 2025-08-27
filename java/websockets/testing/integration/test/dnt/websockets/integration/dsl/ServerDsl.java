@@ -2,20 +2,22 @@ package dnt.websockets.integration.dsl;
 
 import com.lmax.simpledsl.api.DslParams;
 import com.lmax.simpledsl.api.RequiredArg;
+import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.ExecutionLayer;
 import dnt.websockets.communications.ServerPushMessage;
 import dnt.websockets.integration.ServerDriver;
-import dnt.websockets.server.RequestProcessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ServerDsl
 {
     private final ServerDriver serverDriver;
+    private final TestServerMessageCollector messageProcessor;
 
-    public ServerDsl(final ExecutionLayer executionLayer, RequestProcessor requestProcessor)
+    public ServerDsl(final ExecutionLayer executionLayer, TestServerMessageCollector messageProcessor)
     {
-        serverDriver = new ServerDriver(executionLayer, requestProcessor);
+        this.messageProcessor = messageProcessor;
+        this.serverDriver = new ServerDriver(executionLayer, messageProcessor);
     }
 
     public void broadcastMessage()
@@ -32,5 +34,12 @@ public class ServerDsl
         String expectedValue = params.value("expectedValue");
         String actual = serverDriver.getProperty(key);
         assertThat(actual).isEqualTo(expectedValue);
+    }
+
+    public void verifyMessage(String className)
+    {
+        AbstractMessage lastMessage = messageProcessor.getLastMessage();
+        assertThat(lastMessage).isNotNull();
+        assertThat(lastMessage.getClass().getSimpleName()).isEqualTo(className);
     }
 }
