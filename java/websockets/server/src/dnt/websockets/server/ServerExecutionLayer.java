@@ -1,16 +1,16 @@
-package dnt.websockets.server.vertx;
+package dnt.websockets.server;
 
 import dnt.websockets.communications.*;
 import education.common.result.Result;
 import io.vertx.core.Future;
 
-public class VertxServerExecutionLayer implements ExecutionLayer
+public class ServerExecutionLayer implements ExecutionLayer
 {
-    private final Publisher messagePublisher;
+    private final Publisher publisher;
 
-    public VertxServerExecutionLayer(Publisher publisher)
+    public ServerExecutionLayer(Publisher publisher)
     {
-        this.messagePublisher = publisher;
+        this.publisher = publisher;
     }
 
     @Override
@@ -22,12 +22,12 @@ public class VertxServerExecutionLayer implements ExecutionLayer
     @Override
     public void respond(AbstractResponse response)
     {
-        messagePublisher.send(response);
+        publisher.send(response);
     }
 
     @Override
     public void send(AbstractMessage message)
     {
-        messagePublisher.send(message);
+        publisher.send(message);
     }
 }

@@ -1,9 +1,11 @@
 package dnt.websockets.client.vertx;
 
+import dnt.websockets.client.ClientExecutionLayer;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.client.Requests;
 import dnt.websockets.communications.*;
 import dnt.websockets.server.vertx.VertxPublisher;
+import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class VertxClient implements Requests
 {
@@ -21,9 +24,9 @@ public class VertxClient implements Requests
 
     private final URI uri;
     private final PushMessageVisitor pushMessageVisitor;
+    private final Vertx vertx;
 
-    private Vertx vertx;
-    private VertxClientExecutionLayer executorLayer;
+    private ClientExecutionLayer executorLayer;
 
     public VertxClient(Vertx vertx, String source, PushMessageVisitor pushMessageVisitor)
     {
@@ -49,7 +52,7 @@ public class VertxClient implements Requests
     private void handle(WebSocket webSocket)
     {
         Publisher publisher = new VertxPublisher(webSocket);
-        executorLayer = new VertxClientExecutionLayer(vertx, publisher);
+        executorLayer = new ClientExecutionLayer(newExecutor(vertx), publisher);
 
         ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, pushMessageVisitor);
         webSocket.textMessageHandler(messageHandler);
@@ -65,5 +68,20 @@ public class VertxClient implements Requests
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
         return executorLayer.request(new SetPropertyRequest(key, value));
+    }
+
+    private static VertxAsyncExecutor<AbstractResponse> newExecutor(Vertx vertx)
+    {
+        final VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
+        {
+            private final AtomicLong nextCorrelationId = new AtomicLong(1);
+
+            @Override
+            public long generateId()
+            {
+                return nextCorrelationId.getAndIncrement();
+            }
+        };
+        return new VertxAsyncExecutor<>(vertx, uniqueIdGenerator);
     }
 }

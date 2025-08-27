@@ -2,6 +2,7 @@ package dnt.websockets.server.vertx;
 
 import dnt.websockets.communications.*;
 import dnt.websockets.server.RequestProcessor;
+import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerTextMessageHandler;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -61,7 +62,7 @@ public class VertxServer
         LOGGER.debug("Websocket connected {}", uri);
 
         Publisher publisher = new VertxPublisher(serverWebSocket);
-        ExecutionLayer executionLayer = new VertxServerExecutionLayer(publisher);
+        ExecutionLayer executionLayer = new ServerExecutionLayer(publisher);
         ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
         serverWebSocket.textMessageHandler(textMessageHandler);
         textMessageHandlers.add(textMessageHandler);
@@ -114,7 +115,7 @@ public class VertxServer
     private ServerTextMessageHandler newRestTextMessageHandler(RoutingContext ctx)
     {
         final LazyPublisher restPublisher = new LazyPublisher();
-        final VertxServerExecutionLayer restExecutionLayer = new VertxServerExecutionLayer(restPublisher);
+        final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(restPublisher);
         restPublisher.publisher = new VertxRestPublisher(ctx);
         return new ServerTextMessageHandler(restExecutionLayer, requestProcessor);
     }

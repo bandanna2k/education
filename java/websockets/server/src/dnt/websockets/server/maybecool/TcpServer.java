@@ -5,7 +5,7 @@ import dnt.websockets.communications.ExecutionLayer;
 import dnt.websockets.communications.Publisher;
 import dnt.websockets.server.RequestProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
-import dnt.websockets.server.vertx.VertxServerExecutionLayer;
+import dnt.websockets.server.ServerExecutionLayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,7 @@ public class TcpServer implements Runnable
         try(final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream())))
         {
             Publisher messagePublisher = new TcpPublisher(socket);
-            ExecutionLayer executorLayer = new VertxServerExecutionLayer(messagePublisher); // Use vertx for now.
+            ExecutionLayer executorLayer = new ServerExecutionLayer(messagePublisher); // Use vertx for now.
             ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executorLayer, requestProcessor);
             executionLayers.add(executorLayer);
 

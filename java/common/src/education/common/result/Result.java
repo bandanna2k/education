@@ -89,6 +89,22 @@ public class Result<S, E>
 //        return result.map(success());
 //    }
 //
+    public void ifSuccess(Consumer<S> errorConsumer)
+    {
+        if(isSuccess())
+        {
+            errorConsumer.accept(successData);
+        }
+    }
+
+    public void ifError(Consumer<E> errorConsumer)
+    {
+        if(hasFailed())
+        {
+            errorConsumer.accept(errorData);
+        }
+    }
+
     public S success()
     {
         assert isSuccess() : "Result not successful";

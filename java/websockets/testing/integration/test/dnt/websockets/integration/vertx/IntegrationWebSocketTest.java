@@ -3,7 +3,7 @@ package dnt.websockets.integration.vertx;
 import dnt.websockets.integration.vertx.dsl.AbstractIntegrationVertxTest;
 import org.junit.Test;
 
-public class IntegrationVertxTest extends AbstractIntegrationVertxTest
+public class IntegrationWebSocketTest extends AbstractIntegrationVertxTest
 {
     @Test
     public void shouldSendAndReceive()

@@ -1,4 +1,4 @@
-package dnt.websockets.client.vertx;
+package dnt.websockets.client.also;
 
 import dnt.websockets.communications.*;
 import dnt.websockets.vertx.VertxAsyncExecutor;
@@ -8,12 +8,12 @@ import io.vertx.core.Vertx;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class VertxClientExecutionLayer implements ExecutionLayer
+public class EventBusClientExecutionLayer implements ExecutionLayer
 {
     private final Publisher publisher;
     private final VertxAsyncExecutor<AbstractResponse> executor;
 
-    public VertxClientExecutionLayer(Vertx vertx, Publisher publisher)
+    public EventBusClientExecutionLayer(Vertx vertx, Publisher publisher)
     {
         this.publisher = publisher;
         VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()

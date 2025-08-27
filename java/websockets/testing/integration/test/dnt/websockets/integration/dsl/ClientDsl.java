@@ -56,7 +56,8 @@ public class ClientDsl
                 new RequiredArg("key"),
                 new RequiredArg("value"),
                 new OptionalArg("complete").setDefault("true"),
-                new OptionalArg("expectSuccess").setDefault("true"));
+                new OptionalArg("expectSuccess").setDefault("true"),
+                new OptionalArg("expectedErrorMessage"));
         boolean expectSuccess = params.valueAsBoolean("expectSuccess");
 
         String key = "<NULL>".equals(params.value("key")) ? null : params.value("key");
@@ -68,6 +69,10 @@ public class ClientDsl
         {
             Result<SetPropertyResponse, String> result = join(future);
             assertThat(result.isSuccess()).isEqualTo(expectSuccess);
+            result  .ifError(actualError ->
+                    params.valueAsOptional("expectedErrorMessage").ifPresent(expectedErrorMessage -> {
+                        assertThat(actualError).isEqualTo(expectedErrorMessage);
+                    }));
         }
     }
 
@@ -79,6 +84,7 @@ public class ClientDsl
     public void verifyMessage(String className)
     {
         AbstractMessage lastMessage = collector.getLastMessage();
+        assertThat(lastMessage).isNotNull();
         assertThat(lastMessage.getClass().getSimpleName()).isEqualTo(className);
     }
 
