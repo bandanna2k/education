@@ -28,7 +28,7 @@ class oldMessageCollector implements MessageVisitor
     }
 
     @Override
-    public void visit(ExecutionLayer executionLayer, ClientPushPrice message)
+    public void visit(ExecutionLayer executionLayer, ClientPushPulse message)
     {
         messages.add(message);
     }

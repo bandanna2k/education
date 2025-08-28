@@ -39,7 +39,7 @@ public class MessageCollector implements MessageVisitor
     }
 
     @Override
-    public void visit(ExecutionLayer executionLayer, ClientPushPrice message)
+    public void visit(ExecutionLayer executionLayer, ClientPushPulse message)
     {
         this.messageVisitor.visit(executionLayer, message);
         messages.add(message);

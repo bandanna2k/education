@@ -18,5 +18,5 @@ public interface MessageVisitor
     // Client to Server
     default void visit(ExecutionLayer executionLayer, GetPropertyRequest request) {}
     default void visit(ExecutionLayer executionLayer, SetPropertyRequest request) {}
-    default void visit(ExecutionLayer executionLayer, ClientPushPrice message) {}
+    default void visit(ExecutionLayer executionLayer, ClientPushPulse message) {}
 }

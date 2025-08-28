@@ -26,6 +26,6 @@ public class IntegrationEventBusTest extends AbstractIntegrationEventBusTest
     @Test
     public void serverShouldRequestRespond()
     {
-        client.pushPrice("symbol: NZD/USD", "price: 0.7500", "sequence: 1");
+        client.pushPulse("rate: 65", "sequence: 1");
     }
 }

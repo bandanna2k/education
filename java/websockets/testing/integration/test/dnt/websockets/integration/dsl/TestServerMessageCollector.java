@@ -32,7 +32,7 @@ public class TestServerMessageCollector extends ServerMessageProcessor
     }
 
     @Override
-    public void visit(ExecutionLayer executionLayer, ClientPushPrice message)
+    public void visit(ExecutionLayer executionLayer, ClientPushPulse message)
     {
         super.visit(executionLayer, message);
         messages.add(message);

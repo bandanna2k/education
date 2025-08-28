@@ -105,8 +105,8 @@ public class EventBusClient implements Requests
         return executorLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
     }
 
-    public void pushPrice(String symbol, double price, long sequence)
+    public void pushPulse(int rate, long sequence)
     {
-        executorLayer.clientSend(new ClientPushPrice(symbol, price, sequence));
+        executorLayer.clientSend(new ClientPushPulse(rate, sequence));
     }
 }

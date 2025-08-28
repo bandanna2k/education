@@ -1,20 +1,18 @@
 package dnt.websockets.communications;
 
-public class ClientPushPrice extends AbstractMessage
+public class ClientPushPulse extends AbstractMessage
 {
-    public String symbol;
-    public double price;
+    public long rate;
     public long sequence;
 
-    public ClientPushPrice()
+    public ClientPushPulse()
     {
         super();
     }
-    public ClientPushPrice(String symbol, double price, long sequence)
+    public ClientPushPulse(int rate, long sequence)
     {
         this();
-        this.symbol = symbol;
-        this.price = price;
+        this.rate = rate;
         this.sequence = sequence;
     }
 
@@ -25,11 +23,9 @@ public class ClientPushPrice extends AbstractMessage
     }
 
     @Override
-    public String toString()
-    {
-        return "ClientPushPrice{" +
-                "symbol='" + symbol + '\'' +
-                ", price=" + price +
+    public String toString() {
+        return "ClientPushPulse{" +
+                "rate=" + rate +
                 ", sequence=" + sequence +
                 "} " + super.toString();
     }

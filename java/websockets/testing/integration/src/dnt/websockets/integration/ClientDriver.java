@@ -26,8 +26,8 @@ public class ClientDriver implements Requests
         return executionLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
     }
 
-    public void pushPrice(String symbol, double price, long sequence)
+    public void pushPulse(int rate, long sequence)
     {
-        executionLayer.clientSend(new ClientPushPrice(symbol, price, sequence));
+        executionLayer.clientSend(new ClientPushPulse(rate, sequence));
     }
 }

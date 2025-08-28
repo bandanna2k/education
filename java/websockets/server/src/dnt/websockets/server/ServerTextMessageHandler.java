@@ -10,8 +10,6 @@ import io.vertx.core.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-
 public class ServerTextMessageHandler implements Handler<String>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerTextMessageHandler.class);
@@ -59,7 +57,7 @@ public class ServerTextMessageHandler implements Handler<String>
         ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.ALWAYS);
         objectMapper.registerSubtypes(new NamedType(GetPropertyRequest.class, GetPropertyRequest.class.getSimpleName()));
         objectMapper.registerSubtypes(new NamedType(SetPropertyRequest.class, SetPropertyRequest.class.getSimpleName()));
-        objectMapper.registerSubtypes(new NamedType(ClientPushPrice.class, ClientPushPrice.class.getSimpleName()));
+        objectMapper.registerSubtypes(new NamedType(ClientPushPulse.class, ClientPushPulse.class.getSimpleName()));
         return objectMapper;
     }
 

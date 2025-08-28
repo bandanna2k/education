@@ -40,8 +40,8 @@ public class EventBusClientDriver
         return clientMessageCollector.getLastMessage();
     }
 
-    public void pushPrice(String symbol, double price, long sequence)
+    public void pushPulse(int rate, long sequence)
     {
-        client.pushPrice(symbol, price, sequence);
+        client.pushPulse(rate, sequence);
     }
 }

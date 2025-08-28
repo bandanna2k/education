@@ -95,16 +95,14 @@ public class ClientDsl
         assertThat(lastMessage).isNull();
     }
 
-    public void pushPrice(String... args)
+    public void pushPulse(String... args)
     {
         final DslParams params = DslParams.create(args,
-                new RequiredArg("symbol"),
-                new RequiredArg("price"),
+                new RequiredArg("rate"),
                 new RequiredArg("sequence"));
 
-        String symbol = params.value("symbol");
-        double price = params.valueAsDouble("price");
+        int rate = params.valueAsInt("rate");
         long sequence = params.valueAsLong("sequence");
-        clientDriver.pushPrice(symbol, price, sequence);
+        clientDriver.pushPulse(rate, sequence);
     }
 }
