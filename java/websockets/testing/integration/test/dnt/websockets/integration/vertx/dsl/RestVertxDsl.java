@@ -3,7 +3,7 @@ package dnt.websockets.integration.vertx.dsl;
 import com.lmax.simpledsl.api.DslParams;
 import com.lmax.simpledsl.api.OptionalArg;
 import com.lmax.simpledsl.api.RequiredArg;
-import dnt.websockets.integration.vertx.VertxRestDriver;
+import dnt.websockets.integration.vertx.RestClientDriver;
 import io.vertx.core.Future;
 
 import java.util.Optional;
@@ -12,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestVertxDsl
 {
-    private final VertxRestDriver restDriver;
+    private final RestClientDriver restDriver;
 
-    public RestVertxDsl(VertxRestDriver restDriver)
+    public RestVertxDsl(RestClientDriver restDriver)
     {
         this.restDriver = restDriver;
     }

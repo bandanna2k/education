@@ -7,13 +7,14 @@ import io.vertx.ext.web.client.WebClient;
 
 import java.util.Map;
 
-public class VertxRestDriver
+public class RestClientDriver
 {
     public static final int PORT = 7777;
     public static final String HOST = "localhost";
+
     private final WebClient client;
 
-    public VertxRestDriver(Vertx vertx)
+    public RestClientDriver(Vertx vertx)
     {
         client = WebClient.create(vertx);
     }

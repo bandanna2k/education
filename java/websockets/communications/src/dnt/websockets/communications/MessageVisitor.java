@@ -2,6 +2,8 @@ package dnt.websockets.communications;
 
 public interface MessageVisitor
 {
+    MessageVisitor NO_OP = new MessageVisitor() {};
+
     // Both
     default void visit(ExecutionLayer executionLayer, AbstractMessage message) {}
 

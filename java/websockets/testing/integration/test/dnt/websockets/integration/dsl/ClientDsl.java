@@ -3,6 +3,7 @@ package dnt.websockets.integration.dsl;
 import com.lmax.simpledsl.api.DslParams;
 import com.lmax.simpledsl.api.OptionalArg;
 import com.lmax.simpledsl.api.RequiredArg;
+import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.communications.*;
 import dnt.websockets.integration.ClientDriver;
 import dnt.websockets.integration.MessageCollector;
@@ -16,9 +17,9 @@ import static org.junit.Assert.assertTrue;
 public class ClientDsl
 {
     private final ClientDriver clientDriver;
-    private final TestClientMessageCollector collector;
+    private final MessageCollector collector;
 
-    public ClientDsl(ExecutionLayer executionLayer, TestClientMessageCollector collector)
+    public ClientDsl(ExecutionLayer executionLayer, MessageCollector collector)
     {
         this.clientDriver = new ClientDriver(executionLayer);
         this.collector = collector;

@@ -9,15 +9,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class IntegrationServer
+public class IntegrationServerConnector
 {
     private final List<ServerTextMessageHandler> textMessageHandlers = new ArrayList<>();
-    private final MessageVisitor messageVisitor;
 
-    public IntegrationServer(final ExecutionLayer executionLayer, MessageVisitor messageVisitor)
+    public IntegrationServerConnector(final ExecutionLayer executionLayer, MessageVisitor messageVisitor)
     {
-        this.messageVisitor = messageVisitor;
-        this.textMessageHandlers.add(new ServerTextMessageHandler(executionLayer, this.messageVisitor));
+        this.textMessageHandlers.add(new ServerTextMessageHandler(executionLayer, messageVisitor));
     }
 
     public void push(AbstractMessage message)

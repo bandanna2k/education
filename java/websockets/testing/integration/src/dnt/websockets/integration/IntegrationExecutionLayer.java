@@ -21,12 +21,13 @@ public class IntegrationExecutionLayer implements ExecutionLayer
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationExecutionLayer.class);
 
-    private final IntegrationPublisher publisher;
+    private final IntegrationPublisher toServerPublisher;
+    private final IntegrationPublisher toClientPublisher;
 
     private final ServerTextMessageHandler serverTextMessageHandler;
     private final ClientTextMessageHandler clientTextMessageHandler;
-    private final MessageCollector clientMessageCollector = new MessageCollector();
-    private final MessageCollector serverMessageCollector = new MessageCollector();
+    private final MessageCollector clientMessageCollector;
+    private final MessageCollector serverMessageCollector;
 
     private Optional<String> maybeFailNextMessage = Optional.empty();
     private boolean throwOnNextMessage = false;
@@ -36,9 +37,14 @@ public class IntegrationExecutionLayer implements ExecutionLayer
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(); // Only use for rewriting a request
 
-    public IntegrationExecutionLayer(ServerMessageProcessor serverMessageProcessor, ClientMessageProcessor clientMessageProcessor)
+    public IntegrationExecutionLayer(MessageVisitor serverMessageProcessor,
+                                     MessageVisitor clientMessageProcessor)
     {
-        this.publisher = new IntegrationPublisher(this, clientMessageProcessor);
+        this.clientMessageCollector = new MessageCollector("Internal Client", clientMessageProcessor);
+        this.serverMessageCollector = new MessageCollector("Internal Server", serverMessageProcessor);
+
+        this.toClientPublisher = new IntegrationPublisher(this, clientMessageCollector);
+        this.toServerPublisher = new IntegrationPublisher(this, serverMessageCollector);
 
         this.serverTextMessageHandler = new ServerTextMessageHandler(this, serverMessageProcessor);
         this.clientTextMessageHandler = new ClientTextMessageHandler(this, clientMessageProcessor);
@@ -47,7 +53,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     @Override
     public void serverResponseToRequest(AbstractResponse response)
     {
-        publisher.send(response);
+        toClientPublisher.send(response);
     }
 
     @Override
@@ -72,7 +78,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
                 throw new RuntimeException(e);
             }
         };
-        return request(request, processRequest);
+        return request(processRequest);
     }
 
     @Override
@@ -97,10 +103,10 @@ public class IntegrationExecutionLayer implements ExecutionLayer
                 throw new RuntimeException(e);
             }
         };
-        return request(request, processRequest);
+        return request(processRequest);
     }
 
-    private <T extends AbstractResponse> Future<Result<T, String>> request(AbstractRequest request, Supplier<Result<T, Object>> processRequest)
+    private <T extends AbstractResponse> Future<Result<T, String>> request(Supplier<Result<T, Object>> processRequest)
     {
         if(pauseProcessing)
         {
@@ -138,7 +144,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     {
         try
         {
-            clientTextMessageHandler.handle(ServerTextMessageHandler.OBJECT_MAPPER.writeValueAsString(message)); // Prove our serde works.
+            clientTextMessageHandler.handle(OBJECT_MAPPER.writeValueAsString(message));
         }
         catch (JsonProcessingException e)
         {

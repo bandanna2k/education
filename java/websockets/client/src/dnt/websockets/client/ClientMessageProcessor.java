@@ -1,9 +1,6 @@
 package dnt.websockets.client;
 
-import dnt.websockets.communications.ExecutionLayer;
-import dnt.websockets.communications.GetStatusRequest;
-import dnt.websockets.communications.GetStatusResponse;
-import dnt.websockets.communications.MessageVisitor;
+import dnt.websockets.communications.*;
 
 public class ClientMessageProcessor implements MessageVisitor
 {
@@ -11,5 +8,11 @@ public class ClientMessageProcessor implements MessageVisitor
     public void visit(ExecutionLayer executionLayer, GetStatusRequest request)
     {
         executionLayer.clientResponseToRequest(new GetStatusResponse("Wicked"));
+    }
+
+    @Override
+    public void visit(ExecutionLayer executionLayer, ServerPushMessage message)
+    {
+        System.out.println("Client received message. " + message);
     }
 }

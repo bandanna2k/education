@@ -7,7 +7,7 @@ import io.vertx.core.Future;
 
 public class ServerDriver
 {
-    private final IntegrationServer server;
+    private final IntegrationServerConnector server;
     private final ExecutionLayer executionLayer;
     private final ServerMessageProcessor messageProcessor;
 
@@ -15,7 +15,7 @@ public class ServerDriver
     {
         this.executionLayer = executionLayer;
         this.messageProcessor = messageProcessor;
-        this.server = new IntegrationServer(executionLayer, messageProcessor);
+        this.server = new IntegrationServerConnector(executionLayer, messageProcessor);
     }
 
     public void broadcastMessage(final ServerPushMessage message)

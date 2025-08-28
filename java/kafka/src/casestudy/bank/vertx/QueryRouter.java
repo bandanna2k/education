@@ -33,20 +33,20 @@ public class QueryRouter
 
         router.route(GET, "/balances").handler(context ->
         {
-            vertx.executeBlocking(future ->
-            {
-                try
-                {
-                    Balances balances = accountDao.getBalances();
-                    context.response().setStatusCode(200).send(OBJECT_MAPPER.writeValueAsString(balances));
-                    future.complete();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    future.fail(e.getMessage());
-                }
-            });
+//            vertx.executeBlocking(future ->
+//            {
+//                try
+//                {
+//                    Balances balances = accountDao.getBalances();
+//                    context.response().setStatusCode(200).send(OBJECT_MAPPER.writeValueAsString(balances));
+//                    future.complete();
+//                }
+//                catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                    future.fail(e.getMessage());
+//                }
+//            });
         });
     }
 }

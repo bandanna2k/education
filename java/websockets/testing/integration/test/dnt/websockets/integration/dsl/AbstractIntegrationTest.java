@@ -1,5 +1,6 @@
 package dnt.websockets.integration.dsl;
 
+import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.communications.*;
 import dnt.websockets.integration.IntegrationExecutionLayer;
@@ -15,15 +16,17 @@ import static org.junit.Assert.fail;
 
 public abstract class AbstractIntegrationTest
 {
-//    private final MessageCollector clientMessageCollector = new MessageCollector();
-//    private final MessageCollector clientMessageCollector2 = new MessageCollector();
+    private final ServerMessageProcessor serverMessageProcessor = new ServerMessageProcessor();
+    private final ClientMessageProcessor clientMessageProcessor = new ClientMessageProcessor();
+    private final ClientMessageProcessor clientMessageProcessor2 = new ClientMessageProcessor();
 
-    private final TestServerMessageCollector serverMessageCollector = new TestServerMessageCollector();
-    private final TestClientMessageCollector clientMessageCollector = new TestClientMessageCollector();
-    private final TestClientMessageCollector clientMessageCollector2 = new TestClientMessageCollector();
+    private final MessageCollector serverMessageCollector = new MessageCollector("Abstract Integration Test Server", serverMessageProcessor);
+    private final MessageCollector clientMessageCollector = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor);
+    private final MessageCollector clientMessageCollector2 = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor2);
+
     private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageCollector, clientMessageCollector);
 
-    protected final ServerDsl server = new ServerDsl(executionLayer, serverMessageCollector);
+    protected final ServerDsl server = new ServerDsl(executionLayer, serverMessageProcessor);
     protected final ClientDsl client = new ClientDsl(executionLayer, clientMessageCollector);
     protected final IntegrationDsl integration = new IntegrationDsl(executionLayer);
 
@@ -51,34 +54,6 @@ public abstract class AbstractIntegrationTest
         {
             integration.resumeProcessing();
             fail("Deferred futures exist");
-        }
-    }
-
-    private static class TestCollector extends MessageCollector
-    {
-        private final MessageCollector collector;
-        private final MessageCollector collector2;
-
-        private TestCollector(MessageCollector collector, MessageCollector collector2)
-        {
-            this.collector = collector;
-            this.collector2 = collector2;
-        }
-
-        @Override
-        public void visit(ExecutionLayer executionLayer, AbstractMessage message)
-        {
-            super.visit(executionLayer, message);
-            collector.visit(executionLayer, message);
-            collector2.visit(executionLayer, message);
-        }
-
-        @Override
-        public void visit(ExecutionLayer executionLayer, ServerPushMessage message)
-        {
-            super.visit(executionLayer, message);
-            collector.visit(executionLayer, message);
-            collector2.visit(executionLayer, message);
         }
     }
 }

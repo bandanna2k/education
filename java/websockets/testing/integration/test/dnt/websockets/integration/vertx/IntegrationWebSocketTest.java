@@ -6,7 +6,7 @@ import org.junit.Test;
 public class IntegrationWebSocketTest extends AbstractIntegrationVertxTest
 {
     @Test
-    public void shouldSendAndReceive()
+    public void shouldSendAndReceive() throws InterruptedException
     {
         client.setProperty("key: name", "value: sam");
         client.getProperty("key: name", "expectedValue: sam");

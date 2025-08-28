@@ -1,10 +1,10 @@
-package dnt.websockets.client.vertx;
+package dnt.websockets.client.websocket;
 
 import dnt.websockets.client.ClientExecutionLayer;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.client.Requests;
 import dnt.websockets.communications.*;
-import dnt.websockets.server.vertx.VertxPublisher;
+import dnt.websockets.server.vertx.WebSocketPublisher;
 import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
@@ -16,32 +16,44 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class VertxClient implements Requests
+public class WebSocketKlient implements Requests
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VertxClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketKlient.class);
 
     private final URI uri;
-    private final MessageVisitor messageVisitor;
+    private final MessageVisitor messageProcessor;
     private final Vertx vertx;
 
     private ClientExecutionLayer executorLayer;
 
-    public VertxClient(Vertx vertx, String source, MessageVisitor messageVisitor)
+    public WebSocketKlient(Vertx vertx, String source, MessageVisitor messageProcessor)
     {
         this.vertx = vertx;
         this.uri = URI.create("/v1/websocket/").resolve(source);
-        this.messageVisitor = messageVisitor;
+        this.messageProcessor = messageProcessor;
     }
 
     public Future<WebSocket> run()
     {
-        WebSocketConnectOptions options = new WebSocketConnectOptions()
+        final HttpClientOptions clientOptions = new HttpClientOptions()
+                .setTcpKeepAlive(true)
+                .setIdleTimeout(0) // Disable idle timeout
+                .setTcpNoDelay(true)
+                .setConnectTimeout(10000)
+//                .setMaxPoolSize(1)
+                .setKeepAlive(true);
+        HttpClient httpClient = vertx.createHttpClient();
+
+        final WebSocketConnectOptions options = new WebSocketConnectOptions()
                 .setURI(uri.toString())
                 .setHost("localhost")
                 .setPort(7777);
-        options.setTimeout(3000);
+//                .addHeader("Connection", "Upgrade")
+//                .addHeader("Upgrade", "websocket");
 
-        WebSocketClient wsClient = vertx.createWebSocketClient();
+        LOGGER.info("Attempting connection. {}", options);
+
+        final WebSocketClient wsClient = vertx.createWebSocketClient();
         return wsClient.connect(options)
                 .onSuccess(this::handle)
                 .onFailure(t -> LOGGER.error("Failed to start client.", t));
@@ -49,11 +61,16 @@ public class VertxClient implements Requests
 
     private void handle(WebSocket webSocket)
     {
-        Publisher publisher = new VertxPublisher(webSocket);
+        System.out.println("1");
+        Publisher publisher = new WebSocketPublisher(webSocket);
+        System.out.println("2");
         executorLayer = new ClientExecutionLayer(newExecutor(vertx), publisher);
 
-        ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
+        System.out.println("3");
+        ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, messageProcessor);
+        System.out.println("4");
         webSocket.textMessageHandler(messageHandler);
+        System.out.println("5");
     }
 
     @Override

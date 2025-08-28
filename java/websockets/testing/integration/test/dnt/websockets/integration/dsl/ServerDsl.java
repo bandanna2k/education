@@ -3,7 +3,9 @@ package dnt.websockets.integration.dsl;
 import com.lmax.simpledsl.api.DslParams;
 import com.lmax.simpledsl.api.RequiredArg;
 import dnt.websockets.communications.*;
+import dnt.websockets.integration.MessageCollector;
 import dnt.websockets.integration.ServerDriver;
+import dnt.websockets.server.ServerMessageProcessor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 
@@ -13,12 +15,12 @@ import static org.junit.Assert.assertTrue;
 public class ServerDsl
 {
     private final ServerDriver serverDriver;
-    private final TestServerMessageCollector messageProcessor;
+    private final MessageCollector collector;
 
-    public ServerDsl(final ExecutionLayer executionLayer, TestServerMessageCollector messageProcessor)
+    public ServerDsl(final ExecutionLayer executionLayer, ServerMessageProcessor serverMessageProcessor)
     {
-        this.messageProcessor = messageProcessor;
-        this.serverDriver = new ServerDriver(executionLayer, messageProcessor);
+        this.collector = new MessageCollector("Server DSL", serverMessageProcessor);
+        this.serverDriver = new ServerDriver(executionLayer, serverMessageProcessor);
     }
 
     public void broadcastMessage()
@@ -39,7 +41,7 @@ public class ServerDsl
 
     public void verifyMessage(String className)
     {
-        AbstractMessage lastMessage = messageProcessor.getLastMessage();
+        AbstractMessage lastMessage = collector.getLastMessage();
         assertThat(lastMessage).isNotNull();
         assertThat(lastMessage.getClass().getSimpleName()).isEqualTo(className);
     }

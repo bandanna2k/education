@@ -11,7 +11,7 @@ import io.vertx.core.Future;
 public class TcpClientDriver
 {
     private final TcpClient client;
-    private final MessageCollector collector = new MessageCollector();
+    private final MessageCollector collector = new MessageCollector(null, null);
 
     public TcpClientDriver()
     {

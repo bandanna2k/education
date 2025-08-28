@@ -8,6 +8,7 @@ import dnt.websockets.vertx.VertxAsyncExecutor;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -21,16 +22,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class VertxServer
+public class WebSocketServer
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VertxServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketServer.class);
     private static final short WEBSOCKET_CODE_FAILED_TO_CONNECT = 100;
 
     private final List<ServerTextMessageHandler> textMessageHandlers = new ArrayList<>();
     private final Vertx vertx;
     private final ServerMessageProcessor requestProcessor = new ServerMessageProcessor();
 
-    public VertxServer(Vertx vertx)
+    public WebSocketServer(Vertx vertx)
     {
         this.vertx = vertx;
     }
@@ -41,12 +42,18 @@ public class VertxServer
         router.route().handler(BodyHandler.create());
         router.get("/property").handler(this::restGetProperty);
         router.post("/property").handler(this::restSetProperty);
-        return vertx.createHttpServer()
+
+        final HttpServerOptions httpServerOptions = new HttpServerOptions()
+                .setTcpKeepAlive(true)
+                .setIdleTimeout(0)
+                .setTcpNoDelay(true);
+        HttpServer httpServer = vertx.createHttpServer(httpServerOptions)
                 .requestHandler(router)
-                .webSocketHandler(this::handle)
+                .webSocketHandler(this::handle);
+        return httpServer
                 .listen(7777)
-                .onSuccess(httpServer -> {
-                    LOGGER.info("Server started on port {}", httpServer.actualPort());
+                .onSuccess(successfulHttpServer -> {
+                    LOGGER.info("Server started on port {}", successfulHttpServer.actualPort());
                 })
                 .onFailure(t -> LOGGER.error("Failed to start server", t));
     }
@@ -60,9 +67,10 @@ public class VertxServer
             serverWebSocket.close(WEBSOCKET_CODE_FAILED_TO_CONNECT);
             return;
         }
-        LOGGER.debug("Websocket connected {}", uri);
 
-        final Publisher publisher = new VertxPublisher(serverWebSocket);
+        LOGGER.info("Websocket connected {}", uri);
+
+        final Publisher publisher = new WebSocketPublisher(serverWebSocket);
         final ExecutionLayer executionLayer = new ServerExecutionLayer(VertxAsyncExecutor.newExecutor(vertx), publisher);
         final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
         serverWebSocket.textMessageHandler(textMessageHandler);
@@ -117,7 +125,7 @@ public class VertxServer
     {
         final LazyPublisher restPublisher = new LazyPublisher();
         final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(VertxAsyncExecutor.newExecutor(vertx), restPublisher);
-        restPublisher.publisher = new VertxRestPublisher(ctx);
+        restPublisher.publisher = new RestPublisher(ctx);
         return new ServerTextMessageHandler(restExecutionLayer, requestProcessor);
     }
 }

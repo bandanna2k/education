@@ -9,15 +9,15 @@ import io.vertx.ext.web.RoutingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VertxRestPublisher implements Publisher
+public class RestPublisher implements Publisher
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VertxRestPublisher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestPublisher.class);
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final RoutingContext routingContext;
 
-    public VertxRestPublisher(RoutingContext ctx)
+    public RestPublisher(RoutingContext ctx)
     {
         this.routingContext = ctx;
     }

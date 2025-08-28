@@ -88,7 +88,7 @@ public class IntegrationTest extends AbstractIntegrationTest
 
         // Both clients see the broadcasted message.
         client("session1").verifyMessage("SetPropertyResponse");
-        client("session2").verifyMessage("SetPropertyResponse");
+        client("session2").verifyNoMoreMessages();
     }
 
     @Test

@@ -1,6 +1,7 @@
 package dnt.websockets.integration.vertx;
 
-import dnt.websockets.client.vertx.VertxClient;
+import dnt.websockets.client.ClientMessageProcessor;
+import dnt.websockets.client.websocket.WebSocketKlient;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
 import dnt.websockets.communications.SetPropertyResponse;
@@ -9,16 +10,20 @@ import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
-public class VertxClientDriver
+public class WebSocketClientDriver
 {
-    private final VertxClient client;
-    private final MessageCollector collector = new MessageCollector();
+    private final WebSocketKlient client;
+    private final MessageCollector collector = new MessageCollector(this.getClass().getSimpleName(),
+            new ClientMessageProcessor());
 
-    public VertxClientDriver(Vertx vertx, String source)
+    public WebSocketClientDriver(Vertx vertx, String source)
     {
-        client = new VertxClient(vertx, source, collector);
+        client = new WebSocketKlient(vertx, source, collector);
         client.run()
-                .onFailure(t -> System.out.println("ERROR:" + t.getMessage()))
+                .onFailure(throwable ->
+                {
+                    throw new RuntimeException(throwable);
+                })
                 .toCompletionStage().toCompletableFuture().join();
     }
 

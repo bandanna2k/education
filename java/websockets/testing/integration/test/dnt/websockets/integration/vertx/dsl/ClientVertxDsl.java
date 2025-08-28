@@ -6,7 +6,7 @@ import com.lmax.simpledsl.api.RequiredArg;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
 import dnt.websockets.communications.SetPropertyResponse;
-import dnt.websockets.integration.vertx.VertxClientDriver;
+import dnt.websockets.integration.vertx.WebSocketClientDriver;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import org.awaitility.Awaitility;
@@ -17,9 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClientVertxDsl
 {
-    private final VertxClientDriver clientDriver;
+    private final WebSocketClientDriver clientDriver;
 
-    public ClientVertxDsl(VertxClientDriver clientDriver)
+    public ClientVertxDsl(WebSocketClientDriver clientDriver)
     {
         this.clientDriver = clientDriver;
     }

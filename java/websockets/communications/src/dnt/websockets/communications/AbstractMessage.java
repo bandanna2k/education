@@ -12,10 +12,7 @@ public abstract class AbstractMessage
         this.type = this.getClass().getSimpleName();
     }
 
-    public void visit(ExecutionLayer executionLayer, MessageVisitor visitor)
-    {
-        visitor.visit(executionLayer, this);
-    }
+    public abstract void visit(ExecutionLayer executionLayer, MessageVisitor visitor);
 
     @Override
     public String toString() {

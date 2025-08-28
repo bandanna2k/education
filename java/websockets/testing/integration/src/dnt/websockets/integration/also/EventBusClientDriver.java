@@ -3,16 +3,19 @@ package dnt.websockets.integration.also;
 import dnt.websockets.client.also.EventBusClient;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
+import dnt.websockets.communications.MessageVisitor;
 import dnt.websockets.communications.SetPropertyResponse;
 import dnt.websockets.integration.MessageCollector;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
+import static dnt.websockets.communications.MessageVisitor.NO_OP;
+
 public class EventBusClientDriver
 {
     private final EventBusClient client;
-    private final MessageCollector clientMessageCollector = new MessageCollector();
+    private final MessageCollector clientMessageCollector = new MessageCollector(this.getClass().getSimpleName(), NO_OP);
 
     public EventBusClientDriver(Vertx vertx)
     {
