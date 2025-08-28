@@ -7,6 +7,8 @@ public interface MessageVisitor
 
     // Server to Client
     default void visit(ExecutionLayer executionLayer, ServerPushMessage message) {}
+    default void visit(ExecutionLayer executionLayer, GetStatusRequest request) {}
+    default void visit(ExecutionLayer executionLayer, ErrorResponse response) {}
 
     // Client to Server
     default void visit(ExecutionLayer executionLayer, GetPropertyRequest request) {}

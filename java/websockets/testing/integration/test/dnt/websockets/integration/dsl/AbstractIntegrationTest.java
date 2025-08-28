@@ -15,12 +15,13 @@ import static org.junit.Assert.fail;
 
 public abstract class AbstractIntegrationTest
 {
-    private final MessageCollector clientMessageCollector = new MessageCollector();
-    private final MessageCollector clientMessageCollector2 = new MessageCollector();
+//    private final MessageCollector clientMessageCollector = new MessageCollector();
+//    private final MessageCollector clientMessageCollector2 = new MessageCollector();
 
     private final TestServerMessageCollector serverMessageCollector = new TestServerMessageCollector();
-    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageCollector,
-            new TestCollector(clientMessageCollector, clientMessageCollector2));
+    private final TestClientMessageCollector clientMessageCollector = new TestClientMessageCollector();
+    private final TestClientMessageCollector clientMessageCollector2 = new TestClientMessageCollector();
+    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageCollector, clientMessageCollector);
 
     protected final ServerDsl server = new ServerDsl(executionLayer, serverMessageCollector);
     protected final ClientDsl client = new ClientDsl(executionLayer, clientMessageCollector);
@@ -36,7 +37,7 @@ public abstract class AbstractIntegrationTest
     }
 
     @BeforeClass
-    public static void beforeClass() throws Exception
+    public static void warmUpObjectMappers() throws Exception
     {
         ClientTextMessageHandler.OBJECT_MAPPER.writeValueAsBytes(new GetPropertyResponse(1, "key"));
         ServerTextMessageHandler.OBJECT_MAPPER.writeValueAsBytes(new SetPropertyRequest("key", "value"));

@@ -20,7 +20,7 @@ public class ClientExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public <T extends AbstractResponse> Future<Result<T, String>> request(AbstractRequest request)
+    public <T extends AbstractResponse> Future<Result<T, String>> clientRequestFromServer(AbstractRequest request)
     {
         return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
                 .map(Result::success)
@@ -31,7 +31,7 @@ public class ClientExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public void respond(AbstractResponse response)
+    public void clientResponseToRequest(AbstractResponse response)
     {
         executor.onResponseReceived(response.correlationId, response);
     }

@@ -5,7 +5,6 @@ public class ErrorResponse extends AbstractResponse
     public int statusCode;
     public String message;
 
-
     public ErrorResponse() {}
     public ErrorResponse(long correlationId, int statusCode, String message)
     {
@@ -15,9 +14,9 @@ public class ErrorResponse extends AbstractResponse
     }
 
     @Override
-    public void visit(ResponseVisitor visitor)
+    public void visit(ExecutionLayer executionLayer, MessageVisitor visitor)
     {
-        visitor.visit(this);
+        visitor.visit(executionLayer, this);
     }
 
     @Override

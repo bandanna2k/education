@@ -16,9 +16,9 @@ import static org.junit.Assert.assertTrue;
 public class ClientDsl
 {
     private final ClientDriver clientDriver;
-    private final MessageCollector collector;
+    private final TestClientMessageCollector collector;
 
-    public ClientDsl(ExecutionLayer executionLayer, MessageCollector collector)
+    public ClientDsl(ExecutionLayer executionLayer, TestClientMessageCollector collector)
     {
         this.clientDriver = new ClientDriver(executionLayer);
         this.collector = collector;
@@ -69,7 +69,7 @@ public class ClientDsl
         {
             Result<SetPropertyResponse, String> result = join(future);
             assertThat(result.isSuccess()).isEqualTo(expectSuccess);
-            result  .ifError(actualError ->
+            result.ifError(actualError ->
                     params.valueAsOptional("expectedErrorMessage").ifPresent(expectedErrorMessage -> {
                         assertThat(actualError).isEqualTo(expectedErrorMessage);
                     }));
