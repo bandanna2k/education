@@ -30,7 +30,13 @@ public class ServerExecutionLayer implements ExecutionLayer
     @Override
     public void serverResponseToRequest(AbstractResponse response)
     {
-        executor.onResponseReceived(response.correlationId, response);
+        publisher.send(response);
+    }
+
+    @Override
+    public void clientResponseToRequest(AbstractResponse response)
+    {
+// TODO Maybe this code ->        executor.onResponseReceived(response.correlationId, response);
     }
 
     @Override

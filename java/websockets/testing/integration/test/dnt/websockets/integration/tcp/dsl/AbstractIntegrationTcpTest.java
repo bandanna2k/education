@@ -1,7 +1,7 @@
-package dnt.websockets.integration.maybecool.dsl;
+package dnt.websockets.integration.tcp.dsl;
 
-import dnt.websockets.integration.maybecool.TcpClientDriver;
-import dnt.websockets.integration.maybecool.TcpServerDriver;
+import dnt.websockets.integration.tcp.TcpClientDriver;
+import dnt.websockets.integration.tcp.TcpServerDriver;
 import org.junit.AfterClass;
 
 public abstract class AbstractIntegrationTcpTest

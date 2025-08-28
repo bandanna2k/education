@@ -1,6 +1,6 @@
-package dnt.websockets.integration.maybecool;
+package dnt.websockets.integration;
 
-import dnt.websockets.integration.maybecool.dsl.AbstractIntegrationTcpTest;
+import dnt.websockets.integration.tcp.dsl.AbstractIntegrationTcpTest;
 import org.junit.Test;
 
 public class IntegrationTcpTest extends AbstractIntegrationTcpTest

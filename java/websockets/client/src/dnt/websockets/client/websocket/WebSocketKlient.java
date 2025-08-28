@@ -61,16 +61,11 @@ public class WebSocketKlient implements Requests
 
     private void handle(WebSocket webSocket)
     {
-        System.out.println("1");
         Publisher publisher = new WebSocketPublisher(webSocket);
-        System.out.println("2");
         executorLayer = new ClientExecutionLayer(newExecutor(vertx), publisher);
 
-        System.out.println("3");
         ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, messageProcessor);
-        System.out.println("4");
         webSocket.textMessageHandler(messageHandler);
-        System.out.println("5");
     }
 
     @Override

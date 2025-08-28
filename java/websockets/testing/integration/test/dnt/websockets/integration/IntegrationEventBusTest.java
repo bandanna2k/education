@@ -1,6 +1,6 @@
-package dnt.websockets.integration.also;
+package dnt.websockets.integration;
 
-import dnt.websockets.integration.also.dsl.AbstractIntegrationEventBusTest;
+import dnt.websockets.integration.eventbus.dsl.AbstractIntegrationEventBusTest;
 import org.junit.Test;
 
 public class IntegrationEventBusTest extends AbstractIntegrationEventBusTest

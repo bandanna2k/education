@@ -1,6 +1,6 @@
-package dnt.websockets.integration.maybecool.dsl;
+package dnt.websockets.integration.tcp.dsl;
 
-import dnt.websockets.integration.maybecool.TcpServerDriver;
+import dnt.websockets.integration.tcp.TcpServerDriver;
 
 public class TcpServerDsl
 {

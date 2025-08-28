@@ -51,7 +51,7 @@ public class ClientTextMessageHandler implements Handler<String>
 
     private void handle(AbstractResponse response)
     {
-        response.visit(executionLayer, messageProcessor);
+        executionLayer.serverResponseToRequest(response);
     }
 
     private void handle(AbstractMessage message)

@@ -2,6 +2,7 @@ package dnt.websockets.server.maybecool;
 
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.ExecutionLayer;
+import dnt.websockets.communications.MessageVisitor;
 import dnt.websockets.communications.Publisher;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
@@ -27,10 +28,15 @@ public class TcpServer implements Runnable
     private static final Vertx VERTX = newVertx();
 
     private final List<ExecutionLayer> executionLayers = new ArrayList<>();
-    private final ServerMessageProcessor requestProcessor = new ServerMessageProcessor();
+    private final MessageVisitor requestProcessor;
 
     private boolean acceptConnections = true;
     private ServerSocket serverSocket;
+
+    public TcpServer(ServerMessageProcessor requestProcessor)
+    {
+        this.requestProcessor = requestProcessor;
+    }
 
     @Override
     public void run()

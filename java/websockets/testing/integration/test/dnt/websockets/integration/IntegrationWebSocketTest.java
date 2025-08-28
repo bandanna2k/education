@@ -1,4 +1,4 @@
-package dnt.websockets.integration.vertx;
+package dnt.websockets.integration;
 
 import dnt.websockets.integration.vertx.dsl.AbstractIntegrationVertxTest;
 import org.junit.Test;

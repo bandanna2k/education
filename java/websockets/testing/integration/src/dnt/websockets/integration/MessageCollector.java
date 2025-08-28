@@ -45,8 +45,24 @@ public class MessageCollector implements MessageVisitor
         messages.add(message);
     }
 
+
     @Override
     public void visit(ExecutionLayer executionLayer, ErrorResponse response)
+    {
+        this.messageVisitor.visit(executionLayer, response);
+        messages.add(response);
+    }
+
+    @Override
+    public void visit(ExecutionLayer executionLayer, GetPropertyResponse response)
+    {
+        System.out.println("2" + response);
+        this.messageVisitor.visit(executionLayer, response);
+        messages.add(response);
+    }
+
+    @Override
+    public void visit(ExecutionLayer executionLayer, SetPropertyResponse response)
     {
         this.messageVisitor.visit(executionLayer, response);
         messages.add(response);
@@ -71,7 +87,7 @@ public class MessageCollector implements MessageVisitor
     @Override
     public String toString()
     {
-        return "MessageCollector2{" +
+        return "MessageCollector{" +
                 "name='" + name + '\'' +
                 ", messages=" + messages +
                 ", messageVisitor=" + messageVisitor +

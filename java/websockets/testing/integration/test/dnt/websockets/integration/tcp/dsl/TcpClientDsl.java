@@ -1,4 +1,4 @@
-package dnt.websockets.integration.also.dsl;
+package dnt.websockets.integration.tcp.dsl;
 
 import com.lmax.simpledsl.api.DslParams;
 import com.lmax.simpledsl.api.OptionalArg;
@@ -6,7 +6,7 @@ import com.lmax.simpledsl.api.RequiredArg;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
 import dnt.websockets.communications.SetPropertyResponse;
-import dnt.websockets.integration.also.EventBusClientDriver;
+import dnt.websockets.integration.tcp.TcpClientDriver;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import org.awaitility.Awaitility;
@@ -15,13 +15,29 @@ import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EventBusClientDsl
+public class TcpClientDsl
 {
-    private final EventBusClientDriver clientDriver;
+    private final TcpClientDriver clientDriver;
 
-    public EventBusClientDsl(EventBusClientDriver clientDriver)
+    public TcpClientDsl(TcpClientDriver clientDriver)
     {
         this.clientDriver = clientDriver;
+    }
+
+    public void getProperty(String... args)
+    {
+        final DslParams params = DslParams.create(args,
+                new RequiredArg("key"),
+                new OptionalArg("expectedValue"),
+                new OptionalArg("expectSuccess").setDefault("true"));
+        boolean expectSuccess = params.valueAsBoolean("expectSuccess");
+
+        String key = params.value("key");
+        Result<GetPropertyResponse, String> result = join(clientDriver.getProperty(key));
+
+        assertThat(result.isSuccess()).isEqualTo(expectSuccess);
+        params.valueAsOptional("expectedValue").ifPresent(expectedValue ->
+                assertThat(result.success().value).isEqualTo(expectedValue));
     }
 
     public void setProperty(String... args)
@@ -36,22 +52,9 @@ public class EventBusClientDsl
         String value = params.value("value");
 
         Result<SetPropertyResponse, String> result = join(clientDriver.setProperty(key, value));
-        assertThat(result.isSuccess()).isEqualTo(expectSuccess);
-    }
-
-    public void getProperty(String... args)
-    {
-        final DslParams params = DslParams.create(args,
-                new RequiredArg("key"),
-                new OptionalArg("expectedValue"),
-                new OptionalArg("expectSuccess").setDefault("true"));
-        boolean expectSuccess = params.valueAsBoolean("expectSuccess");
-
-        String key = params.value("key");
-        Result<GetPropertyResponse, String> result = join(clientDriver.getProperty(key));
-        assertThat(result.isSuccess()).isEqualTo(expectSuccess);
-        params.valueAsOptional("expectedValue").ifPresent(expectedValue ->
-                assertThat(result.success().value).isEqualTo(expectedValue));
+        assertThat(result.isSuccess())
+                .describedAs(result.toString())
+                .isEqualTo(expectSuccess);
     }
 
     private <R> R join(Future<R> future)
@@ -67,13 +70,13 @@ public class EventBusClientDsl
                 .atMost(ofSeconds(2))
                 .untilAsserted(() ->
                 {
-                    AbstractMessage message = clientDriver.popLastMessage();
+                    AbstractMessage message = clientDriver.getLastMessage();
                     assertThat(message).isNotNull();
                     assertThat(message.getClass().getSimpleName()).isEqualToIgnoringCase(className);
                 });
     }
 
-    public void verifyNoMoreMessages()
+    public void verifyNoMessage()
     {
         Awaitility
                 .await()
@@ -81,21 +84,8 @@ public class EventBusClientDsl
                 .during(ofSeconds(2))
                 .atMost(ofSeconds(3))
                 .until(() -> {
-                    AbstractMessage abstractMessage = clientDriver.popLastMessage();
+                    AbstractMessage abstractMessage = clientDriver.getLastMessage();
                     return abstractMessage == null;
                 });
-    }
-
-    public void pushPrice(String... args)
-    {
-        final DslParams params = DslParams.create(args,
-                new RequiredArg("symbol"),
-                new RequiredArg("price"),
-                new RequiredArg("sequence"));
-
-        String symbol = params.value("symbol");
-        double price = params.valueAsDouble("price");
-        long sequence = params.valueAsLong("sequence");
-        clientDriver.pushPrice(symbol, price, sequence);
     }
 }

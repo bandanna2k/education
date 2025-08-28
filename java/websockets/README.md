@@ -56,9 +56,9 @@ sequenceDiagram
 
 ### Compare against these test
 Same interfaces, just wired up for the real world.
-- `dnt.websockets.integration.vertx.IntegrationWebSocketTest` (uses websockets)
-- `dnt.websockets.integration.maybecool.IntegrationTcpTest` (maybe cool, uses old school TCP/IP)
-- `dnt.websockets.integration.also.IntegrationEventBusTest` (also, uses event bus model)
+- `dnt.websockets.integration.IntegrationWebSocketTest` (uses websockets)
+- `dnt.websockets.integration.IntegrationTcpTest` (maybe cool, uses old school TCP/IP)
+- `dnt.websockets.integration.IntegrationEventBusTest` (also, uses event bus model)
 
 Repo Link
 https://github.com/lmax-north/websocket-integration-test

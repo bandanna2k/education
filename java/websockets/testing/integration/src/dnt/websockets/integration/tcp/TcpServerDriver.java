@@ -1,6 +1,7 @@
-package dnt.websockets.integration.maybecool;
+package dnt.websockets.integration.tcp;
 
 import dnt.websockets.communications.ServerPushMessage;
+import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.maybecool.TcpServer;
 
 public class TcpServerDriver
@@ -9,7 +10,7 @@ public class TcpServerDriver
 
     public TcpServerDriver()
     {
-        server = new TcpServer();
+        server = new TcpServer(new ServerMessageProcessor());
         new Thread(server)
                 .start();
 

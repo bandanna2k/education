@@ -31,9 +31,14 @@ public class ClientExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public void clientResponseToRequest(AbstractResponse response)
+    public void serverResponseToRequest(AbstractResponse response)
     {
         executor.onResponseReceived(response.correlationId, response);
+    }
+
+    @Override
+    public void clientResponseToRequest(AbstractResponse response)
+    {
     }
 
     @Override

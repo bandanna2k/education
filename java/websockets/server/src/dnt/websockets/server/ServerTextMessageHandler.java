@@ -50,7 +50,7 @@ public class ServerTextMessageHandler implements Handler<String>
 
     public void send(AbstractMessage message)
     {
-        LOGGER.debug("Sending {}", message);
+        LOGGER.error("Sending {}", message);
         executionLayer.serverSend(message);
     }
 

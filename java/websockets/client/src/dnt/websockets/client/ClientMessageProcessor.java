@@ -13,6 +13,12 @@ public class ClientMessageProcessor implements MessageVisitor
     @Override
     public void visit(ExecutionLayer executionLayer, ServerPushMessage message)
     {
-        System.out.println("Client received message. " + message);
+        System.out.println("Client received push message. " + message);
+    }
+
+    @Override
+    public void visit(ExecutionLayer executionLayer, SetPropertyResponse response)
+    {
+        System.out.println("Set property succeeded." + response);
     }
 }

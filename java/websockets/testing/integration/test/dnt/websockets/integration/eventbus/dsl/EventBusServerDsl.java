@@ -1,4 +1,4 @@
-package dnt.websockets.integration.also.dsl;
+package dnt.websockets.integration.eventbus.dsl;
 
 import dnt.websockets.integration.also.EventBusServerDriver;
 

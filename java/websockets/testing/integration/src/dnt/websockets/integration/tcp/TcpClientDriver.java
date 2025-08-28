@@ -1,5 +1,6 @@
-package dnt.websockets.integration.maybecool;
+package dnt.websockets.integration.tcp;
 
+import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.maybecool.TcpClient;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
@@ -11,10 +12,12 @@ import io.vertx.core.Future;
 public class TcpClientDriver
 {
     private final TcpClient client;
-    private final MessageCollector collector = new MessageCollector(null, null);
+    private final MessageCollector collector;
 
     public TcpClientDriver()
     {
+        final ClientMessageProcessor clientMessageProcessor = new ClientMessageProcessor();
+        collector = new MessageCollector(this.getClass().getSimpleName(), clientMessageProcessor);
         client = new TcpClient(collector);
         new Thread(client)
                 .start();
@@ -42,7 +45,7 @@ public class TcpClientDriver
                 .onFailure(t -> System.out.println("ERROR:" + t.getMessage()));
     }
 
-    public AbstractMessage popLastMessage()
+    public AbstractMessage getLastMessage()
     {
         return collector.getLastMessage();
     }
