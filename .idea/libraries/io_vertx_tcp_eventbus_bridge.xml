@@ -1,0 +1,28 @@
+<component name="libraryTable">
+  <library name="io.vertx.tcp.eventbus.bridge" type="repository">
+    <properties maven-id="io.vertx:vertx-tcp-eventbus-bridge:5.0.3" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/vertx/vertx-tcp-eventbus-bridge/5.0.3/vertx-tcp-eventbus-bridge-5.0.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/vertx/vertx-core/5.0.3/vertx-core-5.0.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/vertx/vertx-core-logging/5.0.3/vertx-core-logging-5.0.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-common/4.2.4.Final/netty-common-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-buffer/4.2.4.Final/netty-buffer-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-transport/4.2.4.Final/netty-transport-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-handler/4.2.4.Final/netty-handler-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-transport-native-unix-common/4.2.4.Final/netty-transport-native-unix-common-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-codec-base/4.2.4.Final/netty-codec-base-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-handler-proxy/4.2.4.Final/netty-handler-proxy-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-codec-socks/4.2.4.Final/netty-codec-socks-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-codec-http/4.2.4.Final/netty-codec-http-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-codec-compression/4.2.4.Final/netty-codec-compression-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-codec-http2/4.2.4.Final/netty-codec-http2-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-resolver/4.2.4.Final/netty-resolver-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-resolver-dns/4.2.4.Final/netty-resolver-dns-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty-codec-dns/4.2.4.Final/netty-codec-dns-4.2.4.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.18.2/jackson-core-2.18.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/vertx/vertx-bridge-common/5.0.3/vertx-bridge-common-5.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
