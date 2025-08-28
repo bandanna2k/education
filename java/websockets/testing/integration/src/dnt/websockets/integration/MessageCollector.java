@@ -56,7 +56,6 @@ public class MessageCollector implements MessageVisitor
     @Override
     public void visit(ExecutionLayer executionLayer, GetPropertyResponse response)
     {
-        System.out.println("2" + response);
         this.messageVisitor.visit(executionLayer, response);
         messages.add(response);
     }
@@ -73,6 +72,13 @@ public class MessageCollector implements MessageVisitor
     {
         this.messageVisitor.visit(executionLayer, message);
         messages.add(message);
+    }
+
+    @Override
+    public void visit(ExecutionLayer executionLayer, GetStatusRequest request)
+    {
+        this.messageVisitor.visit(executionLayer, request);
+        messages.add(request);
     }
 
     public <T extends AbstractMessage> T getLastMessage()

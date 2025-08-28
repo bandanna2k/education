@@ -15,7 +15,7 @@ public class IntegrationTest extends AbstractIntegrationTest
     @Test
     public void serverShouldRequestAndResponse()
     {
-        server.getStatusFromClient("client: client", "expectedStatus: Cool");
+        server.getStatusFromClient("client: client", "expectedStatus: Wicked");
     }
 
     @Test

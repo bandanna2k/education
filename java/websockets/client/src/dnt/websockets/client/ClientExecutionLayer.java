@@ -39,6 +39,7 @@ public class ClientExecutionLayer implements ExecutionLayer
     @Override
     public void clientResponseToRequest(AbstractResponse response)
     {
+        publisher.send(response);
     }
 
     @Override

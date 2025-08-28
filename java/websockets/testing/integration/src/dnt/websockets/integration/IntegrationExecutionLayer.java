@@ -57,6 +57,12 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     }
 
     @Override
+    public void clientResponseToRequest(AbstractResponse response)
+    {
+        response.visit(this, serverMessageCollector);
+    }
+
+    @Override
     public <T extends AbstractResponse> Future<Result<T, String>> serverRequestFromClient(AbstractRequest request)
     {
         final Supplier<Result<T, Object>> processRequest = () ->
