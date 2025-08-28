@@ -17,9 +17,9 @@ public class ServerDsl
     private final ServerDriver serverDriver;
     private final MessageCollector collector;
 
-    public ServerDsl(final ExecutionLayer executionLayer, ServerMessageProcessor serverMessageProcessor)
+    public ServerDsl(final ExecutionLayer executionLayer, ServerMessageProcessor serverMessageProcessor, MessageCollector serverMessageCollector)
     {
-        this.collector = new MessageCollector("Server DSL", serverMessageProcessor);
+        this.collector = serverMessageCollector;
         this.serverDriver = new ServerDriver(executionLayer, serverMessageProcessor);
     }
 

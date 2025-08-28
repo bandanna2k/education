@@ -26,7 +26,7 @@ public abstract class AbstractIntegrationTest
 
     private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageCollector, clientMessageCollector);
 
-    protected final ServerDsl server = new ServerDsl(executionLayer, serverMessageProcessor);
+    protected final ServerDsl server = new ServerDsl(executionLayer, serverMessageProcessor, serverMessageCollector);
     protected final ClientDsl client = new ClientDsl(executionLayer, clientMessageCollector);
     protected final IntegrationDsl integration = new IntegrationDsl(executionLayer);
 
