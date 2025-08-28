@@ -5,6 +5,7 @@ import dnt.websockets.client.Requests;
 import dnt.websockets.client.ClientExecutionLayer;
 import dnt.websockets.communications.*;
 import dnt.websockets.server.maybecool.TcpPublisher;
+import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -15,8 +16,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicLong;
 
-import static dnt.websockets.vertx.VertxAsyncExecutor.newExecutor;
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 
 public class TcpClient implements Requests, Runnable
@@ -36,13 +37,13 @@ public class TcpClient implements Requests, Runnable
     @Override
     public Future<Result<GetPropertyResponse, String>> getProperty(String key)
     {
-        return executorLayer.clientRequestFromServer(new GetPropertyRequest(key));
+        return executorLayer.request(new GetPropertyRequest(key));
     }
 
     @Override
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
-        return executorLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
+        return executorLayer.request(new SetPropertyRequest(key, value));
     }
 
     @Override
@@ -54,7 +55,7 @@ public class TcpClient implements Requests, Runnable
             LOGGER.info("Connected to server");
 
             final Publisher publisher = new TcpPublisher(socket);
-            executorLayer = new ClientExecutionLayer(newExecutor(VERTX), publisher);
+            executorLayer = new ClientExecutionLayer(newExecutor(), publisher);
 
             ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
             try(final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream())))
@@ -73,5 +74,20 @@ public class TcpClient implements Requests, Runnable
         {
             throw new RuntimeException(e);
         }
+    }
+
+    private static VertxAsyncExecutor<AbstractResponse> newExecutor()
+    {
+        final VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
+        {
+            private final AtomicLong nextCorrelationId = new AtomicLong(1);
+
+            @Override
+            public long generateId()
+            {
+                return nextCorrelationId.getAndIncrement();
+            }
+        };
+        return new VertxAsyncExecutor<>(VERTX, uniqueIdGenerator);
     }
 }

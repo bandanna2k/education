@@ -25,12 +25,12 @@ public class ServerMessageProcessor implements MessageVisitor
         if(value == null)
         {
             final ErrorResponse response = new ErrorResponse(request.correlationId, 404, "Value not found");
-            executionLayer.serverResponseToRequest(response);
+            executionLayer.respond(response);
         }
         else
         {
             GetPropertyResponse response = new GetPropertyResponse(request.correlationId, value);
-            executionLayer.serverResponseToRequest(response);
+            executionLayer.respond(response);
         }
     }
 
@@ -45,13 +45,13 @@ public class ServerMessageProcessor implements MessageVisitor
         final Optional<ErrorResponse> maybeError = request.validate();
         if(maybeError.isPresent())
         {
-            executionLayer.serverResponseToRequest(maybeError.get());
+            executionLayer.respond(maybeError.get());
             return;
         }
 
         properties.put(request.key, request.value);
         SetPropertyResponse response = new SetPropertyResponse(request.correlationId);
-        executionLayer.serverResponseToRequest(response);
+        executionLayer.respond(response);
     }
 
     public String get(String key)

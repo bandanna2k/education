@@ -6,7 +6,6 @@ import dnt.websockets.communications.Publisher;
 import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
-import dnt.websockets.vertx.VertxAsyncExecutor;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
@@ -69,16 +68,18 @@ public class EventBusServer
             eventBus.send(serverOutgoingTopic, "Welcome. Thank you.");
             message.reply("Registered. Thank you.");
 
-            final DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
-            final Publisher publisher = new EventBusPublisher(eventBus, serverOutgoingTopic, deliveryOptions);
-            final ExecutionLayer executionLayer = new ServerExecutionLayer(VertxAsyncExecutor.newExecutor(vertx), publisher);
-            final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
+            DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
+            Publisher publisher = new EventBusPublisher(eventBus, serverOutgoingTopic, deliveryOptions);
+            ExecutionLayer executionLayer = new ServerExecutionLayer(publisher);
+            ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
             textMessageHandlers.add(textMessageHandler);
             senderIdToTextMessageHandler.put(senderId, textMessageHandler);
 
-            eventBus.consumer(clientIncomingTopic, clientToServerMessage ->
+            eventBus.consumer(clientIncomingTopic, message2 ->
             {
-                String maybeJson = clientToServerMessage.body().toString();
+                String maybeJson = message2.body().toString();
+                System.out.println("1 " +senderId);
+                System.out.println("2 " +maybeJson);
                 senderIdToTextMessageHandler.get(senderId).handle(maybeJson);
             });
         });

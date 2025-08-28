@@ -28,15 +28,11 @@ import io.vertx.core.Future;
  */
 public interface ExecutionLayer
 {
-    void clientSend(AbstractMessage message);
+    <T extends AbstractResponse> Future<Result<T, String>> request(AbstractRequest request);
+
+    void respond(AbstractResponse response);
 
     void serverSend(AbstractMessage message);
 
-    default <T extends AbstractResponse> Future<Result<T, String>> clientRequestFromServer(AbstractRequest request) { throw new UnsupportedOperationException(); }
-
-    default <T extends AbstractResponse> Future<Result<T, String>> serverRequestFromClient(AbstractRequest request) { throw new UnsupportedOperationException(); }
-
-    default void clientResponseToRequest(AbstractResponse response) { throw new UnsupportedOperationException(); }
-
-    default void serverResponseToRequest(AbstractResponse response) { throw new UnsupportedOperationException(); }
+    void clientSend(AbstractMessage message);
 }

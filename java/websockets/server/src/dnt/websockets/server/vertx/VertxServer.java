@@ -4,7 +4,6 @@ import dnt.websockets.communications.*;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerTextMessageHandler;
-import dnt.websockets.vertx.VertxAsyncExecutor;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
@@ -62,9 +61,9 @@ public class VertxServer
         }
         LOGGER.debug("Websocket connected {}", uri);
 
-        final Publisher publisher = new VertxPublisher(serverWebSocket);
-        final ExecutionLayer executionLayer = new ServerExecutionLayer(VertxAsyncExecutor.newExecutor(vertx), publisher);
-        final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
+        Publisher publisher = new VertxPublisher(serverWebSocket);
+        ExecutionLayer executionLayer = new ServerExecutionLayer(publisher);
+        ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
         serverWebSocket.textMessageHandler(textMessageHandler);
         textMessageHandlers.add(textMessageHandler);
     }
@@ -116,7 +115,7 @@ public class VertxServer
     private ServerTextMessageHandler newRestTextMessageHandler(RoutingContext ctx)
     {
         final LazyPublisher restPublisher = new LazyPublisher();
-        final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(VertxAsyncExecutor.newExecutor(vertx), restPublisher);
+        final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(restPublisher);
         restPublisher.publisher = new VertxRestPublisher(ctx);
         return new ServerTextMessageHandler(restExecutionLayer, requestProcessor);
     }

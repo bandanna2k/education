@@ -59,13 +59,13 @@ public class VertxClient implements Requests
     @Override
     public Future<Result<GetPropertyResponse, String>> getProperty(String key)
     {
-        return executorLayer.clientRequestFromServer(new GetPropertyRequest(key));
+        return executorLayer.request(new GetPropertyRequest(key));
     }
 
     @Override
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
-        return executorLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
+        return executorLayer.request(new SetPropertyRequest(key, value));
     }
 
     private static VertxAsyncExecutor<AbstractResponse> newExecutor(Vertx vertx)

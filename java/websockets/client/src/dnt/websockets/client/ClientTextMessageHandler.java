@@ -19,6 +19,7 @@ public class ClientTextMessageHandler implements Handler<String>
     public static final ObjectMapper OBJECT_MAPPER = newClientObjectMapper();
     private static final ObjectReader MESSAGE_READER = getClientMessageReader(OBJECT_MAPPER);
 
+    private final ResponseVisitor processor;
     private final MessageVisitor messageProcessor;
     private final ExecutionLayer executionLayer;
 
@@ -26,6 +27,7 @@ public class ClientTextMessageHandler implements Handler<String>
     {
         this.messageProcessor = messageProcessor;
         this.executionLayer = executionLayer;
+        this.processor = new ResponseProcessor(this.executionLayer);
     }
 
     @Override
@@ -51,7 +53,7 @@ public class ClientTextMessageHandler implements Handler<String>
 
     private void handle(AbstractResponse response)
     {
-        response.visit(executionLayer, messageProcessor);
+        response.visit(processor);
     }
 
     private void handle(AbstractMessage message)
@@ -65,7 +67,6 @@ public class ClientTextMessageHandler implements Handler<String>
         mapper.registerSubtypes(new NamedType(GetPropertyResponse.class, GetPropertyResponse.class.getSimpleName()));
         mapper.registerSubtypes(new NamedType(SetPropertyResponse.class, SetPropertyResponse.class.getSimpleName()));
         mapper.registerSubtypes(new NamedType(ServerPushMessage.class, ServerPushMessage.class.getSimpleName()));
-        mapper.registerSubtypes(new NamedType(GetStatusRequest.class, GetStatusRequest.class.getSimpleName()));
         return mapper;
     }
     private static ObjectReader getClientMessageReader(ObjectMapper mapper)

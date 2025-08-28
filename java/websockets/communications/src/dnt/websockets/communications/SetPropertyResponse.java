@@ -9,9 +9,9 @@ public class SetPropertyResponse extends AbstractResponse
     }
 
     @Override
-    public void visit(ExecutionLayer executionLayer, MessageVisitor visitor)
+    public void visit(ResponseVisitor visitor)
     {
-        visitor.visit(executionLayer, this);
+        visitor.visit(this);
     }
 
     @Override

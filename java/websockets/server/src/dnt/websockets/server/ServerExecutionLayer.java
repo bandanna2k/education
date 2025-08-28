@@ -1,36 +1,28 @@
 package dnt.websockets.server;
 
 import dnt.websockets.communications.*;
-import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 
 public class ServerExecutionLayer implements ExecutionLayer
 {
     private final Publisher publisher;
-    private final VertxAsyncExecutor<AbstractResponse> executor;
 
-    public ServerExecutionLayer(VertxAsyncExecutor<AbstractResponse> executor, Publisher publisher)
+    public ServerExecutionLayer(Publisher publisher)
     {
-        this.executor = executor;
         this.publisher = publisher;
     }
 
     @Override
-    public <T extends AbstractResponse> Future<Result<T, String>> serverRequestFromClient(AbstractRequest request)
+    public <T extends AbstractResponse> Future<Result<T, String>> request(AbstractRequest request)
     {
-        return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
-                .map(Result::success)
-                .recover(throwable ->
-                        Future.succeededFuture(Result.failure(throwable.getMessage())))
-                .map(result ->
-                        result.map(s -> (T)s, Object::toString));
+        throw new UnsupportedOperationException("Not implemented on server.");
     }
 
     @Override
-    public void serverResponseToRequest(AbstractResponse response)
+    public void respond(AbstractResponse response)
     {
-        executor.onResponseReceived(response.correlationId, response);
+        publisher.send(response);
     }
 
     @Override

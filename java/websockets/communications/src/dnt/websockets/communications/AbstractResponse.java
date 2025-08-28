@@ -17,7 +17,7 @@ public abstract class AbstractResponse extends AbstractMessage
         this.type = this.getClass().getSimpleName();
     }
 
-    public abstract void visit(ExecutionLayer executionLayer, MessageVisitor visitor);
+    public abstract void visit(ResponseVisitor visitor);
 
     @Override
     public String toString()

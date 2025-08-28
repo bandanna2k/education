@@ -13,21 +13,17 @@ public class IntegrationTest extends AbstractIntegrationTest
     }
 
     @Test
-    public void serverShouldRequestAndResponse()
-    {
-        server.getStatusFromClient("client: client", "expectedStatus: Cool");
-    }
-
-    @Test
-    public void serverShouldPushMessage()
+    public void serverShouldBroadcastMessage()
     {
         client.verifyNoMoreMessages();
+
         server.broadcastMessage();
+
         client.verifyMessage("ServerPushMessage");
     }
 
     @Test
-    public void clientShouldPushMessage()
+    public void serverShouldRequestRespond()
     {
         client.pushPrice("symbol: NZD/USD", "price: 0.7500", "sequence: 1");
         server.verifyMessage("ClientPushPrice");

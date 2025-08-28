@@ -17,13 +17,13 @@ public class ClientDriver implements Requests
     @Override
     public Future<Result<GetPropertyResponse, String>> getProperty(String key)
     {
-        return executionLayer.clientRequestFromServer(new GetPropertyRequest(key));
+        return executionLayer.request(new GetPropertyRequest(key));
     }
 
     @Override
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
-        return executionLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
+        return executionLayer.request(new SetPropertyRequest(key, value));
     }
 
     public void pushPrice(String symbol, double price, long sequence)

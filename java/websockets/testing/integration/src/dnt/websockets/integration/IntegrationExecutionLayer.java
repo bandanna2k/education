@@ -1,8 +1,6 @@
 package dnt.websockets.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.communications.ExecutionLayer;
 import dnt.websockets.communications.*;
@@ -25,8 +23,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
 
     private final ServerTextMessageHandler serverTextMessageHandler;
     private final ClientTextMessageHandler clientTextMessageHandler;
-    private final MessageCollector clientMessageCollector = new MessageCollector();
-    private final MessageCollector serverMessageCollector = new MessageCollector();
+    private final MessageCollector collector;
 
     private Optional<String> maybeFailNextMessage = Optional.empty();
     private boolean throwOnNextMessage = false;
@@ -34,32 +31,24 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     private final Queue<DeferredFuture<?>> deferredFutures = new LinkedList<>();
     private boolean pauseProcessing;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(); // Only use for rewriting a request
-
-    public IntegrationExecutionLayer(ServerMessageProcessor serverMessageProcessor, ClientMessageProcessor clientMessageProcessor)
+    public IntegrationExecutionLayer(ServerMessageProcessor requestProcessor, MessageCollector collector)
     {
-        this.publisher = new IntegrationPublisher(this, clientMessageProcessor);
+        this.publisher = new IntegrationPublisher(this, collector);
+        this.collector = collector;
 
-        this.serverTextMessageHandler = new ServerTextMessageHandler(this, serverMessageProcessor);
-        this.clientTextMessageHandler = new ClientTextMessageHandler(this, clientMessageProcessor);
+        this.serverTextMessageHandler = new ServerTextMessageHandler(this, requestProcessor);
+        this.clientTextMessageHandler = new ClientTextMessageHandler(this, this.collector);
     }
 
     @Override
-    public void serverResponseToRequest(AbstractResponse response)
-    {
-        publisher.send(response);
-    }
-
-    @Override
-    public <T extends AbstractResponse> Future<Result<T, String>> serverRequestFromClient(AbstractRequest request)
+    public <T extends AbstractResponse> Future<Result<T, String>> request(AbstractRequest request)
     {
         final Supplier<Result<T, Object>> processRequest = () ->
         {
             try
             {
-                String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
-                clientTextMessageHandler.handle(serialisedRequest);
-                T lastMessage = serverMessageCollector.getLastMessage();
+                serverTextMessageHandler.handle(ServerTextMessageHandler.OBJECT_MAPPER.writeValueAsString(request));
+                T lastMessage = collector.getLastMessage();
                 if (lastMessage == null)
                 {
                     LOGGER.error("No response received.");
@@ -72,36 +61,6 @@ public class IntegrationExecutionLayer implements ExecutionLayer
                 throw new RuntimeException(e);
             }
         };
-        return request(request, processRequest);
-    }
-
-    @Override
-    public <T extends AbstractResponse> Future<Result<T, String>> clientRequestFromServer(AbstractRequest request)
-    {
-        final Supplier<Result<T, Object>> processRequest = () ->
-        {
-            try
-            {
-                String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
-                serverTextMessageHandler.handle(serialisedRequest);
-                T lastMessage = clientMessageCollector.getLastMessage();
-                if (lastMessage == null)
-                {
-                    LOGGER.error("No response received.");
-                    return Result.failure("No response received");
-                }
-                return intercept(request, lastMessage);
-            }
-            catch (JsonProcessingException e)
-            {
-                throw new RuntimeException(e);
-            }
-        };
-        return request(request, processRequest);
-    }
-
-    private <T extends AbstractResponse> Future<Result<T, String>> request(AbstractRequest request, Supplier<Result<T, Object>> processRequest)
-    {
         if(pauseProcessing)
         {
             DeferredFuture<Result<T, Object>> deferredFuture = new DeferredFuture<>(processRequest);
@@ -131,6 +90,12 @@ public class IntegrationExecutionLayer implements ExecutionLayer
             return Result.failure(errorResponse.message);
         }
         return Result.success(lastMessage);
+    }
+
+    @Override
+    public void respond(AbstractResponse response)
+    {
+        publisher.send(response);
     }
 
     @Override
