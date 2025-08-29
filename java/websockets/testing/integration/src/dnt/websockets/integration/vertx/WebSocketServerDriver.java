@@ -1,6 +1,6 @@
 package dnt.websockets.integration.vertx;
 
-import dnt.websockets.communications.ServerPushMessage;
+import dnt.websockets.messages.ServerPushMessage;
 import dnt.websockets.server.vertx.WebSocketServer;
 import io.vertx.core.Vertx;
 

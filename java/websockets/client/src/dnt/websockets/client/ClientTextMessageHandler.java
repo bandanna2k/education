@@ -5,12 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import dnt.websockets.communications.*;
+import dnt.websockets.infrastructure.ExecutionLayer;
+import dnt.websockets.messages.*;
 import io.vertx.core.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
 
 public class ClientTextMessageHandler implements Handler<String>
 {

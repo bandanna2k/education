@@ -1,7 +1,7 @@
 package dnt.websockets.integration.eventbus;
 
-import dnt.websockets.communications.ServerPushMessage;
-import dnt.websockets.server.also.EventBusServer;
+import dnt.websockets.messages.ServerPushMessage;
+import dnt.websockets.server.eventbus.EventBusServer;
 import io.vertx.core.Vertx;
 
 public class EventBusServerDriver

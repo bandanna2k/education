@@ -15,12 +15,12 @@ public class IntegrationEventBusTest extends AbstractIntegrationEventBusTest
     @Test
     public void serverShouldBroadcast()
     {
-//        client.verifyNoMoreMessages();
+        client.verifyNoMoreMessages();
 
         server.broadcastMessage();
 
         client.verifyMessage("ServerPushMessage");
-//        client.verifyNoMoreMessages();
+        client.verifyNoMoreMessages();
     }
 
     @Test

@@ -1,6 +1,7 @@
 package dnt.websockets.client;
 
-import dnt.websockets.communications.*;
+import dnt.websockets.infrastructure.ExecutionLayer;
+import dnt.websockets.messages.*;
 
 public class ClientMessageProcessor implements MessageVisitor
 {

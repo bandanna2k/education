@@ -1,15 +1,15 @@
 package dnt.websockets.integration.eventbus;
 
 import dnt.websockets.client.also.EventBusClient;
-import dnt.websockets.communications.AbstractMessage;
-import dnt.websockets.communications.GetPropertyResponse;
-import dnt.websockets.communications.SetPropertyResponse;
+import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.GetPropertyResponse;
+import dnt.websockets.messages.SetPropertyResponse;
 import dnt.websockets.integration.MessageCollector;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
-import static dnt.websockets.communications.MessageVisitor.NO_OP;
+import static dnt.websockets.messages.MessageVisitor.NO_OP;
 
 public class EventBusClientDriver
 {

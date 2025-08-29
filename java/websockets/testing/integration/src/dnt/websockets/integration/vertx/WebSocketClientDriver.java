@@ -2,9 +2,9 @@ package dnt.websockets.integration.vertx;
 
 import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.websocket.WebSocketKlient;
-import dnt.websockets.communications.AbstractMessage;
-import dnt.websockets.communications.GetPropertyResponse;
-import dnt.websockets.communications.SetPropertyResponse;
+import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.GetPropertyResponse;
+import dnt.websockets.messages.SetPropertyResponse;
 import dnt.websockets.integration.MessageCollector;
 import education.common.result.Result;
 import io.vertx.core.Future;

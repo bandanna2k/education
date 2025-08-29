@@ -24,5 +24,6 @@
     <orderEntry type="module" module-name="client" />
     <orderEntry type="module" module-name="server" />
     <orderEntry type="module" module-name="websockets-vertx" />
+    <orderEntry type="module" module-name="infrastructure" />
   </component>
 </module>

@@ -1,7 +1,10 @@
 package dnt.websockets.integration;
 
-import dnt.websockets.communications.*;
+import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.integration.infrastructure.IntegrationServerConnector;
+import dnt.websockets.messages.GetStatusRequest;
+import dnt.websockets.messages.GetStatusResponse;
+import dnt.websockets.messages.ServerPushMessage;
 import dnt.websockets.server.ServerMessageProcessor;
 import education.common.result.Result;
 import io.vertx.core.Future;

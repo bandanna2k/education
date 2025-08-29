@@ -1,6 +1,7 @@
 package dnt.websockets.server;
 
-import dnt.websockets.communications.*;
+import dnt.websockets.infrastructure.ExecutionLayer;
+import dnt.websockets.messages.*;
 
 import java.util.HashMap;
 import java.util.Optional;

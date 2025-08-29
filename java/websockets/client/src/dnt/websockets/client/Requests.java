@@ -1,7 +1,7 @@
 package dnt.websockets.client;
 
-import dnt.websockets.communications.GetPropertyResponse;
-import dnt.websockets.communications.SetPropertyResponse;
+import dnt.websockets.messages.GetPropertyResponse;
+import dnt.websockets.messages.SetPropertyResponse;
 import education.common.result.Result;
 import io.vertx.core.Future;
 

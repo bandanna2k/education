@@ -3,8 +3,9 @@ package dnt.websockets.client.also;
 import dnt.websockets.client.ClientExecutionLayer;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.client.Requests;
-import dnt.websockets.communications.*;
-import dnt.websockets.server.also.EventBusPublisher;
+import dnt.websockets.infrastructure.ExecutionLayer;
+import dnt.websockets.messages.*;
+import dnt.websockets.server.eventbus.EventBusPublisher;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-import static dnt.websockets.vertx.VertxAsyncExecutor.*;
+import static dnt.websockets.vertx.VertxAsyncExecutor.newExecutor;
 
 public class EventBusClient implements Requests
 {

@@ -3,10 +3,11 @@ package dnt.websockets.integration.dsl;
 import com.lmax.simpledsl.api.DslParams;
 import com.lmax.simpledsl.api.OptionalArg;
 import com.lmax.simpledsl.api.RequiredArg;
-import dnt.websockets.communications.*;
 import dnt.websockets.integration.MessageCollector;
 import dnt.websockets.integration.ServerDriver;
-import dnt.websockets.server.ServerMessageProcessor;
+import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.GetStatusResponse;
+import dnt.websockets.messages.ServerPushMessage;
 import education.common.result.Result;
 import io.vertx.core.Future;
 

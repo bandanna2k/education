@@ -1,8 +1,8 @@
 package dnt.websockets.integration.infrastructure;
 
-import dnt.websockets.communications.AbstractMessage;
-import dnt.websockets.communications.ExecutionLayer;
-import dnt.websockets.communications.MessageVisitor;
+import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.MessageVisitor;
+import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.server.ServerTextMessageHandler;
 
 import java.util.ArrayList;

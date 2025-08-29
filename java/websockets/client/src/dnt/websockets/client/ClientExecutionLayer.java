@@ -1,6 +1,10 @@
 package dnt.websockets.client;
 
-import dnt.websockets.communications.*;
+import dnt.websockets.infrastructure.ExecutionLayer;
+import dnt.websockets.infrastructure.Publisher;
+import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.AbstractRequest;
+import dnt.websockets.messages.AbstractResponse;
 import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;

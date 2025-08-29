@@ -1,8 +1,8 @@
 package dnt.websockets.integration.tcp;
 
-import dnt.websockets.communications.ServerPushMessage;
+import dnt.websockets.messages.ServerPushMessage;
 import dnt.websockets.server.ServerMessageProcessor;
-import dnt.websockets.server.maybecool.TcpServer;
+import dnt.websockets.server.tcp.TcpServer;
 
 public class TcpServerDriver
 {

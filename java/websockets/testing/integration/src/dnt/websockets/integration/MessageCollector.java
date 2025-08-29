@@ -1,6 +1,7 @@
 package dnt.websockets.integration;
 
-import dnt.websockets.communications.*;
+import dnt.websockets.infrastructure.ExecutionLayer;
+import dnt.websockets.messages.*;
 
 import java.util.LinkedList;
 import java.util.Queue;

@@ -1,6 +1,10 @@
 package dnt.websockets.server.vertx;
 
-import dnt.websockets.communications.*;
+import dnt.websockets.infrastructure.ExecutionLayer;
+import dnt.websockets.infrastructure.Publisher;
+import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.GetPropertyRequest;
+import dnt.websockets.messages.SetPropertyRequest;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerTextMessageHandler;

@@ -2,9 +2,9 @@ package dnt.websockets.server.vertx;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dnt.websockets.communications.AbstractMessage;
-import dnt.websockets.communications.ErrorResponse;
-import dnt.websockets.communications.Publisher;
+import dnt.websockets.infrastructure.Publisher;
+import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.ErrorResponse;
 import io.vertx.ext.web.RoutingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
