@@ -4,9 +4,6 @@ import dnt.websockets.communications.*;
 import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 public class ClientExecutionLayer implements ExecutionLayer
 {

@@ -34,7 +34,7 @@ public interface ExecutionLayer
 
     default <T extends AbstractResponse> Future<Result<T, String>> clientRequestFromServer(AbstractRequest request) { throw new UnsupportedOperationException(); }
 
-    default <T extends AbstractResponse> Future<Result<T, String>> serverRequestFromClient(AbstractRequest request) { throw new UnsupportedOperationException(); }
+    default <T extends AbstractResponse> Future<Result<T, String>> serverRequestOnClient(AbstractServerRequest request) { throw new UnsupportedOperationException(); }
 
     default void clientResponseToRequest(AbstractResponse response) { throw new UnsupportedOperationException(); }
 

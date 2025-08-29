@@ -1,20 +1,11 @@
 package dnt.websockets.communications;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-public class GetStatusRequest extends AbstractRequest
+public class GetStatusRequest extends AbstractServerRequest
 {
-    @JsonIgnore
-    private String client;
-
-    public GetStatusRequest()
+    public GetStatusRequest() {}
+    public GetStatusRequest(String clientId)
     {
-        super();
-    }
-    public GetStatusRequest(String client)
-    {
-        this();
-        this.client = client;
+        super(clientId);
     }
 
     @Override
@@ -26,7 +17,7 @@ public class GetStatusRequest extends AbstractRequest
     @Override
     public String toString() {
         return "GetClientStatus{" +
-                "client='" + client + '\'' +
+                "client='" + clientId + '\'' +
                 "} " + super.toString();
     }
 }

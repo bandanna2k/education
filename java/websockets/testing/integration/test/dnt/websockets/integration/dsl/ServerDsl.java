@@ -1,6 +1,7 @@
 package dnt.websockets.integration.dsl;
 
 import com.lmax.simpledsl.api.DslParams;
+import com.lmax.simpledsl.api.OptionalArg;
 import com.lmax.simpledsl.api.RequiredArg;
 import dnt.websockets.communications.*;
 import dnt.websockets.integration.MessageCollector;
@@ -50,12 +51,14 @@ public class ServerDsl
     {
         final DslParams params = DslParams.create(args,
                 new RequiredArg("client"),
-                new RequiredArg("expectedStatus"));
+                new OptionalArg("expectedStatus"),
+                new OptionalArg("expectedErrorMessage"));
         String client = params.value("client");
         String expectedStatus = params.value("expectedStatus");
         Result<GetStatusResponse, String> actual = join(serverDriver.getStatusFromClient(client));
-        assertTrue(actual.isSuccess());
-        assertThat(actual.success().status).isEqualTo(expectedStatus);
+        actual.consume(
+                response -> assertThat(response.status).isEqualTo(expectedStatus),
+                error -> assertThat(error).isEqualTo(params.value("expectedErrorMessage")));
     }
 
     private static <R> R join(Future<R> future)

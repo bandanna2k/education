@@ -2,11 +2,9 @@ package dnt.websockets.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.communications.ExecutionLayer;
 import dnt.websockets.communications.*;
-import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
 import education.common.result.Result;
 import io.vertx.core.Future;
@@ -25,7 +23,6 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     private final IntegrationPublisher toClientPublisher;
 
     private final ServerTextMessageHandler serverTextMessageHandler;
-    private final ClientTextMessageHandler clientTextMessageHandler;
     private final MessageCollector clientMessageCollector;
     private final MessageCollector serverMessageCollector;
 
@@ -47,7 +44,6 @@ public class IntegrationExecutionLayer implements ExecutionLayer
         this.toServerPublisher = new IntegrationPublisher(this, serverMessageCollector);
 
         this.serverTextMessageHandler = new ServerTextMessageHandler(this, serverMessageProcessor);
-        this.clientTextMessageHandler = new ClientTextMessageHandler(this, clientMessageProcessor);
     }
 
     @Override
@@ -62,15 +58,22 @@ public class IntegrationExecutionLayer implements ExecutionLayer
         response.visit(this, serverMessageCollector);
     }
 
-    @Override
-    public <T extends AbstractResponse> Future<Result<T, String>> serverRequestFromClient(AbstractRequest request)
+    public Map<String, ClientTextMessageHandler> clients = new HashMap<>();
+    public void register(String clientId, ClientTextMessageHandler clientTextMessageHandler)
     {
+        clients.put(clientId, clientTextMessageHandler);
+    }
+
+    @Override
+    public <T extends AbstractResponse> Future<Result<T, String>> serverRequestOnClient(AbstractServerRequest request)
+    {
+        final ClientTextMessageHandler messageHandler = clients.get(request.clientId);
         final Supplier<Result<T, Object>> processRequest = () ->
         {
             try
             {
                 String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
-                clientTextMessageHandler.handle(serialisedRequest);
+                messageHandler.handle(serialisedRequest);
                 T lastMessage = serverMessageCollector.getLastMessage();
                 if (lastMessage == null)
                 {
@@ -150,7 +153,9 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     {
         try
         {
-            clientTextMessageHandler.handle(OBJECT_MAPPER.writeValueAsString(message));
+            final String json = OBJECT_MAPPER.writeValueAsString(message);
+            clients.values().forEach(clientTextMessageHandler ->
+                    clientTextMessageHandler.handle(json));
         }
         catch (JsonProcessingException e)
         {

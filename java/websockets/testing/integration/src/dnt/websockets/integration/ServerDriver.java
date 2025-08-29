@@ -30,6 +30,6 @@ public class ServerDriver
 
     public Future<Result<GetStatusResponse, String>> getStatusFromClient(String client)
     {
-        return executionLayer.serverRequestFromClient(new GetStatusRequest(client));
+        return executionLayer.serverRequestOnClient(new GetStatusRequest(client));
     }
 }

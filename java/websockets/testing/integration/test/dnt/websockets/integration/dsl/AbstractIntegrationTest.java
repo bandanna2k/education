@@ -10,6 +10,7 @@ import dnt.websockets.integration.ServerDriver;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.util.Map;
@@ -29,20 +30,22 @@ public abstract class AbstractIntegrationTest
     private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageCollector, clientMessageCollector);
 
     protected final ServerDriver serverDriver = new ServerDriver(executionLayer, serverMessageProcessor);
-    protected final ClientDriver clientDriver = new ClientDriver(executionLayer);
+    protected final ClientDriver clientDriver = new ClientDriver(executionLayer, clientMessageProcessor);
 
     protected final ServerDsl server = new ServerDsl(serverDriver, serverMessageCollector);
     protected final ClientDsl client = new ClientDsl(clientDriver, clientMessageCollector);
     protected final IntegrationDsl integration = new IntegrationDsl(executionLayer);
 
-    protected final ClientDriver clientDriver2 = new ClientDriver(executionLayer);
+    protected final ClientDriver clientDriver2 = new ClientDriver(executionLayer, clientMessageProcessor2);
     protected final ClientDsl client2 = new ClientDsl(clientDriver2, clientMessageCollector2);
 
     private final Map<String, ClientDsl> clients = Map.of("session1", client, "session2", client2);
 
     protected ClientDsl client(String session)
     {
-        return clients.get(session);
+        ClientDsl clientDsl = clients.get(session);
+        assert clientDsl != null : "No client found for session: " + session;
+        return clientDsl;
     }
 
     @BeforeClass
@@ -50,6 +53,13 @@ public abstract class AbstractIntegrationTest
     {
         ClientTextMessageHandler.OBJECT_MAPPER.writeValueAsBytes(new GetPropertyResponse(1, "key"));
         ServerTextMessageHandler.OBJECT_MAPPER.writeValueAsBytes(new SetPropertyRequest("key", "value"));
+    }
+
+    @Before
+    public void setUp()
+    {
+        executionLayer.register("session1", new ClientTextMessageHandler(executionLayer, clientMessageCollector));
+        executionLayer.register("session2", new ClientTextMessageHandler(executionLayer, clientMessageCollector2));
     }
 
     @After

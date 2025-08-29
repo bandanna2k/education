@@ -17,7 +17,7 @@ public class ServerExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public <T extends AbstractResponse> Future<Result<T, String>> serverRequestFromClient(AbstractRequest request)
+    public <T extends AbstractResponse> Future<Result<T, String>> serverRequestOnClient(AbstractServerRequest request)
     {
         return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
                 .map(Result::success)
