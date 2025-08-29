@@ -1,6 +1,7 @@
 package dnt.websockets.vertx;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +11,9 @@ public abstract class VertxFactory
 
     public static Vertx newVertx()
     {
-        Vertx vertx = Vertx.vertx();
+        VertxOptions options = new VertxOptions();
+        Vertx vertx = Vertx.vertx(options);
+
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOGGER.info("Executing custom shutdown hook... {}", vertx.hashCode());

@@ -78,8 +78,7 @@ public class ClientWebSocketDsl
         Awaitility
                 .await()
                 .pollInterval(ofMillis(100))
-                .during(ofMillis(900))
-                .atMost(ofMillis(1000))
+                .during(ofMillis(2000))
                 .until(() -> {
                     AbstractMessage abstractMessage = clientDriver.popLastMessage();
                     return abstractMessage == null;

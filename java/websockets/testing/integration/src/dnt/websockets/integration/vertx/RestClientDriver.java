@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class RestClientDriver
 {
-    public static final int PORT = 7777;
-    public static final String HOST = "localhost";
+    private static final int PORT = 7780;
+    private static final String HOST = "localhost";
 
     private final WebClient client;
 

@@ -4,6 +4,7 @@ import dnt.websockets.integration.vertx.RestClientDriver;
 import dnt.websockets.integration.vertx.WebSocketClientDriver;
 import dnt.websockets.integration.vertx.WebSocketServerDriver;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
@@ -16,6 +17,10 @@ import static org.junit.Assert.fail;
 
 public abstract class AbstractIntegrationVertxTest
 {
+    static
+    {
+        System.setProperty("org.slf4j.simpleLogger.log.dnt.websockets", "DEBUG");
+    }
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractIntegrationVertxTest.class);
 
     private static final Vertx VERTX = newVertx();
@@ -47,11 +52,6 @@ public abstract class AbstractIntegrationVertxTest
                 .onFailure(throwable -> fail("WebSocket server failed to start. " + throwable.getMessage()))
                 .onSuccess(webSocket -> LOGGER.info("WebSocket server started"))
                 .toCompletionStage().toCompletableFuture().join();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Before
@@ -65,5 +65,6 @@ public abstract class AbstractIntegrationVertxTest
                 .onFailure(throwable -> fail("WebSocket client failed to start. " + throwable.getMessage()))
                 .onSuccess(webSocket -> LOGGER.info("WebSocket client started"))
                 .toCompletionStage().toCompletableFuture().join();
+//        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
     }
 }

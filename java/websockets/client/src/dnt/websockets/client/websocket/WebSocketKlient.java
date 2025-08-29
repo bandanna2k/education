@@ -9,12 +9,14 @@ import dnt.websockets.server.vertx.WebSocketPublisher;
 import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class WebSocketKlient implements Requests
@@ -37,24 +39,31 @@ public class WebSocketKlient implements Requests
     public Future<WebSocket> run()
     {
         final WebSocketConnectOptions connectOptions = new WebSocketConnectOptions()
+                .setIdleTimeout(10_000)
                 .setURI(uri.toString())
                 .setHost("localhost")
-                .setPort(7777);
+                .setPort(7780);
 
         LOGGER.info("Attempting connection. {}", connectOptions);
 
-        final WebSocketClientOptions webSocketClientOptions = new WebSocketClientOptions();
-//                .setTcpNoDelay(true)
-//                .setIdleTimeout(0)
-//                .setConnectTimeout(10_000)
-//                .setMaxConnections(1)
-//                .setTcpKeepAlive(true);
-        final WebSocketClient wsClient = vertx.createWebSocketClient(webSocketClientOptions);
-        return wsClient.connect(connectOptions)
-                .onSuccess(this::handle)
-                .onFailure(t -> {
-                    LOGGER.error("Failed to start client.", t);
-                });
+        final WebSocketClient wsClient = vertx.createWebSocketClient();
+
+        final int createWsClientGarbageCollectionDelay = 100;
+        return delay(vertx, createWsClientGarbageCollectionDelay)
+                .flatMap(unused -> wsClient
+                        .connect(connectOptions)
+                        .timeout(5, TimeUnit.SECONDS)
+                        .onSuccess(this::handle)
+                        .onFailure(t -> {
+                            LOGGER.error("Failed to start client.", t);
+                        }));
+    }
+
+    private static Future<Void> delay(Vertx vertx, long delayMs)
+    {
+        Promise<Void> promise = Promise.promise();
+        vertx.setTimer(delayMs, id -> promise.complete());
+        return promise.future();
     }
 
     private void handle(WebSocket webSocket)

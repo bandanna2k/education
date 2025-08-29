@@ -25,6 +25,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class WebSocketServer
 {
@@ -47,15 +48,10 @@ public class WebSocketServer
         router.get("/property").handler(this::restGetProperty);
         router.post("/property").handler(this::restSetProperty);
 
-        final HttpServerOptions httpServerOptions = new HttpServerOptions();
-//                .setTcpKeepAlive(true)
-//                .setIdleTimeout(0)
-//                .setTcpNoDelay(true);
-        HttpServer httpServer = vertx.createHttpServer(httpServerOptions)
+        return vertx.createHttpServer()
                 .requestHandler(router)
-                .webSocketHandler(this::handle);
-        return httpServer
-                .listen(7777)
+                .webSocketHandler(this::handle)
+                .listen(7780)
                 .onSuccess(successfulHttpServer -> {
                     LOGGER.info("Server started on port {}", successfulHttpServer.actualPort());
                 })

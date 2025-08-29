@@ -31,7 +31,7 @@ public class ServerTextMessageHandler implements Handler<String>
     @Override
     public void handle(String maybeJson)
     {
-        LOGGER.debug("Receiving {}", maybeJson);
+        LOGGER.debug("Client --> JSON --> Server | {}", maybeJson);
         try
         {
             handle(MESSAGE_READER.<AbstractMessage>readValue(maybeJson));

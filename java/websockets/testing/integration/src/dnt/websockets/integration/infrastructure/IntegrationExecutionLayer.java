@@ -71,7 +71,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
                 T lastMessage = serverMessageCollector.getLastMessage();
                 if (lastMessage == null)
                 {
-                    LOGGER.error("No response received.");
+                    LOGGER.error("Client  X- JSON <-- Server | No client response received {}", request);
                     return Result.failure("No response received");
                 }
                 return intercept(request, lastMessage);
@@ -96,7 +96,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
                 T lastMessage = clientMessageCollector.getLastMessage();
                 if (lastMessage == null)
                 {
-                    LOGGER.error("No response received.");
+                    LOGGER.error("Client --> JSON -X  Server | No server response received {}", request);
                     return Result.failure("No response received");
                 }
                 return intercept(request, lastMessage);

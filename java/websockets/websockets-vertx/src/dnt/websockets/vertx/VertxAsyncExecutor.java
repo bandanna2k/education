@@ -144,7 +144,7 @@ public class VertxAsyncExecutor<Response>
     {
         final VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
         {
-            private final AtomicLong nextCorrelationId = new AtomicLong(1);
+            private final AtomicLong nextCorrelationId = new AtomicLong(System.currentTimeMillis() % 100_000);
 
             @Override
             public long generateId()
