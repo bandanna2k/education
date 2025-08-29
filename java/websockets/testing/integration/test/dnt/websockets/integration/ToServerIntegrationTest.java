@@ -1,13 +1,13 @@
 package dnt.websockets.integration;
 
-import dnt.websockets.integration.dsl.AbstractIntegrationTest;
+import dnt.websockets.integration.base.AbstractIntegrationTest;
+import dnt.websockets.integration.base.ToServerTests;
 import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 
-public class ToServerTests extends AbstractIntegrationTest
+public class ToServerIntegrationTest extends AbstractIntegrationTest implements ToServerTests
 {
     @Test
+    @Override
     public void clientShouldRequestAndResponse()
     {
         client.setProperty("key: name", "value: sam");
@@ -15,6 +15,7 @@ public class ToServerTests extends AbstractIntegrationTest
     }
 
     @Test
+    @Override
     public void clientShouldPushMessage()
     {
         client.pushPulse("rate: 60", "sequence: 1");
@@ -22,6 +23,7 @@ public class ToServerTests extends AbstractIntegrationTest
     }
 
     @Test
+    @Override
     public void serverShouldFutureFailNextMessage()
     {
         client.setProperty("key: name", "value: sam");
@@ -33,6 +35,7 @@ public class ToServerTests extends AbstractIntegrationTest
     }
 
     @Test
+    @Override
     public void shouldFailIfNoResponse()
     {
         client.setProperty("key: do_not_send_response", "value: true",
@@ -40,6 +43,7 @@ public class ToServerTests extends AbstractIntegrationTest
     }
 
     @Test
+    @Override
     public void serverShouldFailNextMessage()
     {
         client.setProperty("key: name", "value: sam", "expectSuccess: true");
@@ -50,6 +54,7 @@ public class ToServerTests extends AbstractIntegrationTest
     }
 
     @Test
+    @Override
     public void shouldSupportMultipleClients()
     {
         client("session1").setProperty("key: name", "value: sam", "expectSuccess: true");

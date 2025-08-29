@@ -1,7 +1,9 @@
 package dnt.websockets.integration.vertx;
 
+import dnt.websockets.messages.GetStatusResponse;
 import dnt.websockets.messages.ServerPushMessage;
 import dnt.websockets.server.vertx.WebSocketServer;
+import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
@@ -23,5 +25,10 @@ public class WebSocketServerDriver
     public void broadcastMessage()
     {
         server.broadcast(new ServerPushMessage());
+    }
+
+    public Future<Result<GetStatusResponse, String>> getStatusFromClient(String status)
+    {
+        return server.getStatus(status);
     }
 }

@@ -1,13 +1,13 @@
 package dnt.websockets.integration;
 
 import dnt.websockets.client.ClientMessageProcessor;
-import dnt.websockets.client.Requests;
+import dnt.websockets.client.ClientRequests;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.messages.*;
 import education.common.result.Result;
 import io.vertx.core.Future;
 
-public class ClientDriver implements Requests
+public class ClientDriver implements ClientRequests
 {
     private final ExecutionLayer executionLayer;
     private final ClientMessageProcessor clientMessageProcessor;

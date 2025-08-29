@@ -2,7 +2,7 @@ package dnt.websockets.client.also;
 
 import dnt.websockets.client.ClientExecutionLayer;
 import dnt.websockets.client.ClientTextMessageHandler;
-import dnt.websockets.client.Requests;
+import dnt.websockets.client.ClientRequests;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.messages.*;
 import dnt.websockets.server.eventbus.EventBusPublisher;
@@ -19,7 +19,7 @@ import java.util.UUID;
 
 import static dnt.websockets.vertx.VertxAsyncExecutor.newExecutor;
 
-public class EventBusClient implements Requests
+public class EventBusClient implements ClientRequests
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventBusClient.class);
 

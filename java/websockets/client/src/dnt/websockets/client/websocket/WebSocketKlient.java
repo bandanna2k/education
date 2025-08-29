@@ -1,25 +1,27 @@
 package dnt.websockets.client.websocket;
 
 import dnt.websockets.client.ClientExecutionLayer;
+import dnt.websockets.client.ClientRequests;
 import dnt.websockets.client.ClientTextMessageHandler;
-import dnt.websockets.client.Requests;
 import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.messages.*;
 import dnt.websockets.server.vertx.WebSocketPublisher;
-import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.*;
+import io.vertx.core.http.WebSocket;
+import io.vertx.core.http.WebSocketClient;
+import io.vertx.core.http.WebSocketConnectOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
-public class WebSocketKlient implements Requests
+import static dnt.websockets.vertx.VertxAsyncExecutor.newExecutor;
+
+public class WebSocketKlient implements ClientRequests
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketKlient.class);
 
@@ -87,18 +89,18 @@ public class WebSocketKlient implements Requests
         return executorLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
     }
 
-    private static VertxAsyncExecutor<AbstractResponse> newExecutor(Vertx vertx)
-    {
-        final VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
-        {
-            private final AtomicLong nextCorrelationId = new AtomicLong(1);
-
-            @Override
-            public long generateId()
-            {
-                return nextCorrelationId.getAndIncrement();
-            }
-        };
-        return new VertxAsyncExecutor<>(vertx, uniqueIdGenerator);
-    }
+//    private static VertxAsyncExecutor<AbstractResponse> newExecutor(Vertx vertx)
+//    {
+//        final VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
+//        {
+//            private final AtomicLong nextCorrelationId = new AtomicLong(1);
+//
+//            @Override
+//            public long generateId()
+//            {
+//                return nextCorrelationId.getAndIncrement();
+//            }
+//        };
+//        return new VertxAsyncExecutor<>(vertx, uniqueIdGenerator);
+//    }
 }

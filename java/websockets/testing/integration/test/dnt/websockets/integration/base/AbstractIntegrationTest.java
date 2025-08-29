@@ -1,8 +1,11 @@
-package dnt.websockets.integration.dsl;
+package dnt.websockets.integration.base;
 
 import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.integration.ClientDriver;
+import dnt.websockets.integration.dsl.ClientDsl;
+import dnt.websockets.integration.dsl.IntegrationDsl;
+import dnt.websockets.integration.dsl.ServerDsl;
 import dnt.websockets.integration.infrastructure.IntegrationExecutionLayer;
 import dnt.websockets.integration.MessageCollector;
 import dnt.websockets.integration.ServerDriver;

@@ -55,6 +55,12 @@ public class ServerMessageProcessor implements MessageVisitor
         executionLayer.serverResponseToRequest(response);
     }
 
+    @Override
+    public void visit(ExecutionLayer executionLayer, GetStatusResponse message)
+    {
+        System.out.println("Get status response received.");
+    }
+
     public String get(String key)
     {
         return properties.get(key);

@@ -1,9 +1,7 @@
 package dnt.websockets.integration;
 
-import dnt.websockets.integration.dsl.AbstractIntegrationTest;
+import dnt.websockets.integration.base.AbstractIntegrationTest;
 import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 
 /*
  Example tests. See ToClientTests and ToServerTests for more

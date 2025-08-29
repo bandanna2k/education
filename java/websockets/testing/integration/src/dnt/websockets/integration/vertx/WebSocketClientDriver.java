@@ -14,8 +14,8 @@ import io.vertx.core.http.WebSocket;
 public class WebSocketClientDriver
 {
     private final WebSocketKlient client;
-    private final MessageCollector collector = new MessageCollector(this.getClass().getSimpleName(),
-            new ClientMessageProcessor());
+    private final ClientMessageProcessor clientMessageProcessor = new ClientMessageProcessor();
+    private final MessageCollector collector = new MessageCollector(this.getClass().getSimpleName(), clientMessageProcessor);
     private final String clientId;
 
     public WebSocketClientDriver(Vertx vertx, String clientId)
@@ -49,5 +49,10 @@ public class WebSocketClientDriver
     public String getClientId()
     {
         return clientId;
+    }
+
+    public void setStatus(String status)
+    {
+        clientMessageProcessor.setStatus(status);
     }
 }

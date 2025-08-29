@@ -8,6 +8,8 @@ import java.util.Queue;
 
 public class MessageCollector implements MessageVisitor
 {
+    // TODO assert all values
+
     private final String name;
     private final Queue<AbstractMessage> messages = new LinkedList<>();
     private final MessageVisitor messageVisitor;
@@ -80,6 +82,13 @@ public class MessageCollector implements MessageVisitor
     {
         this.messageVisitor.visit(executionLayer, request);
         messages.add(request);
+    }
+
+    @Override
+    public void visit(ExecutionLayer executionLayer, GetStatusResponse message)
+    {
+        this.messageVisitor.visit(executionLayer, message);
+        messages.add(message);
     }
 
     public <T extends AbstractMessage> T getLastMessage()

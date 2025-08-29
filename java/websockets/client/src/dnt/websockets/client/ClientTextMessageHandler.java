@@ -30,7 +30,7 @@ public class ClientTextMessageHandler implements Handler<String>
     @Override
     public void handle(String maybeJson)
     {
-        LOGGER.debug("Raw input {}", maybeJson);
+        LOGGER.debug("Client <-- JSON <-- Server | {}", maybeJson);
         try
         {
             AbstractMessage message = MESSAGE_READER.readValue(maybeJson);
@@ -64,6 +64,7 @@ public class ClientTextMessageHandler implements Handler<String>
         mapper.registerSubtypes(new NamedType(GetPropertyResponse.class, GetPropertyResponse.class.getSimpleName()));
         mapper.registerSubtypes(new NamedType(SetPropertyResponse.class, SetPropertyResponse.class.getSimpleName()));
         mapper.registerSubtypes(new NamedType(ServerPushMessage.class, ServerPushMessage.class.getSimpleName()));
+        mapper.registerSubtypes(new NamedType(ErrorResponse.class, ErrorResponse.class.getSimpleName()));
         mapper.registerSubtypes(new NamedType(GetStatusRequest.class, GetStatusRequest.class.getSimpleName()));
         return mapper;
     }

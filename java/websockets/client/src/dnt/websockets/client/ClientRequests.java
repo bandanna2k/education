@@ -5,7 +5,7 @@ import dnt.websockets.messages.SetPropertyResponse;
 import education.common.result.Result;
 import io.vertx.core.Future;
 
-public interface Requests
+public interface ClientRequests
 {
     Future<Result<GetPropertyResponse, String>> getProperty(String key);
 

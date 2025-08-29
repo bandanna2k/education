@@ -54,7 +54,7 @@ public class ClientWebSocketDsl
                 assertThat(result.success().value).isEqualTo(expectedValue));
     }
 
-    private <R> R join(Future<R> future)
+    private static <R> R join(Future<R> future)
     {
         return future.toCompletionStage().toCompletableFuture().join();
     }
@@ -83,5 +83,12 @@ public class ClientWebSocketDsl
                     AbstractMessage abstractMessage = clientDriver.popLastMessage();
                     return abstractMessage == null;
                 });
+    }
+
+    public void setStatus(String... args)
+    {
+        final DslParams params = DslParams.create(args,
+                new RequiredArg("status"));
+        clientDriver.setStatus(params.value("status"));
     }
 }

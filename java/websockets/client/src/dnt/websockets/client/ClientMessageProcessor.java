@@ -14,7 +14,8 @@ public class ClientMessageProcessor implements MessageVisitor
         {
             return;
         }
-        executionLayer.clientResponseToRequest(new GetStatusResponse(status));
+        GetStatusResponse response = new GetStatusResponse(status);
+        executionLayer.clientResponseToRequest(response);
     }
 
     @Override

@@ -1,11 +1,13 @@
 package dnt.websockets.integration;
 
-import dnt.websockets.integration.dsl.AbstractIntegrationTest;
+import dnt.websockets.integration.base.AbstractIntegrationTest;
+import dnt.websockets.integration.base.ToClientTests;
 import org.junit.Test;
 
-public class ToClientTests extends AbstractIntegrationTest
+public class ToClientIntegrationTests extends AbstractIntegrationTest implements ToClientTests
 {
     @Test
+    @Override
     public void serverShouldRequestAndResponse()
     {
         server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
@@ -14,7 +16,8 @@ public class ToClientTests extends AbstractIntegrationTest
     }
 
     @Test
-    public void serverShouldPushMessage()
+    @Override
+    public void serverShouldBroadcast()
     {
         client("session1").verifyNoMoreMessages();
         client("session2").verifyNoMoreMessages();
@@ -26,6 +29,7 @@ public class ToClientTests extends AbstractIntegrationTest
     }
 
     @Test
+    @Override
     public void shouldReportNoResponseReceived()
     {
         server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
@@ -34,6 +38,7 @@ public class ToClientTests extends AbstractIntegrationTest
     }
 
     @Test
+    @Override
     public void shouldSupportMultipleClients()
     {
         client("session1").setStatus("OK");

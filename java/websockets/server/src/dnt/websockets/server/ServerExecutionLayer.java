@@ -8,9 +8,13 @@ import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServerExecutionLayer implements ExecutionLayer
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerExecutionLayer.class);
+
     private final Publisher publisher;
     private final VertxAsyncExecutor<AbstractResponse> executor;
 
@@ -23,6 +27,7 @@ public class ServerExecutionLayer implements ExecutionLayer
     @Override
     public <T extends AbstractResponse> Future<Result<T, String>> serverRequestOnClient(AbstractServerRequest request)
     {
+        LOGGER.debug("Client     Pojo <--- Server | {}", request);
         return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
                 .map(Result::success)
                 .recover(throwable ->

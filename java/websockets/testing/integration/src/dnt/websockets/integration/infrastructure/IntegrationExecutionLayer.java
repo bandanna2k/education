@@ -1,7 +1,9 @@
 package dnt.websockets.integration.infrastructure;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.integration.MessageCollector;
@@ -61,19 +63,21 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     @Override
     public <T extends AbstractResponse> Future<Result<T, String>> serverRequestOnClient(AbstractServerRequest request)
     {
-        final ClientTextMessageHandler messageHandler = clientTextMessageHandlers.get(request.clientId);
-        final Supplier<Result<T, Object>> processRequest = () ->
+        final ClientTextMessageHandler clientTextMessageHandler = clientTextMessageHandlers.get(request.clientId);
+        final Supplier<Result<T, Object>> requestProcessor = () ->
         {
             try
             {
                 String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
-                messageHandler.handle(serialisedRequest);
+                clientTextMessageHandler.handle(serialisedRequest);
                 T lastMessage = serverMessageCollector.getLastMessage();
                 if (lastMessage == null)
                 {
                     LOGGER.error("Client  X- JSON <-- Server | No client response received {}", request);
                     return Result.failure("No response received");
                 }
+                assert canJacksonDeserialize(ServerTextMessageHandler.OBJECT_MAPPER, lastMessage)
+                        : String.format("ServerTextMessageHandler Cannot serialise %s", lastMessage.getClass().getSimpleName());
                 return intercept(request, lastMessage);
             }
             catch (JsonProcessingException e)
@@ -81,7 +85,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
                 throw new RuntimeException(e);
             }
         };
-        return request(processRequest);
+        return request(requestProcessor);
     }
 
     @Override
@@ -99,6 +103,8 @@ public class IntegrationExecutionLayer implements ExecutionLayer
                     LOGGER.error("Client --> JSON -X  Server | No server response received {}", request);
                     return Result.failure("No response received");
                 }
+                assert canJacksonDeserialize(ClientTextMessageHandler.OBJECT_MAPPER, lastMessage)
+                        : String.format("ClientTextMessageHandler Cannot serialise %s", lastMessage.getClass().getSimpleName());
                 return intercept(request, lastMessage);
             }
             catch (JsonProcessingException e)
@@ -167,6 +173,21 @@ public class IntegrationExecutionLayer implements ExecutionLayer
         catch (JsonProcessingException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean canJacksonDeserialize(ObjectMapper mapper, AbstractMessage message)
+    {
+        try
+        {
+            String serialised = OBJECT_MAPPER.writeValueAsString(message);
+            mapper.readValue(serialised, AbstractMessage.class);
+            return true;
+
+        }
+        catch (Exception e)
+        {
+            return false;
         }
     }
 

@@ -1,7 +1,7 @@
 package dnt.websockets.client.maybecool;
 
 import dnt.websockets.client.ClientTextMessageHandler;
-import dnt.websockets.client.Requests;
+import dnt.websockets.client.ClientRequests;
 import dnt.websockets.client.ClientExecutionLayer;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.infrastructure.Publisher;
@@ -21,7 +21,7 @@ import java.net.Socket;
 import static dnt.websockets.vertx.VertxAsyncExecutor.newExecutor;
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 
-public class TcpClient implements Requests, Runnable
+public class TcpClient implements ClientRequests, Runnable
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpClient.class);
     private static final Vertx VERTX = newVertx();

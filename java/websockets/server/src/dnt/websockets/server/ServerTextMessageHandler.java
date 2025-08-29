@@ -49,7 +49,7 @@ public class ServerTextMessageHandler implements Handler<String>
 
     public void send(AbstractMessage message)
     {
-        LOGGER.debug("Sending {}", message);
+        LOGGER.debug("Client     Pojo <--- Server | Sending {}", message);
         executionLayer.serverSend(message);
     }
 
@@ -59,6 +59,7 @@ public class ServerTextMessageHandler implements Handler<String>
         objectMapper.registerSubtypes(new NamedType(GetPropertyRequest.class, GetPropertyRequest.class.getSimpleName()));
         objectMapper.registerSubtypes(new NamedType(SetPropertyRequest.class, SetPropertyRequest.class.getSimpleName()));
         objectMapper.registerSubtypes(new NamedType(ClientPushPulse.class, ClientPushPulse.class.getSimpleName()));
+        objectMapper.registerSubtypes(new NamedType(GetStatusResponse.class, GetStatusResponse.class.getSimpleName()));
         return objectMapper;
     }
 

@@ -46,7 +46,7 @@ public class ClientExecutionLayer implements ExecutionLayer
     @Override
     public void serverSend(AbstractMessage message)
     {
-        publisher.send(message);
+//        publisher.send(message);
     }
 
     @Override

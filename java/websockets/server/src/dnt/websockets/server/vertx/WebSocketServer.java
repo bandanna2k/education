@@ -2,17 +2,16 @@ package dnt.websockets.server.vertx;
 
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.infrastructure.Publisher;
-import dnt.websockets.messages.AbstractMessage;
-import dnt.websockets.messages.GetPropertyRequest;
-import dnt.websockets.messages.SetPropertyRequest;
+import dnt.websockets.messages.*;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerExecutionLayer;
+import dnt.websockets.server.ServerRequests;
 import dnt.websockets.server.ServerTextMessageHandler;
 import dnt.websockets.vertx.VertxAsyncExecutor;
+import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
-import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.ServerWebSocket;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -22,17 +21,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
-public class WebSocketServer
+import static dnt.websockets.vertx.VertxAsyncExecutor.*;
+
+public class WebSocketServer implements ServerRequests
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketServer.class);
     private static final short WEBSOCKET_CODE_FAILED_TO_CONNECT = 100;
 
-    private final List<ServerTextMessageHandler> textMessageHandlers = new ArrayList<>();
+    private final Map<String, ExecutionLayer> executionLayers = new HashMap<>();
+    private final Map<String, ServerTextMessageHandler> XXXtextMessageHandlers = new HashMap<>();
     private final Vertx vertx;
     private final ServerMessageProcessor requestProcessor = new ServerMessageProcessor();
 
@@ -60,8 +59,10 @@ public class WebSocketServer
 
     private void handle(ServerWebSocket serverWebSocket)
     {
-        URI uri = URI.create(serverWebSocket.path());
-        if (!uri.toString().contains("/v1/websocket"))
+        String path = serverWebSocket.path();
+        URI uri = URI.create(path);
+        String clientId = getClientId(path);
+        if (!uri.toString().startsWith("/v1/websocket/") || null == clientId)
         {
             LOGGER.warn("Failed to connect websocket");
             serverWebSocket.close(WEBSOCKET_CODE_FAILED_TO_CONNECT);
@@ -71,22 +72,28 @@ public class WebSocketServer
         LOGGER.info("Websocket connected {}", uri);
 
         final Publisher publisher = new WebSocketPublisher(serverWebSocket);
-        final ExecutionLayer executionLayer = new ServerExecutionLayer(VertxAsyncExecutor.newExecutor(vertx), publisher);
+        final ExecutionLayer executionLayer = new ServerExecutionLayer(newExecutor(vertx), publisher);
         final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
         serverWebSocket.textMessageHandler(textMessageHandler);
-        textMessageHandlers.add(textMessageHandler);
+        executionLayers.put(clientId, executionLayer);
+    }
+
+    private static String getClientId(String path)
+    {
+        int index = path.lastIndexOf("/");
+        return index > 0 ? path.substring(index + 1) : null;
     }
 
     public void broadcast(AbstractMessage message)
     {
-        Iterator<ServerTextMessageHandler> iterator = textMessageHandlers.iterator();
+        Iterator<ExecutionLayer> iterator = executionLayers.values().iterator();
         while (iterator.hasNext())
         {
-            ServerTextMessageHandler next;
+            ExecutionLayer next;
             try
             {
                 next = iterator.next();
-                next.send(message);
+                next.serverSend(message);
             }
             catch (Exception e)
             {
@@ -94,6 +101,12 @@ public class WebSocketServer
                 LOGGER.error("Error writing message", e);
             }
         }
+    }
+
+    @Override
+    public Future<Result<GetStatusResponse, String>> getStatus(String clientId)
+    {
+        return executionLayers.get(clientId).serverRequestOnClient(new GetStatusRequest(clientId));
     }
 
     private static class LazyPublisher implements Publisher
@@ -106,6 +119,7 @@ public class WebSocketServer
             publisher.send(message);
         }
     }
+
 
 
     private void restGetProperty(RoutingContext ctx)
@@ -124,7 +138,7 @@ public class WebSocketServer
     private ServerTextMessageHandler newRestTextMessageHandler(RoutingContext ctx)
     {
         final LazyPublisher restPublisher = new LazyPublisher();
-        final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(VertxAsyncExecutor.newExecutor(vertx), restPublisher);
+        final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(newExecutor(vertx), restPublisher);
         restPublisher.publisher = new RestPublisher(ctx);
         return new ServerTextMessageHandler(restExecutionLayer, requestProcessor);
     }
