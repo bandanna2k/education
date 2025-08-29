@@ -37,7 +37,7 @@ public class ServerTextMessageHandler implements Handler<String>
             AbstractMessage message = MESSAGE_READER.readValue(maybeJson);
             if(message instanceof AbstractResponse response)
             {
-                handle(response);
+                handleResponse(response);
                 return;
             }
 
@@ -49,7 +49,7 @@ public class ServerTextMessageHandler implements Handler<String>
         }
     }
 
-    private void handle(AbstractResponse response)
+    private void handleResponse(AbstractResponse response)
     {
         executionLayer.clientResponseToRequest(response);
     }
