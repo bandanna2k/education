@@ -1,6 +1,7 @@
 package dnt.websockets.integration;
 
 import dnt.websockets.communications.*;
+import dnt.websockets.integration.infrastructure.IntegrationServerConnector;
 import dnt.websockets.server.ServerMessageProcessor;
 import education.common.result.Result;
 import io.vertx.core.Future;

@@ -62,10 +62,8 @@ public class EventBusClient implements Requests
                 })
                 .onFailure(t -> {
                     LOGGER.warn("Failed to connect. " + senderId);
-                });
-
-        // TODO Join
-        waitForClientToBeReady();
+                })
+                .toCompletionStage().toCompletableFuture().join();
     }
 
     private void subscribe(String senderId, String clientIncomingTopic, String serverOutgoingTopic)
@@ -79,18 +77,6 @@ public class EventBusClient implements Requests
         EventBusPublisher publisher = new EventBusPublisher(eventBus, clientIncomingTopic, deliveryOptions);
         executorLayer = new ClientExecutionLayer(newExecutor(vertx), publisher);
         textMessageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
-    }
-
-    private void waitForClientToBeReady()
-    {
-        try
-        {
-            Thread.sleep(1000);
-        }
-        catch (InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

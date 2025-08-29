@@ -1,4 +1,4 @@
-package dnt.websockets.integration;
+package dnt.websockets.integration.infrastructure;
 
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.ExecutionLayer;
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+// TODO Can I get rid of this?
 public class IntegrationServerConnector
 {
     private final List<ServerTextMessageHandler> textMessageHandlers = new ArrayList<>();

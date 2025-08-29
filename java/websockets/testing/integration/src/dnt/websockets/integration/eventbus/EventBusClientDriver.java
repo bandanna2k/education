@@ -1,9 +1,8 @@
-package dnt.websockets.integration.also;
+package dnt.websockets.integration.eventbus;
 
 import dnt.websockets.client.also.EventBusClient;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
-import dnt.websockets.communications.MessageVisitor;
 import dnt.websockets.communications.SetPropertyResponse;
 import dnt.websockets.integration.MessageCollector;
 import education.common.result.Result;

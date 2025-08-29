@@ -36,7 +36,6 @@ public class ServerExecutionLayer implements ExecutionLayer
     @Override
     public void clientResponseToRequest(AbstractResponse response)
     {
-// TODO Maybe this code ->        executor.onResponseReceived(response.correlationId, response);
     }
 
     @Override

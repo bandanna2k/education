@@ -2,8 +2,7 @@ package dnt.websockets.integration.dsl;
 
 import com.lmax.simpledsl.api.DslParams;
 import com.lmax.simpledsl.api.OptionalArg;
-import com.lmax.simpledsl.api.RequiredArg;
-import dnt.websockets.integration.IntegrationExecutionLayer;
+import dnt.websockets.integration.infrastructure.IntegrationExecutionLayer;
 
 public class IntegrationDsl
 {

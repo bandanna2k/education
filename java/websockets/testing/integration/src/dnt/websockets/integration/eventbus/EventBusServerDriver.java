@@ -1,4 +1,4 @@
-package dnt.websockets.integration.also;
+package dnt.websockets.integration.eventbus;
 
 import dnt.websockets.communications.ServerPushMessage;
 import dnt.websockets.server.also.EventBusServer;

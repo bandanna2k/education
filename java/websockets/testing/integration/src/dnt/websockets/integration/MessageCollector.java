@@ -11,9 +11,9 @@ public class MessageCollector implements MessageVisitor
     private final Queue<AbstractMessage> messages = new LinkedList<>();
     private final MessageVisitor messageVisitor;
 
-    public MessageCollector(String name, MessageVisitor messageVisitor)
+    public MessageCollector(String nameHelpsWithDebugging, MessageVisitor messageVisitor)
     {
-        this.name = name;
+        this.name = nameHelpsWithDebugging;
         this.messageVisitor = messageVisitor;
     }
 

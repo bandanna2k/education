@@ -1,6 +1,6 @@
 package dnt.websockets.integration.eventbus.dsl;
 
-import dnt.websockets.integration.also.EventBusServerDriver;
+import dnt.websockets.integration.eventbus.EventBusServerDriver;
 
 public class EventBusServerDsl
 {

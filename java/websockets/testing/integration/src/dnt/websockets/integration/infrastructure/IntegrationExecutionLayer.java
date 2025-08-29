@@ -1,14 +1,14 @@
-package dnt.websockets.integration;
+package dnt.websockets.integration.infrastructure;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.communications.ExecutionLayer;
 import dnt.websockets.communications.*;
+import dnt.websockets.integration.MessageCollector;
 import dnt.websockets.server.ServerTextMessageHandler;
 import education.common.result.Result;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +19,8 @@ public class IntegrationExecutionLayer implements ExecutionLayer
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationExecutionLayer.class);
 
-    private final IntegrationPublisher toServerPublisher;
-    private final IntegrationPublisher toClientPublisher;
-
     private final ServerTextMessageHandler serverTextMessageHandler;
+    private final Map<String, ClientTextMessageHandler> clientTextMessageHandlers = new HashMap<>();
     private final MessageCollector clientMessageCollector;
     private final MessageCollector serverMessageCollector;
 
@@ -40,16 +38,18 @@ public class IntegrationExecutionLayer implements ExecutionLayer
         this.clientMessageCollector = new MessageCollector("Internal Client", clientMessageProcessor);
         this.serverMessageCollector = new MessageCollector("Internal Server", serverMessageProcessor);
 
-        this.toClientPublisher = new IntegrationPublisher(this, clientMessageCollector);
-        this.toServerPublisher = new IntegrationPublisher(this, serverMessageCollector);
-
         this.serverTextMessageHandler = new ServerTextMessageHandler(this, serverMessageProcessor);
+    }
+
+    public void register(String clientId, ClientTextMessageHandler clientTextMessageHandler)
+    {
+        clientTextMessageHandlers.put(clientId, clientTextMessageHandler);
     }
 
     @Override
     public void serverResponseToRequest(AbstractResponse response)
     {
-        toClientPublisher.send(response);
+        response.visit(this, clientMessageCollector);
     }
 
     @Override
@@ -58,16 +58,10 @@ public class IntegrationExecutionLayer implements ExecutionLayer
         response.visit(this, serverMessageCollector);
     }
 
-    public Map<String, ClientTextMessageHandler> clients = new HashMap<>();
-    public void register(String clientId, ClientTextMessageHandler clientTextMessageHandler)
-    {
-        clients.put(clientId, clientTextMessageHandler);
-    }
-
     @Override
     public <T extends AbstractResponse> Future<Result<T, String>> serverRequestOnClient(AbstractServerRequest request)
     {
-        final ClientTextMessageHandler messageHandler = clients.get(request.clientId);
+        final ClientTextMessageHandler messageHandler = clientTextMessageHandlers.get(request.clientId);
         final Supplier<Result<T, Object>> processRequest = () ->
         {
             try
@@ -154,7 +148,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
         try
         {
             final String json = OBJECT_MAPPER.writeValueAsString(message);
-            clients.values().forEach(clientTextMessageHandler ->
+            clientTextMessageHandlers.values().forEach(clientTextMessageHandler ->
                     clientTextMessageHandler.handle(json));
         }
         catch (JsonProcessingException e)
@@ -202,36 +196,5 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     public boolean isComplete()
     {
         return deferredFutures.isEmpty();
-    }
-
-
-    private static class DeferredFuture<T>
-    {
-        private final Promise<T> promise;
-        private final Supplier<T> supplier;
-
-        public DeferredFuture(Supplier<T> supplier)
-        {
-            this.promise = Promise.promise();
-            this.supplier = supplier;
-        }
-
-        public Future<T> future()
-        {
-            return promise.future();
-        }
-
-        public void complete()
-        {
-            try
-            {
-                T result = supplier.get();
-                promise.complete(result);
-            }
-            catch (Exception e)
-            {
-                promise.fail(e);
-            }
-        }
     }
 }

@@ -1,7 +1,7 @@
 package dnt.websockets.integration.eventbus.dsl;
 
-import dnt.websockets.integration.also.EventBusClientDriver;
-import dnt.websockets.integration.also.EventBusServerDriver;
+import dnt.websockets.integration.eventbus.EventBusClientDriver;
+import dnt.websockets.integration.eventbus.EventBusServerDriver;
 import io.vertx.core.Vertx;
 
 import static dnt.websockets.vertx.VertxFactory.newVertx;

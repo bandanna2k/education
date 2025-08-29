@@ -6,7 +6,7 @@ import com.lmax.simpledsl.api.RequiredArg;
 import dnt.websockets.communications.AbstractMessage;
 import dnt.websockets.communications.GetPropertyResponse;
 import dnt.websockets.communications.SetPropertyResponse;
-import dnt.websockets.integration.also.EventBusClientDriver;
+import dnt.websockets.integration.eventbus.EventBusClientDriver;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import org.awaitility.Awaitility;

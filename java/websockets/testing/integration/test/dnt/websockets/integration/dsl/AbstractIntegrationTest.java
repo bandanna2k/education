@@ -4,7 +4,7 @@ import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.communications.*;
 import dnt.websockets.integration.ClientDriver;
-import dnt.websockets.integration.IntegrationExecutionLayer;
+import dnt.websockets.integration.infrastructure.IntegrationExecutionLayer;
 import dnt.websockets.integration.MessageCollector;
 import dnt.websockets.integration.ServerDriver;
 import dnt.websockets.server.ServerMessageProcessor;
