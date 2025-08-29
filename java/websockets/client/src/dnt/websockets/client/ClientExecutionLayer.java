@@ -5,6 +5,7 @@ import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.messages.AbstractMessage;
 import dnt.websockets.messages.AbstractRequest;
 import dnt.websockets.messages.AbstractResponse;
+import dnt.websockets.messages.ErrorResponse;
 import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
@@ -24,7 +25,14 @@ public class ClientExecutionLayer implements ExecutionLayer
     public <T extends AbstractResponse> Future<Result<T, String>> clientRequestFromServer(AbstractRequest request)
     {
         return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
-                .map(Result::success)
+                .map(data ->
+                {
+                    if(data instanceof ErrorResponse errorResponse)
+                    {
+                        return Result.failure(errorResponse.message);
+                    }
+                    return Result.success(data);
+                })
                 .recover(throwable ->
                         Future.succeededFuture(Result.failure(throwable.getMessage())))
                 .map(result ->

@@ -37,9 +37,7 @@ public class ClientTextMessageHandler implements Handler<String>
             if(message instanceof AbstractResponse response)
             {
                 handleResponse(response);
-                return;
             }
-
             handle(message);
         }
         catch (JsonProcessingException e)

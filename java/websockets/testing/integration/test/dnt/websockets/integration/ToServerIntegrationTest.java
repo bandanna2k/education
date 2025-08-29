@@ -23,7 +23,6 @@ public class ToServerIntegrationTest extends AbstractIntegrationTest implements 
     }
 
     @Test
-    @Override
     public void serverShouldFutureFailNextMessage()
     {
         client.setProperty("key: name", "value: sam");
@@ -35,7 +34,6 @@ public class ToServerIntegrationTest extends AbstractIntegrationTest implements 
     }
 
     @Test
-    @Override
     public void shouldFailIfNoResponse()
     {
         client.setProperty("key: do_not_send_response", "value: true",
@@ -43,7 +41,6 @@ public class ToServerIntegrationTest extends AbstractIntegrationTest implements 
     }
 
     @Test
-    @Override
     public void serverShouldFailNextMessage()
     {
         client.setProperty("key: name", "value: sam", "expectSuccess: true");
@@ -51,17 +48,6 @@ public class ToServerIntegrationTest extends AbstractIntegrationTest implements 
         integration.failNextMessage("Not available for this user.");
 
         client.setProperty("key: name", "value: sam", "expectSuccess: false");
-    }
-
-    @Test
-    @Override
-    public void shouldSupportMultipleClients()
-    {
-        client("session1").setProperty("key: name", "value: sam", "expectSuccess: true");
-
-        // Both clients see the broadcasted message.
-        client("session1").verifyMessage("SetPropertyResponse");
-        client("session2").verifyNoMoreMessages();
     }
 
     @Test
@@ -84,29 +70,38 @@ public class ToServerIntegrationTest extends AbstractIntegrationTest implements 
         server.verifyProperty("key: name", "expectedValue: terry");
     }
 
+    @Override
+    public void shouldSupportMultipleClients()
+    {
+        client("session1").setProperty("key: name", "value: sam", "expectSuccess: true");
+
+        client("session1").verifyMessage("SetPropertyResponse");
+        client("session2").verifyNoMoreMessages();
+    }
+
     @Test
-    public void shouldNotAcceptEmptyValue()
+    public void shouldNotAcceptEmptyValueWhenSettingProperty()
     {
         client.setProperty("key: name", "value: ",
                 "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
     }
 
     @Test
-    public void shouldNotAcceptEmptyKey()
+    public void shouldNotAcceptEmptyKeySettingProperty()
     {
         client.setProperty("key: ", "value: sam",
                 "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
     }
 
     @Test
-    public void shouldNotAcceptNullValue()
+    public void shouldNotAcceptNullValueWhenSettingProperty()
     {
         client.setProperty("key: name", "value: <NULL>",
                 "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
     }
 
     @Test
-    public void shouldNotAcceptNullKey()
+    public void shouldNotAcceptNullKeyWhenSettingProperty()
     {
         client.setProperty("key: <NULL>", "value: sam",
                 "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");

@@ -125,7 +125,6 @@ public class WebSocketServer implements ServerRequests
     private void restGetProperty(RoutingContext ctx)
     {
         final ServerTextMessageHandler restServerTextMessageHandler = newRestTextMessageHandler(ctx);
-
         String key = ctx.queryParams().get("key");
         restServerTextMessageHandler.handle(new GetPropertyRequest(key));
     }

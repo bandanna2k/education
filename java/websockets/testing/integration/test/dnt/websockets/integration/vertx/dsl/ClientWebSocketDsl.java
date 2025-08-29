@@ -14,6 +14,8 @@ import org.awaitility.Awaitility;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ClientWebSocketDsl
 {
@@ -29,14 +31,21 @@ public class ClientWebSocketDsl
         final DslParams params = DslParams.create(args,
                 new RequiredArg("key"),
                 new RequiredArg("value"),
-                new OptionalArg("expectSuccess").setDefault("true"));
+                new OptionalArg("expectSuccess").setDefault("true"),
+                new OptionalArg("expectedErrorMessage"));
         boolean expectSuccess = params.valueAsBoolean("expectSuccess");
 
-        String key = params.value("key");
-        String value = params.value("value");
+        String key = "<NULL>".equals(params.value("key")) ? null : params.value("key");
+        String value = "<NULL>".equals(params.value("value")) ? null : params.value("value");
 
         Result<SetPropertyResponse, String> result = join(clientDriver.setProperty(key, value));
-        assertThat(result.isSuccess()).isEqualTo(expectSuccess);
+        result.consume(response -> assertTrue(expectSuccess),
+                error ->
+                {
+                    assertFalse(expectSuccess);
+                    params.valueAsOptional("expectedErrorMessage").ifPresent(expectedErrorMessage ->
+                            assertThat(error).isEqualTo(expectedErrorMessage));
+                });
     }
 
     public void getProperty(String... args)

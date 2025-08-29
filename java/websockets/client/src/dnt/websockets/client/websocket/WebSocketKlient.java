@@ -1,6 +1,7 @@
 package dnt.websockets.client.websocket;
 
 import dnt.websockets.client.ClientExecutionLayer;
+import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.ClientRequests;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.infrastructure.Publisher;
@@ -56,9 +57,7 @@ public class WebSocketKlient implements ClientRequests
                         .connect(connectOptions)
                         .timeout(5, TimeUnit.SECONDS)
                         .onSuccess(this::handle)
-                        .onFailure(t -> {
-                            LOGGER.error("Failed to start client.", t);
-                        }));
+                        .onFailure(t -> LOGGER.error("Failed to start client.", t)));
     }
 
     private static Future<Void> delay(Vertx vertx, long delayMs)
@@ -88,19 +87,4 @@ public class WebSocketKlient implements ClientRequests
     {
         return executorLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
     }
-
-//    private static VertxAsyncExecutor<AbstractResponse> newExecutor(Vertx vertx)
-//    {
-//        final VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
-//        {
-//            private final AtomicLong nextCorrelationId = new AtomicLong(1);
-//
-//            @Override
-//            public long generateId()
-//            {
-//                return nextCorrelationId.getAndIncrement();
-//            }
-//        };
-//        return new VertxAsyncExecutor<>(vertx, uniqueIdGenerator);
-//    }
 }

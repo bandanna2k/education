@@ -16,7 +16,6 @@ public class ToClientWebSocketTest extends AbstractIntegrationVertxTest implemen
         server.getStatusFromClient("client: source1", "expectedStatus: Fantastic");
     }
 
-    @Override
     @Test
     public void serverShouldBroadcast()
     {

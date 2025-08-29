@@ -29,7 +29,8 @@ public class RestClientDriver
                 .map(response -> {
                     int actualStatusCode = response.statusCode();
                     if (actualStatusCode != expectedStatusCode)
-                        throw new RuntimeException(String.format("Unexpected status code. Expected: %d, Actual: %d", expectedStatusCode, actualStatusCode));
+                        throw new RuntimeException(String.format("Unexpected status code. Expected: %d, Actual: %d %s",
+                                expectedStatusCode, actualStatusCode, response.body()));
 
                     if(response.statusCode() < 300)
                     {
@@ -52,7 +53,8 @@ public class RestClientDriver
                 {
                     int actualStatusCode = response.statusCode();
                     if (actualStatusCode != expectedStatusCode)
-                        throw new RuntimeException(String.format("Unexpected status code. Expected: %d, Actual: %d", expectedStatusCode, actualStatusCode));
+                        throw new RuntimeException(String.format("Unexpected status code. Expected: %d, Actual: %d %s",
+                                expectedStatusCode, actualStatusCode, response.body()));
                     return null;
                 });
     }
