@@ -10,9 +10,9 @@ public class GetStatusResponse extends AbstractResponse
     {
         super();
     }
-    public GetStatusResponse(String status)
+    public GetStatusResponse(long correlationId, String status)
     {
-        this();
+        super(correlationId);
         this.status = status;
     }
 

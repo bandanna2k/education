@@ -34,9 +34,9 @@ public class ClientTextMessageHandler implements Handler<String>
         try
         {
             AbstractMessage message = MESSAGE_READER.readValue(maybeJson);
-            if(message instanceof AbstractResponse)
+            if(message instanceof AbstractResponse response)
             {
-                handle((AbstractResponse)message);
+                handle(response);
                 return;
             }
 

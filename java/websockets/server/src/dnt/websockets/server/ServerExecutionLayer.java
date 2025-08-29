@@ -27,7 +27,7 @@ public class ServerExecutionLayer implements ExecutionLayer
     @Override
     public <T extends AbstractResponse> Future<Result<T, String>> serverRequestOnClient(AbstractServerRequest request)
     {
-        LOGGER.debug("Client     Pojo <--- Server | {}", request);
+        LOGGER.debug("Client     Pojo <--- Server | Requesting {}", request);
         return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
                 .map(Result::success)
                 .recover(throwable ->
@@ -45,11 +45,13 @@ public class ServerExecutionLayer implements ExecutionLayer
     @Override
     public void clientResponseToRequest(AbstractResponse response)
     {
+        executor.onResponseReceived(response.correlationId, response);
     }
 
     @Override
     public void serverSend(AbstractMessage message)
     {
+        LOGGER.debug("Client     Pojo <--- Server | Sending {}", message);
         publisher.send(message);
     }
 

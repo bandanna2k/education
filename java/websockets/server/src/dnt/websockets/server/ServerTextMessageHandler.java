@@ -34,6 +34,13 @@ public class ServerTextMessageHandler implements Handler<String>
         LOGGER.debug("Client --> JSON --> Server | {}", maybeJson);
         try
         {
+            AbstractMessage message = MESSAGE_READER.readValue(maybeJson);
+            if(message instanceof AbstractResponse response)
+            {
+                handle(response);
+                return;
+            }
+
             handle(MESSAGE_READER.<AbstractMessage>readValue(maybeJson));
         }
         catch (JsonProcessingException e)
@@ -42,9 +49,14 @@ public class ServerTextMessageHandler implements Handler<String>
         }
     }
 
-    public void handle(AbstractMessage request)
+    private void handle(AbstractResponse response)
     {
-        request.visit(executionLayer, processor);
+        executionLayer.clientResponseToRequest(response);
+    }
+
+    public void handle(AbstractMessage message)
+    {
+        message.visit(executionLayer, processor);
     }
 
     public void send(AbstractMessage message)

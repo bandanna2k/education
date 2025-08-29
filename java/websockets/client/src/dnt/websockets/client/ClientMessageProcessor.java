@@ -14,7 +14,7 @@ public class ClientMessageProcessor implements MessageVisitor
         {
             return;
         }
-        GetStatusResponse response = new GetStatusResponse(status);
+        GetStatusResponse response = new GetStatusResponse(request.correlationId, status);
         executionLayer.clientResponseToRequest(response);
     }
 
