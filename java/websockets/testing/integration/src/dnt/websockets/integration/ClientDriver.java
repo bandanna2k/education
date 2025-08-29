@@ -30,4 +30,9 @@ public class ClientDriver implements Requests
     {
         executionLayer.clientSend(new ClientPushPulse(rate, sequence));
     }
+
+    public void setStatus(String rate)
+    {
+
+    }
 }

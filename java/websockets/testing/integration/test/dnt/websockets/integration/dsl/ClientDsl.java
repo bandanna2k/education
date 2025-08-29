@@ -19,9 +19,9 @@ public class ClientDsl
     private final ClientDriver clientDriver;
     private final MessageCollector collector;
 
-    public ClientDsl(ExecutionLayer executionLayer, MessageCollector collector)
+    public ClientDsl(ClientDriver clientDriver, MessageCollector collector)
     {
-        this.clientDriver = new ClientDriver(executionLayer);
+        this.clientDriver = clientDriver;
         this.collector = collector;
     }
 
@@ -104,5 +104,12 @@ public class ClientDsl
         int rate = params.valueAsInt("rate");
         long sequence = params.valueAsLong("sequence");
         clientDriver.pushPulse(rate, sequence);
+    }
+
+    public void setStatus(String... args)
+    {
+        final DslParams params = DslParams.create(args,
+                new RequiredArg("rate"));
+        clientDriver.setStatus(params.value("rate"));
     }
 }

@@ -9,6 +9,7 @@ public class ToClientTests extends AbstractIntegrationTest
     public void serverShouldRequestAndResponse()
     {
         server.getStatusFromClient("client: client", "expectedStatus: Wicked");
+        client.setStatus("Fantastic");
     }
 
     @Test

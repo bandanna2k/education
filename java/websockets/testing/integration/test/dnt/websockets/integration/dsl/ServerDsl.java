@@ -17,10 +17,10 @@ public class ServerDsl
     private final ServerDriver serverDriver;
     private final MessageCollector collector;
 
-    public ServerDsl(final ExecutionLayer executionLayer, ServerMessageProcessor serverMessageProcessor, MessageCollector serverMessageCollector)
+    public ServerDsl(ServerDriver serverDriver, MessageCollector serverMessageCollector)
     {
         this.collector = serverMessageCollector;
-        this.serverDriver = new ServerDriver(executionLayer, serverMessageProcessor);
+        this.serverDriver = serverDriver;
     }
 
     public void broadcastMessage()

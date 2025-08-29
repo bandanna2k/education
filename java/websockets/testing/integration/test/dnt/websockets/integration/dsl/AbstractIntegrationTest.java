@@ -3,8 +3,10 @@ package dnt.websockets.integration.dsl;
 import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.communications.*;
+import dnt.websockets.integration.ClientDriver;
 import dnt.websockets.integration.IntegrationExecutionLayer;
 import dnt.websockets.integration.MessageCollector;
+import dnt.websockets.integration.ServerDriver;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
 import org.junit.After;
@@ -26,11 +28,15 @@ public abstract class AbstractIntegrationTest
 
     private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageCollector, clientMessageCollector);
 
-    protected final ServerDsl server = new ServerDsl(executionLayer, serverMessageProcessor, serverMessageCollector);
-    protected final ClientDsl client = new ClientDsl(executionLayer, clientMessageCollector);
+    protected final ServerDriver serverDriver = new ServerDriver(executionLayer, serverMessageProcessor);
+    protected final ClientDriver clientDriver = new ClientDriver(executionLayer);
+
+    protected final ServerDsl server = new ServerDsl(serverDriver, serverMessageCollector);
+    protected final ClientDsl client = new ClientDsl(clientDriver, clientMessageCollector);
     protected final IntegrationDsl integration = new IntegrationDsl(executionLayer);
 
-    protected final ClientDsl client2 = new ClientDsl(executionLayer, clientMessageCollector2);
+    protected final ClientDriver clientDriver2 = new ClientDriver(executionLayer);
+    protected final ClientDsl client2 = new ClientDsl(clientDriver2, clientMessageCollector2);
 
     private final Map<String, ClientDsl> clients = Map.of("session1", client, "session2", client2);
 
