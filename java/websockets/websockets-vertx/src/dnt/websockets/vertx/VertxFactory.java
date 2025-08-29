@@ -15,7 +15,7 @@ public abstract class VertxFactory
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOGGER.info("Executing custom shutdown hook... {}", vertx.hashCode());
             vertx.close();
-            LOGGER.info("Executing custom shutdown hook...{}", vertx.hashCode());
+            LOGGER.info("Executed custom shutdown hook...{}", vertx.hashCode());
         }));
         return vertx;
     }

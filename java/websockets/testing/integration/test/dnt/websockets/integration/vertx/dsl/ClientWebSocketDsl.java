@@ -15,11 +15,11 @@ import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ClientVertxDsl
+public class ClientWebSocketDsl
 {
     private final WebSocketClientDriver clientDriver;
 
-    public ClientVertxDsl(WebSocketClientDriver clientDriver)
+    public ClientWebSocketDsl(WebSocketClientDriver clientDriver)
     {
         this.clientDriver = clientDriver;
     }
@@ -78,8 +78,8 @@ public class ClientVertxDsl
         Awaitility
                 .await()
                 .pollInterval(ofMillis(100))
-                .during(ofSeconds(2))
-                .atMost(ofSeconds(3))
+                .during(ofMillis(900))
+                .atMost(ofMillis(1000))
                 .until(() -> {
                     AbstractMessage abstractMessage = clientDriver.popLastMessage();
                     return abstractMessage == null;

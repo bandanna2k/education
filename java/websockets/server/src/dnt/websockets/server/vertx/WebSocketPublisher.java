@@ -24,7 +24,7 @@ public class WebSocketPublisher implements Publisher
     @Override
     public void send(AbstractMessage message)
     {
-        LOGGER.error("Sending {}", message);
+        LOGGER.debug("Sending {}", message);
         try
         {
             serverWebSocket.writeTextMessage(OBJECT_MAPPER.writeValueAsString(message));

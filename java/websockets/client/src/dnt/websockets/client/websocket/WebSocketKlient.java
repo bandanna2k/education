@@ -36,28 +36,25 @@ public class WebSocketKlient implements Requests
 
     public Future<WebSocket> run()
     {
-        final HttpClientOptions clientOptions = new HttpClientOptions()
-                .setTcpKeepAlive(true)
-                .setIdleTimeout(0) // Disable idle timeout
-                .setTcpNoDelay(true)
-                .setConnectTimeout(10000)
-//                .setMaxPoolSize(1)
-                .setKeepAlive(true);
-        HttpClient httpClient = vertx.createHttpClient();
-
-        final WebSocketConnectOptions options = new WebSocketConnectOptions()
+        final WebSocketConnectOptions connectOptions = new WebSocketConnectOptions()
                 .setURI(uri.toString())
                 .setHost("localhost")
                 .setPort(7777);
-//                .addHeader("Connection", "Upgrade")
-//                .addHeader("Upgrade", "websocket");
 
-        LOGGER.info("Attempting connection. {}", options);
+        LOGGER.info("Attempting connection. {}", connectOptions);
 
-        final WebSocketClient wsClient = vertx.createWebSocketClient();
-        return wsClient.connect(options)
+        final WebSocketClientOptions webSocketClientOptions = new WebSocketClientOptions();
+//                .setTcpNoDelay(true)
+//                .setIdleTimeout(0)
+//                .setConnectTimeout(10_000)
+//                .setMaxConnections(1)
+//                .setTcpKeepAlive(true);
+        final WebSocketClient wsClient = vertx.createWebSocketClient(webSocketClientOptions);
+        return wsClient.connect(connectOptions)
                 .onSuccess(this::handle)
-                .onFailure(t -> LOGGER.error("Failed to start client.", t));
+                .onFailure(t -> {
+                    LOGGER.error("Failed to start client.", t);
+                });
     }
 
     private void handle(WebSocket webSocket)

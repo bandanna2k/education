@@ -6,7 +6,7 @@ import org.junit.Test;
 public class IntegrationWebSocketTest extends AbstractIntegrationVertxTest
 {
     @Test
-    public void shouldSendAndReceive() throws InterruptedException
+    public void shouldSendAndReceive()
     {
         client.setProperty("key: name", "value: sam");
         client.getProperty("key: name", "expectedValue: sam");
@@ -15,12 +15,15 @@ public class IntegrationWebSocketTest extends AbstractIntegrationVertxTest
     @Test
     public void serverShouldBroadcast()
     {
-        client.verifyNoMoreMessages();
+        client("source1").verifyNoMoreMessages();
+        client("source2").verifyNoMoreMessages();
 
         server.broadcastMessage();
 
-        client.verifyMessage("ServerPushMessage");
-        client.verifyNoMoreMessages();
+        client("source1").verifyMessage("ServerPushMessage");
+        client("source2").verifyMessage("ServerPushMessage");
+        client("source1").verifyNoMoreMessages();
+        client("source2").verifyNoMoreMessages();
     }
 
     @Test

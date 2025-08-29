@@ -47,10 +47,10 @@ public class WebSocketServer
         router.get("/property").handler(this::restGetProperty);
         router.post("/property").handler(this::restSetProperty);
 
-        final HttpServerOptions httpServerOptions = new HttpServerOptions()
-                .setTcpKeepAlive(true)
-                .setIdleTimeout(0)
-                .setTcpNoDelay(true);
+        final HttpServerOptions httpServerOptions = new HttpServerOptions();
+//                .setTcpKeepAlive(true)
+//                .setIdleTimeout(0)
+//                .setTcpNoDelay(true);
         HttpServer httpServer = vertx.createHttpServer(httpServerOptions)
                 .requestHandler(router)
                 .webSocketHandler(this::handle);
@@ -65,7 +65,7 @@ public class WebSocketServer
     private void handle(ServerWebSocket serverWebSocket)
     {
         URI uri = URI.create(serverWebSocket.path());
-        if (!uri.toString().startsWith("/v1/websocket"))
+        if (!uri.toString().contains("/v1/websocket"))
         {
             LOGGER.warn("Failed to connect websocket");
             serverWebSocket.close(WEBSOCKET_CODE_FAILED_TO_CONNECT);

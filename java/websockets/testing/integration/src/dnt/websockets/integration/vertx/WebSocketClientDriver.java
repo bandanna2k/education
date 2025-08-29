@@ -9,22 +9,28 @@ import dnt.websockets.integration.MessageCollector;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.WebSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebSocketClientDriver
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketClientDriver.class);
+
     private final WebSocketKlient client;
     private final MessageCollector collector = new MessageCollector(this.getClass().getSimpleName(),
             new ClientMessageProcessor());
+    private final String clientId;
 
-    public WebSocketClientDriver(Vertx vertx, String source)
+    public WebSocketClientDriver(Vertx vertx, String clientId)
     {
-        client = new WebSocketKlient(vertx, source, collector);
-        client.run()
-                .onFailure(throwable ->
-                {
-                    throw new RuntimeException(throwable);
-                })
-                .toCompletionStage().toCompletableFuture().join();
+        this.clientId = clientId;
+        this.client = new WebSocketKlient(vertx, clientId, collector);
+    }
+
+    public Future<WebSocket> start()
+    {
+        return this.client.run();
     }
 
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
@@ -42,5 +48,10 @@ public class WebSocketClientDriver
     public AbstractMessage popLastMessage()
     {
         return collector.getLastMessage();
+    }
+
+    public String getClientId()
+    {
+        return clientId;
     }
 }
