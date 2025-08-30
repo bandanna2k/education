@@ -34,7 +34,7 @@ public class ToClientWebSocketTest
         }
 
         @Test
-        public void shouldReportNoResponseReceived()
+        public void shouldFailOnNoResponseReceived()
         {
             server.getStatusFromClient("client: source1", "expectedStatus: Wicked");
             client.setStatus("do_not_send_response");

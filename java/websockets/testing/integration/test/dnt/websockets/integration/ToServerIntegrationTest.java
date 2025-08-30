@@ -24,13 +24,6 @@ public class ToServerIntegrationTest
         }
 
         @Test
-        public void shouldFailIfNoResponse()
-        {
-            client.setProperty("key: do_not_send_response", "value: true",
-                    "expectSuccess: false", "expectedErrorMessage: No response received");
-        }
-
-        @Test
         public void serverShouldFailNextMessage()
         {
             client.setProperty("key: name", "value: sam", "expectSuccess: true");
@@ -83,6 +76,13 @@ public class ToServerIntegrationTest
 
             client("session1").verifyMessage("SetPropertyResponse");
             client("session2").verifyNoMoreMessages();
+        }
+
+        @Override
+        public void shouldFailOnNoResponseReceived()
+        {
+            client.setProperty("key: do_not_send_response", "value: true",
+                    "expectSuccess: false", "expectedErrorMessage: No response received");
         }
 
         @Test

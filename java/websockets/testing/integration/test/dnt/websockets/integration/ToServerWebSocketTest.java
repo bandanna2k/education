@@ -36,8 +36,8 @@ public class ToServerWebSocketTest
             server.verifyMessage("ClientPushPulse");
         }
 
-        @Test
-        public void shouldFailIfNoResponse()
+        @Override
+        public void shouldFailOnNoResponseReceived()
         {
             client.setProperty("key: do_not_send_response", "value: true", "expectSuccess: false");
         }

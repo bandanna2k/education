@@ -32,14 +32,6 @@ public class ToClientIntegrationTest
         }
 
         @Test
-        public void shouldReportNoResponseReceived()
-        {
-            server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
-            client.setStatus("do_not_send_response");
-            server.getStatusFromClient("client: session1", "expectedErrorMessage: No response received");
-        }
-
-        @Test
         public void shouldSupportMultipleClients()
         {
             client("session1").setStatus("OK");
@@ -47,6 +39,14 @@ public class ToClientIntegrationTest
 
             server.getStatusFromClient("client: session1", "expectedStatus: OK");
             server.getStatusFromClient("client: session2", "expectedStatus: Fine");
+        }
+
+        @Test
+        public void shouldFailOnNoResponseReceived()
+        {
+            server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
+            client.setStatus("do_not_send_response");
+            server.getStatusFromClient("client: session1", "expectedErrorMessage: No response received");
         }
     }
 }
