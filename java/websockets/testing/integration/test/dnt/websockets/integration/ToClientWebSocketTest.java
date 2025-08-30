@@ -7,7 +7,6 @@ import org.junit.Test;
 
 public class ToClientWebSocketTest extends AbstractIntegrationVertxTest implements ToClientTests
 {
-    @Override
     @Test
     public void serverShouldRequestAndResponse()
     {
@@ -38,11 +37,13 @@ public class ToClientWebSocketTest extends AbstractIntegrationVertxTest implemen
         server.getStatusFromClient("client: source1", "expectedErrorMessage: Request timed out");
     }
 
-    @Override
     @Test
-    @Ignore
     public void shouldSupportMultipleClients()
     {
+        client("source1").setStatus("OK");
+        client("source2").setStatus("Fine");
 
+        server.getStatusFromClient("client: source1", "expectedStatus: OK");
+        server.getStatusFromClient("client: source2", "expectedStatus: Fine");
     }
 }
