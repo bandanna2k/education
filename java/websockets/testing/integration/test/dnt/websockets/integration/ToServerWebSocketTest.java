@@ -27,7 +27,6 @@ public class ToServerWebSocketTest extends AbstractIntegrationVertxTest implemen
         client.setProperty("key: do_not_send_response", "value: true", "expectSuccess: false");
     }
 
-    @Ignore
     @Test
     public void shouldSupportMultipleClients()
     {
