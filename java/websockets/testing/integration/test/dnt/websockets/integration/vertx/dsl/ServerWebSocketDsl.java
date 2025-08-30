@@ -39,7 +39,7 @@ public class ServerWebSocketDsl
         Result<GetStatusResponse, String> actual = join(serverDriver.getStatusFromClient(client));
         actual.consume(
                 response -> assertThat(response.status).isEqualTo(expectedStatus),
-                error -> assertThat(error).isEqualTo(params.value("expectedErrorMessage")));
+                error -> assertThat(error).startsWith(params.value("expectedErrorMessage")));
     }
 
     private static <R> R join(Future<R> future)

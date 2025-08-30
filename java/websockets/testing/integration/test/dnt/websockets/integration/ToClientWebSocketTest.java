@@ -30,12 +30,12 @@ public class ToClientWebSocketTest extends AbstractIntegrationVertxTest implemen
         client("source2").verifyNoMoreMessages();
     }
 
-    @Override
     @Test
-    @Ignore
     public void shouldReportNoResponseReceived()
     {
-
+        server.getStatusFromClient("client: source1", "expectedStatus: Wicked");
+        client.setStatus("do_not_send_response");
+        server.getStatusFromClient("client: source1", "expectedErrorMessage: Request timed out");
     }
 
     @Override
