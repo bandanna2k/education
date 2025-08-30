@@ -12,11 +12,19 @@ public class ToClientWebSocketTest
     public static class MainTests extends AbstractIntegrationVertxTest implements ToClientTests
     {
         @Test
-        public void serverShouldRequestAndResponse()
+        public void serverShouldRequestAndSucceed()
         {
             server.getStatusFromClient("client: source1", "expectedStatus: Wicked");
             client.setStatus("Fantastic");
             server.getStatusFromClient("client: source1", "expectedStatus: Fantastic");
+        }
+
+        @Test
+        public void serverShouldRequestAndFail()
+        {
+            server.getStatusFromClient("client: source1", "expectedStatus: Wicked");
+            client.setStatus("fail_requests");
+            server.getStatusFromClient("client: source1", "expectedErrorMessage: Request not accepted at this time.");
         }
 
         @Test

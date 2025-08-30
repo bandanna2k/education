@@ -72,6 +72,7 @@ public class ServerTextMessageHandler implements Handler<String>
         objectMapper.registerSubtypes(new NamedType(SetPropertyRequest.class, SetPropertyRequest.class.getSimpleName()));
         objectMapper.registerSubtypes(new NamedType(ClientPushPulse.class, ClientPushPulse.class.getSimpleName()));
         objectMapper.registerSubtypes(new NamedType(GetStatusResponse.class, GetStatusResponse.class.getSimpleName()));
+        objectMapper.registerSubtypes(new NamedType(ErrorResponse.class, ErrorResponse.class.getSimpleName()));
         return objectMapper;
     }
 

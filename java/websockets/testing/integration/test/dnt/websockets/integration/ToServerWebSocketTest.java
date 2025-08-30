@@ -23,10 +23,19 @@ public class ToServerWebSocketTest
     public static class MainTests extends AbstractIntegrationVertxTest implements ToServerTests
     {
         @Test
-        public void clientShouldRequestAndReceive()
+        public void clientShouldRequestAndSucceed()
         {
             client.setProperty("key: name", "value: sam");
             client.getProperty("key: name", "expectedValue: sam");
+        }
+
+        @Override
+        public void clientShouldRequestAndFail()
+        {
+            shouldNotAcceptEmptyValueWhenSettingProperty();
+            shouldNotAcceptNullValueWhenSettingProperty();
+            shouldNotAcceptEmptyKeySettingProperty();
+            shouldNotAcceptNullKeyWhenSettingProperty();
         }
 
         @Test

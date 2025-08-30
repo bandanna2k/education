@@ -56,10 +56,19 @@ public class ToServerIntegrationTest
     public static class MainTests extends AbstractIntegrationTest implements ToServerTests
     {
         @Test
-        public void clientShouldRequestAndReceive()
+        public void clientShouldRequestAndSucceed()
         {
             client.setProperty("key: name", "value: sam");
             client.getProperty("key: name", "expectedValue: sam");
+        }
+
+        @Override
+        public void clientShouldRequestAndFail()
+        {
+            shouldNotAcceptEmptyKeySettingProperty();
+            shouldNotAcceptEmptyValueWhenSettingProperty();
+            shouldNotAcceptNullKeyWhenSettingProperty();
+            shouldNotAcceptNullValueWhenSettingProperty();
         }
 
         @Test

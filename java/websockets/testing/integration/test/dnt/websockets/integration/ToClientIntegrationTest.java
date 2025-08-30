@@ -12,11 +12,19 @@ public class ToClientIntegrationTest
     public static class MainTests extends AbstractIntegrationTest implements ToClientTests
     {
         @Test
-        public void serverShouldRequestAndResponse()
+        public void serverShouldRequestAndSucceed()
         {
             server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
             client.setStatus("Fantastic");
             server.getStatusFromClient("client: session1", "expectedStatus: Fantastic");
+        }
+
+        @Test
+        public void serverShouldRequestAndFail()
+        {
+            server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
+            client.setStatus("fail_requests");
+            server.getStatusFromClient("client: session1", "expectedErrorMessage: Request not accepted at this time.");
         }
 
         @Test

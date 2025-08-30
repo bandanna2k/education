@@ -2,7 +2,8 @@ package dnt.websockets.integration.base;
 
 public interface ToServerTests
 {
-    void clientShouldRequestAndReceive();
+    void clientShouldRequestAndSucceed();
+    void clientShouldRequestAndFail();
     void clientShouldPushMessage();
     void shouldSupportMultipleClients();
     void shouldFailOnNoResponseReceived();

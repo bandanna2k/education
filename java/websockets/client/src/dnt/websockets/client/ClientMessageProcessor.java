@@ -14,6 +14,12 @@ public class ClientMessageProcessor implements MessageVisitor
         {
             return;
         }
+        if("fail_requests".equalsIgnoreCase(status))
+        {
+            ErrorResponse response = new ErrorResponse(request.correlationId, 503, "Request not accepted at this time.");
+            executionLayer.clientResponseToRequest(response);
+            return;
+        }
         GetStatusResponse response = new GetStatusResponse(request.correlationId, status);
         executionLayer.clientResponseToRequest(response);
     }
