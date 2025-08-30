@@ -1,6 +1,5 @@
 package dnt.websockets.client;
 
-import dnt.websockets.client.websocket.WebSocketKlient;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.messages.AbstractMessage;
@@ -30,14 +29,7 @@ public class ClientExecutionLayer implements ExecutionLayer
     public <T extends AbstractResponse> Future<Result<T, String>> clientRequestFromServer(AbstractRequest request)
     {
         return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
-                .map(data ->
-                {
-                    if(data instanceof ErrorResponse errorResponse)
-                    {
-                        return Result.failure(errorResponse.message);
-                    }
-                    return Result.success(data);
-                })
+                .map(ClientExecutionLayer::checkForErrorResponse)
                 .recover(throwable ->
                         Future.succeededFuture(Result.failure(throwable.getMessage())))
                 .map(result ->
@@ -59,7 +51,7 @@ public class ClientExecutionLayer implements ExecutionLayer
     @Override
     public void serverSend(AbstractMessage message)
     {
-//        publisher.send(message);
+        throw new UnsupportedOperationException("Client will never ask to broadcast a message as a server.");
     }
 
     @Override
@@ -67,5 +59,14 @@ public class ClientExecutionLayer implements ExecutionLayer
     {
         LOGGER.debug("Client --> Pojo     Server | Sending {}", message);
         publisher.send(message);
+    }
+
+    private static Result<AbstractResponse, String> checkForErrorResponse(AbstractResponse data)
+    {
+        if(data instanceof ErrorResponse errorResponse)
+        {
+            return Result.failure(errorResponse.message);
+        }
+        return Result.success(data);
     }
 }

@@ -30,14 +30,7 @@ public class ServerExecutionLayer implements ExecutionLayer
     {
         LOGGER.debug("Client     Pojo <--- Server | Requesting {}", request);
         return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
-                .map(data ->
-                {
-                    if(data instanceof ErrorResponse errorResponse)
-                    {
-                        return Result.failure(errorResponse.message);
-                    }
-                    return Result.success(data);
-                })
+                .map(ServerExecutionLayer::checkForErrorResponse)
                 .recover(throwable ->
                         Future.succeededFuture(Result.failure(throwable.getMessage())))
                 .map(result ->
@@ -66,5 +59,15 @@ public class ServerExecutionLayer implements ExecutionLayer
     @Override
     public void clientSend(AbstractMessage message)
     {
+        throw new UnsupportedOperationException("Server will never ask to broadcast as a client.");
+    }
+
+    private static Result<AbstractResponse, String> checkForErrorResponse(AbstractResponse data)
+    {
+        if(data instanceof ErrorResponse errorResponse)
+        {
+            return Result.failure(errorResponse.message);
+        }
+        return Result.success(data);
     }
 }
