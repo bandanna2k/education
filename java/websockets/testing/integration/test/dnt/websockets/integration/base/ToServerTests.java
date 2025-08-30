@@ -2,7 +2,7 @@ package dnt.websockets.integration.base;
 
 public interface ToServerTests
 {
-    void clientShouldRequestAndResponse();
+    void clientShouldRequestAndReceive();
     void clientShouldPushMessage();
     void shouldSupportMultipleClients();
     void shouldNotAcceptEmptyValueWhenSettingProperty();

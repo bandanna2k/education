@@ -2,65 +2,81 @@ package dnt.websockets.integration;
 
 import dnt.websockets.integration.base.ToServerTests;
 import dnt.websockets.integration.vertx.dsl.AbstractIntegrationVertxTest;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 
-public class ToServerWebSocketTest extends AbstractIntegrationVertxTest implements ToServerTests
+@RunWith(Enclosed.class)
+public class ToServerWebSocketTest
 {
-    @Test
-    public void clientShouldRequestAndResponse()
+    public static class OtherTests extends AbstractIntegrationVertxTest
     {
-        client.setProperty("key: name", "value: sam");
-        client.getProperty("key: name", "expectedValue: sam");
+        @Test
+        public void shouldUseRest()
+        {
+            rest.getProperty("key: limit", "expectedStatusCode: 404");
+            rest.setProperty("key: limit", "value: 1000", "expectedStatusCode: 200");
+            rest.getProperty("key: limit", "expectedValue: 1000", "expectedStatusCode: 200");
+        }
     }
 
-    @Test
-    public void clientShouldPushMessage()
+    public static class MainTests extends AbstractIntegrationVertxTest implements ToServerTests
     {
-        client.pushPulse("rate: 60", "sequence: 1");
-        server.verifyMessage("ClientPushPulse");
-    }
+        @Test
+        public void clientShouldRequestAndReceive()
+        {
+            client.setProperty("key: name", "value: sam");
+            client.getProperty("key: name", "expectedValue: sam");
+        }
 
-    @Test
-    public void shouldFailIfNoResponse()
-    {
-        client.setProperty("key: do_not_send_response", "value: true", "expectSuccess: false");
-    }
+        @Test
+        public void clientShouldPushMessage()
+        {
+            client.pushPulse("rate: 60", "sequence: 1");
+            server.verifyMessage("ClientPushPulse");
+        }
 
-    @Test
-    public void shouldSupportMultipleClients()
-    {
-        client("source1").setProperty("key: name", "value: sam", "expectSuccess: true");
+        @Test
+        public void shouldFailIfNoResponse()
+        {
+            client.setProperty("key: do_not_send_response", "value: true", "expectSuccess: false");
+        }
 
-        client("source1").verifyMessage("SetPropertyResponse");
-        client("source2").verifyNoMoreMessages();
-    }
+        @Test
+        public void shouldSupportMultipleClients()
+        {
+            client("source1").setProperty("key: name", "value: sam", "expectSuccess: true");
 
-    @Test
-    public void shouldNotAcceptEmptyValueWhenSettingProperty()
-    {
-        client.setProperty("key: name", "value: ",
-                "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
-    }
+            client("source1").verifyMessage("SetPropertyResponse");
+            client("source2").verifyNoMoreMessages();
+        }
 
-    @Test
-    public void shouldNotAcceptEmptyKeySettingProperty()
-    {
-        client.setProperty("key: ", "value: sam",
-                "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
-    }
+        @Test
+        public void shouldNotAcceptEmptyValueWhenSettingProperty()
+        {
+            client.setProperty("key: name", "value: ",
+                    "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
+        }
 
-    @Test
-    public void shouldNotAcceptNullValueWhenSettingProperty()
-    {
-        client.setProperty("key: name", "value: <NULL>",
-                "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
-    }
+        @Test
+        public void shouldNotAcceptEmptyKeySettingProperty()
+        {
+            client.setProperty("key: ", "value: sam",
+                    "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
+        }
 
-    @Test
-    public void shouldNotAcceptNullKeyWhenSettingProperty()
-    {
-        client.setProperty("key: <NULL>", "value: sam",
-                "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
+        @Test
+        public void shouldNotAcceptNullValueWhenSettingProperty()
+        {
+            client.setProperty("key: name", "value: <NULL>",
+                    "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
+        }
+
+        @Test
+        public void shouldNotAcceptNullKeyWhenSettingProperty()
+        {
+            client.setProperty("key: <NULL>", "value: sam",
+                    "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
+        }
     }
 }
