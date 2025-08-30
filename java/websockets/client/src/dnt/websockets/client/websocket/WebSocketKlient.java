@@ -1,7 +1,6 @@
 package dnt.websockets.client.websocket;
 
 import dnt.websockets.client.ClientExecutionLayer;
-import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.ClientRequests;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.infrastructure.Publisher;
@@ -86,5 +85,10 @@ public class WebSocketKlient implements ClientRequests
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
         return executorLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
+    }
+
+    public void pushMessage(ClientPushPulse clientPushPulse)
+    {
+        executorLayer.clientSend(clientPushPulse);
     }
 }

@@ -4,7 +4,6 @@ import dnt.websockets.integration.vertx.RestClientDriver;
 import dnt.websockets.integration.vertx.WebSocketClientDriver;
 import dnt.websockets.integration.vertx.WebSocketServerDriver;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
@@ -30,7 +29,7 @@ public abstract class AbstractIntegrationVertxTest
     private final WebSocketClientDriver clientDriver2 = new WebSocketClientDriver(VERTX, "source2");
     private final RestClientDriver restDriver = new RestClientDriver(VERTX);
 
-    protected static ServerVertxDsl server = new ServerVertxDsl(serverDriver);
+    protected static ServerWebSocketDsl server = new ServerWebSocketDsl(serverDriver);
     protected ClientWebSocketDsl client = new ClientWebSocketDsl(clientDriver);
     protected ClientWebSocketDsl client2 = new ClientWebSocketDsl(clientDriver2);
     protected RestVertxDsl rest = new RestVertxDsl(restDriver);

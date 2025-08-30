@@ -1,5 +1,6 @@
 package dnt.websockets.client;
 
+import dnt.websockets.client.websocket.WebSocketKlient;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.messages.AbstractMessage;
@@ -9,9 +10,13 @@ import dnt.websockets.messages.ErrorResponse;
 import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClientExecutionLayer implements ExecutionLayer
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientExecutionLayer.class);
+
     private final Publisher publisher;
     private final VertxAsyncExecutor<AbstractResponse> executor;
 
@@ -60,5 +65,7 @@ public class ClientExecutionLayer implements ExecutionLayer
     @Override
     public void clientSend(AbstractMessage message)
     {
+        LOGGER.debug("Client --> Pojo     Server | Sending {}", message);
+        publisher.send(message);
     }
 }

@@ -7,7 +7,6 @@ import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerRequests;
 import dnt.websockets.server.ServerTextMessageHandler;
-import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -31,13 +30,13 @@ public class WebSocketServer implements ServerRequests
     private static final short WEBSOCKET_CODE_FAILED_TO_CONNECT = 100;
 
     private final Map<String, ExecutionLayer> executionLayers = new HashMap<>();
-    private final Map<String, ServerTextMessageHandler> XXXtextMessageHandlers = new HashMap<>();
     private final Vertx vertx;
-    private final ServerMessageProcessor requestProcessor = new ServerMessageProcessor();
+    private final MessageVisitor messageProcessor;
 
-    public WebSocketServer(Vertx vertx)
+    public WebSocketServer(Vertx vertx, MessageVisitor messageProcessor)
     {
         this.vertx = vertx;
+        this.messageProcessor = messageProcessor;
     }
 
     public Future<HttpServer> start()
@@ -73,7 +72,7 @@ public class WebSocketServer implements ServerRequests
 
         final Publisher publisher = new WebSocketPublisher(serverWebSocket);
         final ExecutionLayer executionLayer = new ServerExecutionLayer(newExecutor(vertx), publisher);
-        final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
+        final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, messageProcessor);
         serverWebSocket.textMessageHandler(textMessageHandler);
         executionLayers.put(clientId, executionLayer);
     }
@@ -139,6 +138,6 @@ public class WebSocketServer implements ServerRequests
         final LazyPublisher restPublisher = new LazyPublisher();
         final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(newExecutor(vertx), restPublisher);
         restPublisher.publisher = new RestPublisher(ctx);
-        return new ServerTextMessageHandler(restExecutionLayer, requestProcessor);
+        return new ServerTextMessageHandler(restExecutionLayer, messageProcessor);
     }
 }

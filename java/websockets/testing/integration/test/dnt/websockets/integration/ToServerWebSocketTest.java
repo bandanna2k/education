@@ -14,10 +14,11 @@ public class ToServerWebSocketTest extends AbstractIntegrationVertxTest implemen
         client.getProperty("key: name", "expectedValue: sam");
     }
 
-    @Ignore
     @Test
     public void clientShouldPushMessage()
     {
+        client.pushPulse("rate: 60", "sequence: 1");
+        server.verifyMessage("ClientPushPulse");
     }
 
     @Test

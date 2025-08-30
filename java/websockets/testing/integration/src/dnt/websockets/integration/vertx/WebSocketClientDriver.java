@@ -4,6 +4,7 @@ import dnt.websockets.client.ClientMessageProcessor;
 import dnt.websockets.client.websocket.WebSocketKlient;
 import dnt.websockets.integration.MessageCollector;
 import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.ClientPushPulse;
 import dnt.websockets.messages.GetPropertyResponse;
 import dnt.websockets.messages.SetPropertyResponse;
 import education.common.result.Result;
@@ -54,5 +55,10 @@ public class WebSocketClientDriver
     public void setStatus(String status)
     {
         clientMessageProcessor.setStatus(status);
+    }
+
+    public void pushPulse(int rate, long sequence)
+    {
+        client.pushMessage(new ClientPushPulse(rate, sequence));
     }
 }

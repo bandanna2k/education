@@ -100,4 +100,15 @@ public class ClientWebSocketDsl
                 new RequiredArg("status"));
         clientDriver.setStatus(params.value("status"));
     }
+
+    public void pushPulse(String... args)
+    {
+        final DslParams params = DslParams.create(args,
+                new RequiredArg("rate"),
+                new RequiredArg("sequence"));
+
+        int rate = params.valueAsInt("rate");
+        long sequence = params.valueAsLong("sequence");
+        clientDriver.pushPulse(rate, sequence);
+    }
 }
