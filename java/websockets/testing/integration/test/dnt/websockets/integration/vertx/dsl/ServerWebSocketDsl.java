@@ -56,9 +56,20 @@ public class ServerWebSocketDsl
                 .untilAsserted(() ->
                 {
                     AbstractMessage message = serverDriver.popLastMessage();
-                    System.out.println(message);
                     assertThat(message).isNotNull();
                     assertThat(message.getClass().getSimpleName()).isEqualToIgnoringCase(expectedClassName);
+                });
+    }
+
+    public void verifyNoMoreMessages()
+    {
+        Awaitility
+                .await()
+                .pollInterval(ofMillis(100))
+                .during(ofMillis(2000))
+                .until(() -> {
+                    AbstractMessage abstractMessage = serverDriver.popLastMessage();
+                    return abstractMessage == null;
                 });
     }
 }

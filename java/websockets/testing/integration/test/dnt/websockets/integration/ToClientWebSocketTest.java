@@ -57,6 +57,10 @@ public class ToClientWebSocketTest
 
             server.getStatusFromClient("client: source1", "expectedStatus: OK");
             server.getStatusFromClient("client: source2", "expectedStatus: Fine");
+
+            server.verifyMessage("GetStatusResponse");
+            server.verifyMessage("GetStatusResponse");
+            server.verifyNoMoreMessages();
         }
     }
 }

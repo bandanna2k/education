@@ -38,7 +38,6 @@ public class ServerTextMessageHandler implements Handler<String>
             if(message instanceof AbstractResponse response)
             {
                 handleResponse(response);
-                return;
             }
 
             handle(MESSAGE_READER.<AbstractMessage>readValue(maybeJson));
