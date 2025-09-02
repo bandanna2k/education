@@ -23,15 +23,22 @@ import static org.junit.Assert.fail;
 
 public abstract class AbstractIntegrationTest
 {
+    static
+    {
+        System.setProperty("org.slf4j.simpleLogger.log.dnt.websockets", "DEBUG");
+    }
     private final ServerMessageProcessor serverMessageProcessor = new ServerMessageProcessor();
     private final ClientMessageProcessor clientMessageProcessor = new ClientMessageProcessor();
     private final ClientMessageProcessor clientMessageProcessor2 = new ClientMessageProcessor();
 
     private final MessageCollector testServerMessageCollector = new MessageCollector("Abstract Integration Test Server", serverMessageProcessor);
     private final MessageCollector testClientMessageCollector = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor);
+
     private final MessageCollector testClientMessageCollector2 = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor2);
 
+    // TODO Not quite right. Need to cater for both testClientMessageCollectors
     private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(testServerMessageCollector, testClientMessageCollector);
+//    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageProcessor, clientMessageProcessor);
 
     protected final ServerDriver serverDriver = new ServerDriver(executionLayer, serverMessageProcessor);
     protected final ClientDriver clientDriver = new ClientDriver(executionLayer, clientMessageProcessor);

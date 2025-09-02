@@ -18,8 +18,8 @@ public class ToClientIntegrationTest
             client.setStatus("Fantastic");
             server.getStatusFromClient("client: session1", "expectedStatus: Fantastic");
 
-            server.verifyMessage("GetStatusResponse");
             client.verifyMessage("GetStatusRequest");
+            server.verifyMessage("GetStatusResponse");
         }
 
         @Test

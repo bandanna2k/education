@@ -1,7 +1,6 @@
 package dnt.websockets.integration;
 
 import dnt.websockets.infrastructure.ExecutionLayer;
-import dnt.websockets.integration.infrastructure.IntegrationServerConnector;
 import dnt.websockets.messages.GetStatusRequest;
 import dnt.websockets.messages.GetStatusResponse;
 import dnt.websockets.messages.ServerPushMessage;
@@ -11,7 +10,6 @@ import io.vertx.core.Future;
 
 public class ServerDriver
 {
-    private final IntegrationServerConnector server;
     private final ExecutionLayer executionLayer;
     private final ServerMessageProcessor messageProcessor;
 
@@ -19,12 +17,11 @@ public class ServerDriver
     {
         this.executionLayer = executionLayer;
         this.messageProcessor = messageProcessor;
-        this.server = new IntegrationServerConnector(executionLayer, messageProcessor);
     }
 
     public void broadcastMessage(final ServerPushMessage message)
     {
-        server.push(message);
+        executionLayer.serverSend(message);
     }
 
     public String getProperty(String key)
