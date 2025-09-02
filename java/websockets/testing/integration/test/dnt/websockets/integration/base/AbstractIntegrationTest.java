@@ -27,21 +27,21 @@ public abstract class AbstractIntegrationTest
     private final ClientMessageProcessor clientMessageProcessor = new ClientMessageProcessor();
     private final ClientMessageProcessor clientMessageProcessor2 = new ClientMessageProcessor();
 
-    private final MessageCollector serverMessageCollector = new MessageCollector("Abstract Integration Test Server", serverMessageProcessor);
-    private final MessageCollector clientMessageCollector = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor);
-    private final MessageCollector clientMessageCollector2 = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor2);
+    private final MessageCollector testServerMessageCollector = new MessageCollector("Abstract Integration Test Server", serverMessageProcessor);
+    private final MessageCollector testClientMessageCollector = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor);
+    private final MessageCollector testClientMessageCollector2 = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor2);
 
-    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageCollector, clientMessageCollector);
+    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(testServerMessageCollector, testClientMessageCollector);
 
     protected final ServerDriver serverDriver = new ServerDriver(executionLayer, serverMessageProcessor);
     protected final ClientDriver clientDriver = new ClientDriver(executionLayer, clientMessageProcessor);
 
-    protected final ServerDsl server = new ServerDsl(serverDriver, serverMessageCollector);
-    protected final ClientDsl client = new ClientDsl(clientDriver, clientMessageCollector);
+    protected final ServerDsl server = new ServerDsl(serverDriver, testServerMessageCollector);
+    protected final ClientDsl client = new ClientDsl(clientDriver, testClientMessageCollector);
     protected final IntegrationDsl integration = new IntegrationDsl(executionLayer);
 
     protected final ClientDriver clientDriver2 = new ClientDriver(executionLayer, clientMessageProcessor2);
-    protected final ClientDsl client2 = new ClientDsl(clientDriver2, clientMessageCollector2);
+    protected final ClientDsl client2 = new ClientDsl(clientDriver2, testClientMessageCollector2);
 
     private final Map<String, ClientDsl> clients = Map.of("session1", client, "session2", client2);
 
@@ -62,8 +62,8 @@ public abstract class AbstractIntegrationTest
     @Before
     public void setUp()
     {
-        executionLayer.register("session1", new ClientTextMessageHandler(executionLayer, clientMessageCollector));
-        executionLayer.register("session2", new ClientTextMessageHandler(executionLayer, clientMessageCollector2));
+        executionLayer.register("session1", new ClientTextMessageHandler(executionLayer, testClientMessageCollector));
+        executionLayer.register("session2", new ClientTextMessageHandler(executionLayer, testClientMessageCollector2));
     }
 
     @After

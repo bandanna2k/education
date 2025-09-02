@@ -1,9 +1,7 @@
 package dnt.websockets.integration.infrastructure;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.integration.MessageCollector;
@@ -23,8 +21,8 @@ public class IntegrationExecutionLayer implements ExecutionLayer
 
     private final ServerTextMessageHandler serverTextMessageHandler;
     private final Map<String, ClientTextMessageHandler> clientTextMessageHandlers = new HashMap<>();
-    private final MessageCollector clientMessageCollector;
-    private final MessageCollector serverMessageCollector;
+    private final MessageCollector internalClientMessageCollector;
+    private final MessageCollector internalServerMessageCollector;
 
     private Optional<String> maybeFailNextMessage = Optional.empty();
     private boolean throwOnNextMessage = false;
@@ -37,8 +35,8 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     public IntegrationExecutionLayer(MessageVisitor serverMessageProcessor,
                                      MessageVisitor clientMessageProcessor)
     {
-        this.clientMessageCollector = new MessageCollector("Internal Client", clientMessageProcessor);
-        this.serverMessageCollector = new MessageCollector("Internal Server", serverMessageProcessor);
+        this.internalClientMessageCollector = new MessageCollector("Internal Client", clientMessageProcessor);
+        this.internalServerMessageCollector = new MessageCollector("Internal Server", serverMessageProcessor);
 
         this.serverTextMessageHandler = new ServerTextMessageHandler(this, serverMessageProcessor);
     }
@@ -51,13 +49,13 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     @Override
     public void serverResponseToRequest(AbstractResponse response)
     {
-        response.visit(this, clientMessageCollector);
+        response.visit(this, internalClientMessageCollector);
     }
 
     @Override
     public void clientResponseToRequest(AbstractResponse response)
     {
-        response.visit(this, serverMessageCollector);
+        response.visit(this, internalServerMessageCollector);
     }
 
     @Override
@@ -70,7 +68,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
             {
                 String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
                 clientTextMessageHandler.handle(serialisedRequest);
-                T lastMessage = serverMessageCollector.getLastMessage();
+                T lastMessage = internalServerMessageCollector.getLastMessage();
                 if (lastMessage == null)
                 {
                     LOGGER.error("Client  X- JSON <-- Server | No client response received {}", request);
@@ -97,7 +95,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
             {
                 String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
                 serverTextMessageHandler.handle(serialisedRequest);
-                T lastMessage = clientMessageCollector.getLastMessage();
+                T lastMessage = internalClientMessageCollector.getLastMessage();
                 if (lastMessage == null)
                 {
                     LOGGER.error("Client --> JSON -X  Server | No server response received {}", request);
