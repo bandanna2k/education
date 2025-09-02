@@ -13,6 +13,7 @@
     <orderEntry type="library" name="fasterxml.jackson.core.annotations" level="project" />
     <orderEntry type="library" name="io.vertx.core" level="project" />
     <orderEntry type="library" scope="TEST" name="junit" level="project" />
-    <orderEntry type="library" name="assertj.core" level="project" />
+    <orderEntry type="library" scope="TEST" name="assertj.core" level="project" />
+    <orderEntry type="library" scope="TEST" name="reflections" level="project" />
   </component>
 </module>
