@@ -31,21 +31,27 @@ public class ClientWebSocketDsl
         final DslParams params = DslParams.create(args,
                 new RequiredArg("key"),
                 new RequiredArg("value"),
+                new OptionalArg("complete").setDefault("true"),
                 new OptionalArg("expectSuccess").setDefault("true"),
                 new OptionalArg("expectedErrorMessage"));
         boolean expectSuccess = params.valueAsBoolean("expectSuccess");
 
         String key = "<NULL>".equals(params.value("key")) ? null : params.value("key");
         String value = "<NULL>".equals(params.value("value")) ? null : params.value("value");
+        boolean complete = params.valueAsBoolean("complete");
 
-        Result<SetPropertyResponse, String> result = join(clientDriver.setProperty(key, value));
-        result.consume(response -> assertTrue(expectSuccess),
-                error ->
-                {
-                    assertFalse(expectSuccess);
-                    params.valueAsOptional("expectedErrorMessage").ifPresent(expectedErrorMessage ->
-                            assertThat(error).isEqualTo(expectedErrorMessage));
-                });
+        Future<Result<SetPropertyResponse, String>> future = clientDriver.setProperty(key, value);
+        if(complete)
+        {
+            Result<SetPropertyResponse, String> result = join(future);
+            result.consume(response -> assertTrue(expectSuccess),
+                    error ->
+                    {
+                        assertFalse(expectSuccess);
+                        params.valueAsOptional("expectedErrorMessage").ifPresent(expectedErrorMessage ->
+                                assertThat(error).isEqualTo(expectedErrorMessage));
+                    });
+        }
     }
 
     public void getProperty(String... args)

@@ -1,4 +1,4 @@
-package dnt.websockets.client.also;
+package dnt.websockets.client.eventbus;
 
 import dnt.websockets.client.ClientExecutionLayer;
 import dnt.websockets.client.ClientTextMessageHandler;

@@ -1,4 +1,4 @@
-package dnt.websockets.client.maybecool;
+package dnt.websockets.client.tcp;
 
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.client.ClientRequests;

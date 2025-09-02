@@ -1,7 +1,7 @@
 package dnt.websockets.integration.tcp;
 
 import dnt.websockets.client.ClientMessageProcessor;
-import dnt.websockets.client.maybecool.TcpClient;
+import dnt.websockets.client.tcp.TcpClient;
 import dnt.websockets.messages.AbstractMessage;
 import dnt.websockets.messages.GetPropertyResponse;
 import dnt.websockets.messages.SetPropertyResponse;

@@ -1,6 +1,6 @@
 package dnt.websockets.integration.eventbus;
 
-import dnt.websockets.client.also.EventBusClient;
+import dnt.websockets.client.eventbus.EventBusClient;
 import dnt.websockets.messages.AbstractMessage;
 import dnt.websockets.messages.GetPropertyResponse;
 import dnt.websockets.messages.SetPropertyResponse;

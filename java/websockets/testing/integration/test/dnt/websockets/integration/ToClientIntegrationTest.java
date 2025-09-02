@@ -17,6 +17,9 @@ public class ToClientIntegrationTest
             server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
             client.setStatus("Fantastic");
             server.getStatusFromClient("client: session1", "expectedStatus: Fantastic");
+
+            server.verifyMessage("GetStatusResponse");
+            client.verifyMessage("GetStatusRequest");
         }
 
         @Test

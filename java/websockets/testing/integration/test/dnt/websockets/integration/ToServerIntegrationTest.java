@@ -60,6 +60,9 @@ public class ToServerIntegrationTest
         {
             client.setProperty("key: name", "value: sam");
             client.getProperty("key: name", "expectedValue: sam");
+
+            server.verifyMessage("SetPropertyRequest");
+            client.verifyMessage("SetPropertyResponse");
         }
 
         @Override
