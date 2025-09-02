@@ -38,13 +38,13 @@ public class ServerExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public void serverResponseToRequest(AbstractResponse response)
+    public void serverCompleteResponse(AbstractResponse response)
     {
         publisher.send(response);
     }
 
     @Override
-    public void clientResponseToRequest(AbstractResponse response)
+    public void clientCompleteResponse(AbstractResponse response)
     {
         executor.onResponseReceived(response.correlationId, response);
     }

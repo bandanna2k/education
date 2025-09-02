@@ -37,13 +37,13 @@ public class ClientExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public void serverResponseToRequest(AbstractResponse response)
+    public void serverCompleteResponse(AbstractResponse response)
     {
         executor.onResponseReceived(response.correlationId, response);
     }
 
     @Override
-    public void clientResponseToRequest(AbstractResponse response)
+    public void clientCompleteResponse(AbstractResponse response)
     {
         publisher.send(response);
     }

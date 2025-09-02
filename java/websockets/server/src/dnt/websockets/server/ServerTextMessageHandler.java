@@ -37,20 +37,14 @@ public class ServerTextMessageHandler implements Handler<String>
             AbstractMessage message = MESSAGE_READER.readValue(maybeJson);
             if(message instanceof AbstractResponse response)
             {
-                handleResponse(response);
+                executionLayer.clientCompleteResponse(response);
             }
-
             handle(MESSAGE_READER.<AbstractMessage>readValue(maybeJson));
         }
         catch (JsonProcessingException e)
         {
             LOGGER.warn("Failed to decode json. Error: {}, '{}'", e.getMessage(), maybeJson);
         }
-    }
-
-    private void handleResponse(AbstractResponse response)
-    {
-        executionLayer.clientResponseToRequest(response);
     }
 
     public void handle(AbstractMessage message)

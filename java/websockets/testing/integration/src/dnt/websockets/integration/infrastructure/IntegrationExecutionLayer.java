@@ -47,13 +47,13 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public void serverResponseToRequest(AbstractResponse response)
+    public void serverCompleteResponse(AbstractResponse response)
     {
         response.visit(this, internalClientMessageCollector);
     }
 
     @Override
-    public void clientResponseToRequest(AbstractResponse response)
+    public void clientCompleteResponse(AbstractResponse response)
     {
         response.visit(this, internalServerMessageCollector);
     }

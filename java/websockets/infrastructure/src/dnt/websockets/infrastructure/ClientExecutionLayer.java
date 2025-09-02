@@ -12,7 +12,7 @@ interface ClientExecutionLayer
     {
         throw new UnsupportedOperationException();
     }
-    default void clientResponseToRequest(AbstractResponse response)
+    default void clientCompleteResponse(AbstractResponse response)
     {
         throw new UnsupportedOperationException();
     }
