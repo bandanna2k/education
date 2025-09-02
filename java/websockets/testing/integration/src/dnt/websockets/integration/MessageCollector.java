@@ -21,13 +21,6 @@ public class MessageCollector implements MessageVisitor
     }
 
     @Override
-    public void visit(ExecutionLayer executionLayer, AbstractMessage message)
-    {
-        this.messageVisitor.visit(executionLayer, message);
-        messages.add(message);
-    }
-
-    @Override
     public void visit(ExecutionLayer executionLayer, GetPropertyRequest request)
     {
         this.messageVisitor.visit(executionLayer, request);

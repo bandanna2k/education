@@ -6,9 +6,6 @@ public interface MessageVisitor
 {
     MessageVisitor NO_OP = new MessageVisitor() {};
 
-    // Both
-    default void visit(ExecutionLayer executionLayer, AbstractMessage message) {}
-
     // Server to Client
     default void visit(ExecutionLayer executionLayer, ServerPushMessage message) {}
     default void visit(ExecutionLayer executionLayer, GetStatusRequest request) {}
