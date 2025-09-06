@@ -39,7 +39,11 @@ public class SeleniumTest
                 "QHR279"
             };
 
-            Arrays.stream(plates).forEach(plate -> openFile(capturePlate(driver, plate)));
+            Arrays.stream(plates).forEach(plate ->
+            {
+                File file = capturePlate(driver, plate);
+//                openFile(file);
+            });
         }
         System.out.println("Finished");
     }
