@@ -1,30 +1,34 @@
-package education.selenium;
+package education.common;
 
-import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class SeleniumTest
+public class Selenium
 {
-    @Test
-    void shouldOpenSelenium()
+    public static void main(String[] args)
+    {
+        new Selenium().go();
+    }
+
+    private void go()
     {
         try (final BrowserWebDriverContainer<?> firefox = new BrowserWebDriverContainer<>()
                 .withCapabilities(new FirefoxOptions())
                 .withSharedMemorySize(2147483648L)
         )
         {
-            List <String> portBindings = new ArrayList<>();
+            List<String> portBindings = new ArrayList<>();
             portBindings.add("4444:4444"); // hostPort:containerPort
             portBindings.add("15900:5900"); // hostPort:containerPort
             portBindings.add("7900:7900"); // hostPort:containerPort
@@ -33,16 +37,18 @@ public class SeleniumTest
 
             WebDriver driver = firefox.getWebDriver();
 
-            String[] plates = new String[] {
-                "PDT74",
-                "QHR279"
-            };
+            File file = capturePlate(driver, "PDT74");
+            openFile(file);
 
-            Arrays.stream(plates).forEach(plate ->
+            System.out.println("Enter license plate.");
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)))
             {
-                File file = capturePlate(driver, plate);
-//                openFile(file);
-            });
+                openFile(capturePlate(driver, reader.readLine()));
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
         }
         System.out.println("Finished");
     }
@@ -52,7 +58,8 @@ public class SeleniumTest
         driver.get("https://www.carjam.co.nz/car/?plate=" + plate);
 
         final Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-        wait.until(d -> {
+        wait.until(d ->
+        {
             final WebElement panelTitle = driver.findElement(By.className("panel-title"));
             final WebElement disclaimer = panelTitle.findElement(By.xpath("//*[contains(text(), 'Disclaimer')]"));
             return disclaimer.isDisplayed();
@@ -74,4 +81,5 @@ public class SeleniumTest
             throw new RuntimeException(e);
         }
     }
+
 }
