@@ -27,4 +27,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
-/java/websockets/out/test/integration/dnt/websockets/integration/maybecool/dsl/AbstractIntegrationTcpTest.class
+/**/build/
+.gradle
