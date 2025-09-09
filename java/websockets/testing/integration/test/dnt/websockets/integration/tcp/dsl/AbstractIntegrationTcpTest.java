@@ -2,7 +2,7 @@ package dnt.websockets.integration.tcp.dsl;
 
 import dnt.websockets.integration.tcp.TcpClientDriver;
 import dnt.websockets.integration.tcp.TcpServerDriver;
-import org.junit.AfterClass;
+import org.junit.jupiter.api.AfterAll;
 
 public abstract class AbstractIntegrationTcpTest
 {
@@ -12,7 +12,7 @@ public abstract class AbstractIntegrationTcpTest
     protected TcpServerDsl server = new TcpServerDsl(serverDriver);
     protected TcpClientDsl client = new TcpClientDsl(clientDriver);
 
-    @AfterClass
+    @AfterAll
     public static void afterClass()
     {
         serverDriver.close();

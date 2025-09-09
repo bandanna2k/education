@@ -2,14 +2,13 @@ package dnt.websockets.integration;
 
 import dnt.websockets.integration.base.ToServerTests;
 import dnt.websockets.integration.vertx.dsl.AbstractIntegrationVertxTest;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-@RunWith(Enclosed.class)
 public class ToServerWebSocketTest
 {
-    public static class OtherTests extends AbstractIntegrationVertxTest
+    @Nested
+    class OtherTests extends AbstractIntegrationVertxTest
     {
         @Test
         public void shouldUseRest()
@@ -20,7 +19,8 @@ public class ToServerWebSocketTest
         }
     }
 
-    public static class MainTests extends AbstractIntegrationVertxTest implements ToServerTests
+    @Nested
+    class MainTests extends AbstractIntegrationVertxTest implements ToServerTests
     {
         @Test
         public void clientShouldRequestAndSucceed()

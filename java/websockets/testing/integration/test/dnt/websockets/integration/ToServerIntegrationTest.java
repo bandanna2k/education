@@ -1,16 +1,14 @@
 package dnt.websockets.integration;
 
 import dnt.websockets.integration.base.AbstractIntegrationTest;
-import dnt.websockets.integration.base.ToClientTests;
 import dnt.websockets.integration.base.ToServerTests;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-@RunWith(Enclosed.class)
 public class ToServerIntegrationTest
 {
-    public static class OtherTests extends AbstractIntegrationTest
+    @Nested
+    public class OtherTests extends AbstractIntegrationTest
     {
         @Test
         public void serverShouldFutureFailNextMessage()
@@ -53,7 +51,9 @@ public class ToServerIntegrationTest
             server.verifyProperty("key: name", "expectedValue: terry");
         }
     }
-    public static class MainTests extends AbstractIntegrationTest implements ToServerTests
+
+    @Nested
+    public class MainTests extends AbstractIntegrationTest implements ToServerTests
     {
         @Test
         public void clientShouldRequestAndSucceed()

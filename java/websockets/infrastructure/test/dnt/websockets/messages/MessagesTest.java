@@ -1,7 +1,7 @@
 package dnt.websockets.messages;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Method;

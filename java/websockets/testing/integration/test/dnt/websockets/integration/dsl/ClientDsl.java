@@ -13,7 +13,6 @@ import io.vertx.core.Future;
 import org.assertj.core.api.Assertions;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class ClientDsl
 {

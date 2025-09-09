@@ -12,7 +12,6 @@ import education.common.result.Result;
 import io.vertx.core.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class ServerDsl
 {

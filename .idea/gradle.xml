@@ -16,6 +16,14 @@
             <option value="$PROJECT_DIR$/java/selenium" />
             <option value="$PROJECT_DIR$/java/syntax" />
             <option value="$PROJECT_DIR$/java/vertx" />
+            <option value="$PROJECT_DIR$/java/websockets" />
+            <option value="$PROJECT_DIR$/java/websockets/client" />
+            <option value="$PROJECT_DIR$/java/websockets/communications" />
+            <option value="$PROJECT_DIR$/java/websockets/infrastructure" />
+            <option value="$PROJECT_DIR$/java/websockets/server" />
+            <option value="$PROJECT_DIR$/java/websockets/testing" />
+            <option value="$PROJECT_DIR$/java/websockets/testing/integration" />
+            <option value="$PROJECT_DIR$/java/websockets/websockets-vertx" />
           </set>
         </option>
       </GradleProjectSettings>

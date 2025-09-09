@@ -4,15 +4,16 @@ import dnt.websockets.integration.vertx.RestClientDriver;
 import dnt.websockets.integration.vertx.WebSocketClientDriver;
 import dnt.websockets.integration.vertx.WebSocketServerDriver;
 import io.vertx.core.Vertx;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 import static dnt.websockets.vertx.VertxFactory.newVertx;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.AssertionsForClassTypes.fail;
+
 
 public abstract class AbstractIntegrationVertxTest
 {
@@ -44,7 +45,7 @@ public abstract class AbstractIntegrationVertxTest
         return clients.get(sessionId);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass()
     {
         serverDriver.start()
@@ -53,7 +54,7 @@ public abstract class AbstractIntegrationVertxTest
                 .toCompletionStage().toCompletableFuture().join();
     }
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         clientDriver.start()

@@ -13,13 +13,13 @@ import dnt.websockets.messages.GetPropertyResponse;
 import dnt.websockets.messages.SetPropertyRequest;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Map;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractIntegrationTest
 {
@@ -59,21 +59,21 @@ public abstract class AbstractIntegrationTest
         return clientDsl;
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void warmUpObjectMappers() throws Exception
     {
         ClientTextMessageHandler.OBJECT_MAPPER.writeValueAsBytes(new GetPropertyResponse(1, "key"));
         ServerTextMessageHandler.OBJECT_MAPPER.writeValueAsBytes(new SetPropertyRequest("key", "value"));
     }
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         executionLayer.register("session1", new ClientTextMessageHandler(executionLayer, testClientMessageCollector));
         executionLayer.register("session2", new ClientTextMessageHandler(executionLayer, testClientMessageCollector2));
     }
 
-    @After
+    @AfterEach
     public void tearDown()
     {
         boolean complete = integration.isComplete();

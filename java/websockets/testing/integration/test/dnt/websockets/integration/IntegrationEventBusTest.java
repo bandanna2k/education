@@ -1,7 +1,7 @@
 package dnt.websockets.integration;
 
 import dnt.websockets.integration.eventbus.dsl.AbstractIntegrationEventBusTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IntegrationEventBusTest extends AbstractIntegrationEventBusTest
 {

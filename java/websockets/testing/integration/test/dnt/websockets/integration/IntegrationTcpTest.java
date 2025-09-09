@@ -1,7 +1,7 @@
 package dnt.websockets.integration;
 
 import dnt.websockets.integration.tcp.dsl.AbstractIntegrationTcpTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IntegrationTcpTest extends AbstractIntegrationTcpTest
 {
