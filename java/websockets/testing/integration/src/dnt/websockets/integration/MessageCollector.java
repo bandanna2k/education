@@ -3,7 +3,9 @@ package dnt.websockets.integration;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.messages.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class MessageCollector implements MessageVisitor
@@ -12,32 +14,32 @@ public class MessageCollector implements MessageVisitor
 
     private final String name;
     private final Queue<AbstractMessage> messages = new LinkedList<>();
-    private final MessageVisitor messageVisitor;
+    private final List<MessageVisitor> messageVisitors;
 
-    public MessageCollector(String nameHelpsWithDebugging, MessageVisitor messageVisitor)
+    public MessageCollector(String nameHelpsWithDebugging, MessageVisitor... messageVisitors)
     {
         this.name = nameHelpsWithDebugging;
-        this.messageVisitor = messageVisitor;
+        this.messageVisitors = List.of(messageVisitors);
     }
 
     @Override
     public void visit(ExecutionLayer executionLayer, GetPropertyRequest request)
     {
-        this.messageVisitor.visit(executionLayer, request);
+        messageVisitors.forEach(v -> v.visit(executionLayer, request));
         messages.add(request);
     }
 
     @Override
     public void visit(ExecutionLayer executionLayer, SetPropertyRequest request)
     {
-        this.messageVisitor.visit(executionLayer, request);
+        messageVisitors.forEach(v -> v.visit(executionLayer, request));
         messages.add(request);
     }
 
     @Override
     public void visit(ExecutionLayer executionLayer, ClientPushPulse message)
     {
-        this.messageVisitor.visit(executionLayer, message);
+        messageVisitors.forEach(v -> v.visit(executionLayer, message));
         messages.add(message);
     }
 
@@ -45,42 +47,42 @@ public class MessageCollector implements MessageVisitor
     @Override
     public void visit(ExecutionLayer executionLayer, ErrorResponse response)
     {
-        this.messageVisitor.visit(executionLayer, response);
+        messageVisitors.forEach(v -> v.visit(executionLayer, response));
         messages.add(response);
     }
 
     @Override
     public void visit(ExecutionLayer executionLayer, GetPropertyResponse response)
     {
-        this.messageVisitor.visit(executionLayer, response);
+        messageVisitors.forEach(v -> v.visit(executionLayer, response));
         messages.add(response);
     }
 
     @Override
     public void visit(ExecutionLayer executionLayer, SetPropertyResponse response)
     {
-        this.messageVisitor.visit(executionLayer, response);
+        messageVisitors.forEach(v -> v.visit(executionLayer, response));
         messages.add(response);
     }
 
     @Override
     public void visit(ExecutionLayer executionLayer, ServerPushMessage message)
     {
-        this.messageVisitor.visit(executionLayer, message);
+        messageVisitors.forEach(v -> v.visit(executionLayer, message));
         messages.add(message);
     }
 
     @Override
     public void visit(ExecutionLayer executionLayer, GetStatusRequest request)
     {
-        this.messageVisitor.visit(executionLayer, request);
+        messageVisitors.forEach(v -> v.visit(executionLayer, request));
         messages.add(request);
     }
 
     @Override
     public void visit(ExecutionLayer executionLayer, GetStatusResponse message)
     {
-        this.messageVisitor.visit(executionLayer, message);
+        messageVisitors.forEach(v -> v.visit(executionLayer, message));
         messages.add(message);
     }
 
@@ -99,7 +101,7 @@ public class MessageCollector implements MessageVisitor
         return "MessageCollector{" +
                 "name='" + name + '\'' +
                 ", messages=" + messages +
-                ", messageVisitor=" + messageVisitor +
+                ", messageVisitors=" + messageVisitors +
                 '}';
     }
 }

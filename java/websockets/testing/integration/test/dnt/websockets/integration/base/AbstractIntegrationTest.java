@@ -33,12 +33,13 @@ public abstract class AbstractIntegrationTest
 
     private final MessageCollector testServerMessageCollector = new MessageCollector("Abstract Integration Test Server", serverMessageProcessor);
     private final MessageCollector testClientMessageCollector = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor);
+    private final MessageCollector testClientMessageCollector2 = new MessageCollector("Abstract Integration Test Client 2", clientMessageProcessor2);
 
-    private final MessageCollector testClientMessageCollector2 = new MessageCollector("Abstract Integration Test Client", clientMessageProcessor2);
-
-    // TODO Not quite right. Need to cater for both testClientMessageCollectors
-    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(testServerMessageCollector, testClientMessageCollector);
-//    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(serverMessageProcessor, clientMessageProcessor);
+    private final IntegrationExecutionLayer executionLayer = new IntegrationExecutionLayer(
+            testServerMessageCollector,
+            new MessageCollector("Client Test Collector (Multi)",
+                    testClientMessageCollector,
+                    testClientMessageCollector2));
 
     protected final ServerDriver serverDriver = new ServerDriver(executionLayer, serverMessageProcessor);
     protected final ClientDriver clientDriver = new ClientDriver(executionLayer, clientMessageProcessor);

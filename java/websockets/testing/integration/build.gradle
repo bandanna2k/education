@@ -22,8 +22,9 @@ dependencies {
     implementation          project(':java:websockets:server')
     implementation          project(':java:websockets:websockets-vertx')
 
-    testImplementation      'org.awaitility:awaitility:4.3.0'
     testImplementation      'com.lmax:simple-dsl:3.0.0'
+    testImplementation      'org.awaitility:awaitility:4.3.0'
+    testImplementation      'org.junit.jupiter:junit-jupiter-params:5.11.0'
     testImplementation      'org.assertj:assertj-core:3.27.4'
 }
 

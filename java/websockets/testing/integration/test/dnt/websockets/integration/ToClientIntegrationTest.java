@@ -4,29 +4,33 @@ import dnt.websockets.integration.base.AbstractIntegrationTest;
 import dnt.websockets.integration.base.ToClientTests;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class ToClientIntegrationTest
 {
     @Nested
     class MainTests extends AbstractIntegrationTest implements ToClientTests
     {
-        @Test
-        public void serverShouldRequestAndSucceed()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void serverShouldRequestAndSucceed(String source)
         {
-            server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
-            client.setStatus("Fantastic");
-            server.getStatusFromClient("client: session1", "expectedStatus: Fantastic");
+            server.getStatusFromClient("client: " + source, "expectedStatus: Wicked");
+            client(source).setStatus("Fantastic");
+            server.getStatusFromClient("client: " + source, "expectedStatus: Fantastic");
 
-            client.verifyMessage("GetStatusRequest");
+            client(source).verifyMessage("GetStatusRequest");
             server.verifyMessage("GetStatusResponse");
         }
 
-        @Test
-        public void serverShouldRequestAndFail()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void serverShouldRequestAndFail(String source)
         {
-            server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
-            client.setStatus("fail_requests");
-            server.getStatusFromClient("client: session1", "expectedErrorMessage: Request not accepted at this time.");
+            server.getStatusFromClient("client: " + source, "expectedStatus: Wicked");
+            client(source).setStatus("fail_requests");
+            server.getStatusFromClient("client: " + source, "expectedErrorMessage: Request not accepted at this time.");
         }
 
         @Test
@@ -51,12 +55,13 @@ public class ToClientIntegrationTest
             server.getStatusFromClient("client: session2", "expectedStatus: Fine");
         }
 
-        @Test
-        public void shouldFailOnNoResponseReceived()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void shouldFailOnNoResponseReceived(String source)
         {
-            server.getStatusFromClient("client: session1", "expectedStatus: Wicked");
-            client.setStatus("do_not_send_response");
-            server.getStatusFromClient("client: session1", "expectedErrorMessage: No response received");
+            server.getStatusFromClient("client: " + source, "expectedStatus: Wicked");
+            client(source).setStatus("do_not_send_response");
+            server.getStatusFromClient("client: " + source, "expectedErrorMessage: No response received");
         }
     }
 }
