@@ -10,6 +10,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/java" />
+            <option value="$PROJECT_DIR$/java/common" />
             <option value="$PROJECT_DIR$/java/selenium" />
           </set>
         </option>

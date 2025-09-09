@@ -17,5 +17,5 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    dependsOn(':java:selenium:test')
+    dependsOn(':java:common:test')
 }

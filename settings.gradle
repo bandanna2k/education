@@ -1,3 +1,4 @@
 rootProject.name = 'education'
 
 include 'java:selenium'
+include 'java:common'
