@@ -2,13 +2,15 @@ package education.maths;
 
 import education.maths.compressors.Compressor;
 import education.maths.compressors.FastPFORCompression;
-import education.maths.compressors.LzmaCompression;
 import education.maths.compressors.NoCompression;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class SortedIntegers {
     final static Set<Integer> INITIAL_DATA = initialData();

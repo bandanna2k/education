@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/java" />
             <option value="$PROJECT_DIR$/java/common" />
             <option value="$PROJECT_DIR$/java/jackson" />
+            <option value="$PROJECT_DIR$/java/maths" />
             <option value="$PROJECT_DIR$/java/selenium" />
             <option value="$PROJECT_DIR$/java/syntax" />
           </set>

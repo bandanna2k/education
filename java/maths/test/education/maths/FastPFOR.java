@@ -1,8 +1,9 @@
 package education.maths;
 
+
 import me.lemire.integercompression.IntWrapper;
 import me.lemire.integercompression.differential.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
