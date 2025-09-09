@@ -104,9 +104,4 @@ public class MessageCollector implements MessageVisitor
                 ", messageVisitors=" + messageVisitors +
                 '}';
     }
-
-    public void clearMessages()
-    {
-        messages.clear();
-    }
 }

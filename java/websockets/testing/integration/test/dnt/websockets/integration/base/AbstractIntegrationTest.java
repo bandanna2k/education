@@ -70,14 +70,8 @@ public abstract class AbstractIntegrationTest
     @BeforeEach
     public void setUp()
     {
-        executionLayer.register(
-                "session1",
-                new ClientTextMessageHandler(executionLayer, testClientMessageCollector),
-                testClientMessageCollector);
-        executionLayer.register(
-                "session2",
-                new ClientTextMessageHandler(executionLayer, testClientMessageCollector2),
-                testClientMessageCollector2);
+        executionLayer.register("session1", new ClientTextMessageHandler(executionLayer, testClientMessageCollector));
+        executionLayer.register("session2", new ClientTextMessageHandler(executionLayer, testClientMessageCollector2));
     }
 
     @AfterEach

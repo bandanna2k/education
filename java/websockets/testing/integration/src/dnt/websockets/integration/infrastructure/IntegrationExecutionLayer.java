@@ -21,7 +21,7 @@ public class IntegrationExecutionLayer implements ExecutionLayer
 
     private final ServerTextMessageHandler serverTextMessageHandler;
     private final Map<String, ClientTextMessageHandler> clientTextMessageHandlers = new HashMap<>();
-    private final Map<String, MessageCollector> internalClientMessageCollectors = new HashMap<>();
+    private final MessageCollector internalClientMessageCollector;
     private final MessageCollector internalServerMessageCollector;
 
     private Optional<String> maybeFailNextMessage = Optional.empty();
@@ -32,23 +32,24 @@ public class IntegrationExecutionLayer implements ExecutionLayer
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(); // Only use for rewriting a request
 
-    public IntegrationExecutionLayer(MessageVisitor serverMessageProcessor)
+    public IntegrationExecutionLayer(MessageVisitor serverMessageProcessor,
+                                     MessageVisitor clientMessageProcessor)
     {
+        this.internalClientMessageCollector = new MessageCollector("Internal Client", clientMessageProcessor);
         this.internalServerMessageCollector = new MessageCollector("Internal Server", serverMessageProcessor);
 
         this.serverTextMessageHandler = new ServerTextMessageHandler(this, serverMessageProcessor);
     }
 
-    public void register(String clientId, ClientTextMessageHandler clientTextMessageHandler, MessageVisitor clientMessageProcessor)
+    public void register(String clientId, ClientTextMessageHandler clientTextMessageHandler)
     {
         clientTextMessageHandlers.put(clientId, clientTextMessageHandler);
-        internalClientMessageCollectors.put(clientId, new MessageCollector("Internal Client " + clientId, clientMessageProcessor));
     }
 
     @Override
     public void serverCompleteResponse(AbstractResponse response)
     {
-        response.visit(this, internalClientMessageCollectors);
+        response.visit(this, internalClientMessageCollector);
     }
 
     @Override
