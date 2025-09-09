@@ -1,7 +1,7 @@
 package education.vertx.json;
 
 import io.vertx.core.Future;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 

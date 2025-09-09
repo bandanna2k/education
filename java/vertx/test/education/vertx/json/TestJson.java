@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import education.vertx.json.registersubtypes.response.Balance;
 import education.vertx.json.registersubtypes.response.Error;
 import education.vertx.json.registersubtypes.response.Response;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
