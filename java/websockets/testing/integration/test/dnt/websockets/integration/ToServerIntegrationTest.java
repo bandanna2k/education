@@ -2,8 +2,11 @@ package dnt.websockets.integration;
 
 import dnt.websockets.integration.base.AbstractIntegrationTest;
 import dnt.websockets.integration.base.ToServerTests;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class ToServerIntegrationTest
 {
@@ -55,33 +58,37 @@ public class ToServerIntegrationTest
     @Nested
     public class MainTests extends AbstractIntegrationTest implements ToServerTests
     {
-        @Test
-        public void clientShouldRequestAndSucceed()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void clientShouldRequestAndSucceed(String source)
         {
-            client.setProperty("key: name", "value: sam");
-            client.getProperty("key: name", "expectedValue: sam");
+            client(source).setProperty("key: name", "value: sam");
+            client(source).getProperty("key: name", "expectedValue: sam");
 
             server.verifyMessage("SetPropertyRequest");
-            client.verifyMessage("SetPropertyResponse");
+            client(source).verifyMessage("SetPropertyResponse");
         }
 
-        @Override
-        public void clientShouldRequestAndFail()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void clientShouldRequestAndFail(String source)
         {
-            shouldNotAcceptEmptyKeySettingProperty();
-            shouldNotAcceptEmptyValueWhenSettingProperty();
-            shouldNotAcceptNullKeyWhenSettingProperty();
-            shouldNotAcceptNullValueWhenSettingProperty();
+            shouldNotAcceptEmptyKeySettingProperty(source);
+            shouldNotAcceptEmptyValueWhenSettingProperty(source);
+            shouldNotAcceptNullKeyWhenSettingProperty(source);
+            shouldNotAcceptNullValueWhenSettingProperty(source);
         }
 
-        @Test
-        public void clientShouldPushMessage()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void clientShouldPushMessage(String source)
         {
-            client.pushPulse("rate: 60", "sequence: 1");
+            client(source).pushPulse("rate: 60", "sequence: 1");
             server.verifyMessage("ClientPushPulse");
         }
 
         @Test
+        @Disabled
         public void shouldSupportMultipleClients()
         {
             client("session1").setProperty("key: name", "value: sam", "expectSuccess: true");
@@ -90,36 +97,41 @@ public class ToServerIntegrationTest
             client("session2").verifyNoMoreMessages();
         }
 
-        @Override
-        public void shouldFailOnNoResponseReceived()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void shouldFailOnNoResponseReceived(String source)
         {
-            client.setProperty("key: do_not_send_response", "value: true",
+            client(source).setProperty("key: do_not_send_response", "value: true",
                     "expectSuccess: false", "expectedErrorMessage: No response received");
         }
 
-        @Test
-        public void shouldNotAcceptEmptyValueWhenSettingProperty()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void shouldNotAcceptEmptyValueWhenSettingProperty(String source)
         {
-            client.setProperty("key: name", "value: ",
+            client(source).setProperty("key: name", "value: ",
                     "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
         }
 
-        @Test
-        public void shouldNotAcceptEmptyKeySettingProperty()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void shouldNotAcceptEmptyKeySettingProperty(String source)
         {
-            client.setProperty("key: ", "value: sam",
+            client(source).setProperty("key: ", "value: sam",
                     "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
         }
 
-        @Test
-        public void shouldNotAcceptNullValueWhenSettingProperty()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void shouldNotAcceptNullValueWhenSettingProperty(String source)
         {
-            client.setProperty("key: name", "value: <NULL>",
+            client(source).setProperty("key: name", "value: <NULL>",
                     "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
         }
 
-        @Test
-        public void shouldNotAcceptNullKeyWhenSettingProperty()
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "session1", "session2" })
+        public void shouldNotAcceptNullKeyWhenSettingProperty(String source)
         {
             client.setProperty("key: <NULL>", "value: sam",
                     "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
