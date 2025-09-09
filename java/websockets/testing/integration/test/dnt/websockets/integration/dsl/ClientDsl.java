@@ -112,4 +112,9 @@ public class ClientDsl
                 new RequiredArg("rate"));
         clientDriver.setStatus(params.value("rate"));
     }
+
+    public void clearMessages()
+    {
+        collector.clearMessages();
+    }
 }

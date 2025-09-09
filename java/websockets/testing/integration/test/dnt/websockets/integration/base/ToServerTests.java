@@ -2,14 +2,14 @@ package dnt.websockets.integration.base;
 
 public interface ToServerTests
 {
-    void clientShouldRequestAndSucceed();
-    void clientShouldRequestAndFail();
-    void clientShouldPushMessage();
+    void clientShouldRequestAndSucceed(String source);
+    void clientShouldRequestAndFail(String source);
+    void clientShouldPushMessage(String source);
     void shouldSupportMultipleClients();
-    void shouldFailOnNoResponseReceived();
+    void shouldFailOnNoResponseReceived(String source);
 
-    void shouldNotAcceptEmptyValueWhenSettingProperty();
-    void shouldNotAcceptEmptyKeySettingProperty();
-    void shouldNotAcceptNullValueWhenSettingProperty();
-    void shouldNotAcceptNullKeyWhenSettingProperty();
+    void shouldNotAcceptEmptyValueWhenSettingProperty(String source);
+    void shouldNotAcceptEmptyKeySettingProperty(String source);
+    void shouldNotAcceptNullValueWhenSettingProperty(String source);
+    void shouldNotAcceptNullKeyWhenSettingProperty(String source);
 }
