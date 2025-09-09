@@ -7,8 +7,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import education.jackson.response.Balance;
 import education.jackson.response.Balances;
 import education.jackson.response.Response;
-import education.jackson.response.ResponseVisitor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.UUID;

@@ -6,14 +6,12 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import education.jackson.versioning.casestudy1.requests.Request;
 import education.jackson.versioning.casestudy1.requests.UpsertCustomer;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@RunWith(Enclosed.class)
 public class TestVersioningCaseStudy
 {
     private static final String JSON_WITH_NAME_V1 = """
@@ -50,7 +48,8 @@ public class TestVersioningCaseStudy
                 .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
     }
 
-    public static class TestJsonModuleVersion1
+    @Nested
+    class TestJsonModuleVersion1
     {
         @Test
         public void givenVersion1Protocol_RequestVersion1Works() throws JsonProcessingException
@@ -78,7 +77,8 @@ public class TestVersioningCaseStudy
         }
     }
 
-    public static class TestJsonModuleVersion2
+    @Nested
+    class TestJsonModuleVersion2
     {
         @Test
         public void givenVersion2Protocol_RequestVersion1DoesNotWork() throws JsonProcessingException
@@ -107,7 +107,8 @@ public class TestVersioningCaseStudy
         }
     }
 
-    public static class TestJsonModuleVersion3
+    @Nested
+    class TestJsonModuleVersion3
     {
         @Test
         public void givenVersion3Protocol_RequestVersion1DoesNotWork() throws JsonProcessingException

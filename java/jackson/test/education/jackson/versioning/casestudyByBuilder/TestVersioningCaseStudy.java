@@ -10,13 +10,11 @@ import education.jackson.versioning.casestudyByBuilder.converters.UpsertCustomer
 import education.jackson.versioning.casestudyByBuilder.converters.Request;
 import education.jackson.versioning.casestudyByBuilder.pojos.UpsertCustomer;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-@RunWith(Enclosed.class)
 public class TestVersioningCaseStudy
 {
     private static final String JSON_WITH_NAME_V1 = """
@@ -53,7 +51,8 @@ public class TestVersioningCaseStudy
                 .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
     }
 
-    public static class TestJsonModuleVersion1
+    @Nested
+    class TestJsonModuleVersion1
     {
         private ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion1());
@@ -78,7 +77,8 @@ public class TestVersioningCaseStudy
         }
     }
 
-    public static class TestJsonModuleVersion2
+    @Nested
+    class TestJsonModuleVersion2
     {
         private ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion2());
@@ -103,7 +103,8 @@ public class TestVersioningCaseStudy
         }
     }
 
-    public static class TestJsonModuleVersion3
+    @Nested
+    class TestJsonModuleVersion3
     {
         private ObjectMapper mapper = newBaseMapper()
                 .registerModule(new JsonModuleVersion3());
@@ -128,7 +129,8 @@ public class TestVersioningCaseStudy
         }
     }
 
-    public static class TestAnotherRequest
+    @Nested
+    class TestAnotherRequest
     {
         @Test
         public void canAlsoDeserialiseOtherRequests () throws JsonProcessingException

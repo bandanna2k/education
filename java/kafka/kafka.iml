@@ -14,7 +14,6 @@
     <orderEntry type="library" name="apache.kafka.streams" level="project" />
     <orderEntry type="library" name="apache.kafka.clients" level="project" />
     <orderEntry type="library" name="apache.kafka.connect.json" level="project" />
-    <orderEntry type="module" module-name="jackson" />
     <orderEntry type="library" name="springframework.spring.jdbc" level="project" />
     <orderEntry type="library" name="testcontainers" level="project" />
     <orderEntry type="library" name="flywaydb.flyway.mysql" level="project" />
@@ -24,5 +23,6 @@
     <orderEntry type="library" name="io.vertx.core" level="project" />
     <orderEntry type="library" name="io.vertx.web" level="project" />
     <orderEntry type="module" module-name="education.java.common.main" />
+    <orderEntry type="module" module-name="education.java.jackson.main" />
   </component>
 </module>
