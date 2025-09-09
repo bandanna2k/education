@@ -1,7 +1,7 @@
 package education.syntax.systemout;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class SystemOutTest
 {
@@ -17,7 +17,7 @@ public class SystemOutTest
     }
 
     @Test
-    @Ignore // Does not work with test and intellij
+    @Disabled // Does not work with test and intellij
     public void testOverwritingPrintedLine() throws InterruptedException
     {
         for (int i = 0; i < 100; i++)

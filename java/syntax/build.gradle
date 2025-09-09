@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation      platform('org.junit:junit-bom:5.10.0')
+    testImplementation      'org.junit.jupiter:junit-jupiter-engine:5.13.4'
+    testRuntimeOnly         'org.junit.platform:junit-platform-launcher'
+
+    testImplementation      'org.assertj:assertj-core:3.27.4'
+    testImplementation      'org.hamcrest:hamcrest:3.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        resources {
+            srcDirs = ['resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['test']
+        }
+        resources {
+            srcDirs = ['resources']
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,6 +1,6 @@
 package education.syntax.instanceOf;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Consumer;
 
@@ -29,7 +29,7 @@ public class InstanceOfTest
         }
         {
             MyBaseObject object = new MyObject();
-            ifInstanceOf(object, Long.class, _ -> fail());
+            ifInstanceOf(object, Long.class, unused -> fail());
         }
     }
 

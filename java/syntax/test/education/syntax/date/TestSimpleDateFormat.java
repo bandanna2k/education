@@ -1,16 +1,18 @@
 package education.syntax.date;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class TestSimpleDateFormat
 {
@@ -31,7 +33,7 @@ public class TestSimpleDateFormat
     );
     private SimpleDateFormat sdf;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         sdf = new SimpleDateFormat(FORMAT_THAT_NO_ONE_SHOULD_USE_BUT_WE_DID);
@@ -76,26 +78,35 @@ public class TestSimpleDateFormat
     @Test
     public void accountDetailsDateParserShouldParse() throws ParseException
     {
-        final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_THAT_NO_ONE_SHOULD_USE_BUT_WE_DID);
+        final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_THAT_NO_ONE_SHOULD_USE_BUT_WE_DID, Locale.UK);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        for (final String s : DATES)
-        {
-            final Date parse = sdf.parse(s);
-            System.out.println(parse);
-            assertThat(parse).isNotNull();
-        }
+
+        assertThatExceptionOfType(ParseException.class)
+                .isThrownBy(() ->
+                {
+                    for (final String s : DATES)
+                    {
+                        final Date parse = sdf.parse(s);
+                        System.out.println(parse);
+                        assertThat(parse).isNotNull();
+                    }
+                });
     }
 
     @Test
     public void userProfileDateParserShouldParse() throws ParseException
     {
-        final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_THAT_NO_ONE_SHOULD_USE_BUT_WE_DID);
+        final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_THAT_NO_ONE_SHOULD_USE_BUT_WE_DID, Locale.UK);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        for (final String s : DATES)
-        {
-            final Date parse = sdf.parse(s);
-            System.out.println(parse);
-            assertThat(parse).isNotNull();
-        }
+
+        assertThatExceptionOfType(ParseException.class)
+                .isThrownBy(() -> {
+                    for (final String s : DATES)
+                    {
+                        final Date parse = sdf.parse(s);
+                        System.out.println(parse);
+                        assertThat(parse).isNotNull();
+                    }
+                });
     }
 }

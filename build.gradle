@@ -15,7 +15,23 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+allprojects {
+    tasks.withType(Test) {
+        useJUnitPlatform()
+        outputs.upToDateWhen { false }
+        testLogging {
+            events = ["passed", "skipped", "failed"]
+            exceptionFormat = "full"
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+            showStandardStreams = true
+            displayGranularity = 2
+        }
+    }
+}
+
 test {
-    useJUnitPlatform()
     dependsOn(':java:common:test')
+    dependsOn(':java:syntax:test')
 }

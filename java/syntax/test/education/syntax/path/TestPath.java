@@ -1,24 +1,18 @@
 package education.syntax.path;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class TestPath
 {
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    @Before
-    public void setUp() throws Exception
-    {
-        temporaryFolder.create();
-    }
+    @TempDir
+    private Path temporaryFolder;
 
     @Test
     public void testPath() throws IOException
@@ -30,7 +24,7 @@ public class TestPath
             System.out.println("Absolute Path: " + file.getAbsolutePath());
         }
         {
-            File file = temporaryFolder.newFolder();
+            File file = Files.createFile(temporaryFolder.resolve("myfile")).toFile();
             File parent = file.getParentFile();
 
             System.out.println("Path:          " + file.getPath());
