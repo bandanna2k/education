@@ -36,7 +36,7 @@ public class TestSimpleDateFormat
     @BeforeEach
     public void setUp()
     {
-        sdf = new SimpleDateFormat(FORMAT_THAT_NO_ONE_SHOULD_USE_BUT_WE_DID);
+        sdf = new SimpleDateFormat(FORMAT_THAT_NO_ONE_SHOULD_USE_BUT_WE_DID, Locale.UK);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
