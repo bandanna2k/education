@@ -35,7 +35,7 @@ public class VolatileKeywordTest extends TestClassWithVolatileField {
                         testClass.increment();
                         testClass.append();
                     }
-                    System.out.println(testClass.sb.toString());
+//                    System.out.println(testClass.sb.toString());
                 }
             });
             listOfThreads.add(thread);
