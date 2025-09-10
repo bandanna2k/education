@@ -2,16 +2,12 @@ package dnt.websockets.vertx;
 
 import io.vertx.core.Future;
 import org.assertj.core.api.Assertions;
-import org.awaitility.Awaitility;
-import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
 
 class ManualAsyncExecutorTest
 {
@@ -21,71 +17,78 @@ class ManualAsyncExecutorTest
     @Test
     void shouldCompleteExecutor()
     {
-        ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<>(idGenerator);
+        try(ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
+                .withHandlerForPromisesNotCompletedDuringNormalOperations(n -> fail("Unexpected promises not complete. Count: " + n)))
+        {
+            AtomicLong corrId = new AtomicLong();
+            Future<String> request = executor.execute(corrId::set);
 
-        AtomicLong corrId = new AtomicLong();
-        Future<String> request = executor.execute(corrId::set);
+            executor.onResponseReceived(corrId.get(), "Hello");
 
-        executor.onResponseReceived(corrId.get(), "Hello");
-
-        String response = request.toCompletionStage().toCompletableFuture().join();
-        assertThat(response).isEqualTo("Hello");
+            String response = request.toCompletionStage().toCompletableFuture().join();
+            assertThat(response).isEqualTo("Hello");
+        }
     }
 
     @Test
     void shouldNotCompleteExecutor()
     {
-        ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<>(idGenerator);
+        Assertions.assertThatExceptionOfType(AssertionError.class)
 
-        AtomicLong corrId = new AtomicLong();
-        Future<String> request = executor.execute(corrId::set);
+                .isThrownBy(() -> {
+                    try (ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
+                            .withHandlerForPromisesNotCompletedDuringNormalOperations(n -> fail("Unexpected promises not complete. Count: " + n))) {
+                        AtomicLong corrId = new AtomicLong();
+                        Future<String> request = executor.execute(corrId::set);
 
-        Assertions.assertThatExceptionOfType(ConditionTimeoutException.class)
-                        .isThrownBy(() -> Awaitility.await()
-                                .atMost(Duration.ofMillis(500))
-                                .until(() -> {
-                                    String response = request.toCompletionStage().toCompletableFuture().join();
-                                    return true; // This return won't be reached if method times out
-                                }));
+                        // Don't respond
+                    }
+                })
+                .withMessage("Unexpected promises not complete. Count: 1");
     }
 
     @Test
     void canCompleteInAnyOrder()
     {
-        AsyncExecutor<String> executor = ManualAsyncExecutorFactory.newExecutor();
+        try(ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
+                .withHandlerForPromisesNotCompletedDuringNormalOperations(n -> fail("Unexpected promises not complete. Count: " + n)))
+        {
+            AtomicLong corrId1 = new AtomicLong();
+            Future<String> request1 = executor.execute(corrId1::set);
 
-        AtomicLong corrId1 = new AtomicLong();
-        Future<String> request1 = executor.execute(corrId1::set);
+            AtomicLong corrId2 = new AtomicLong();
+            Future<String> request2 = executor.execute(corrId2::set);
 
-        AtomicLong corrId2 = new AtomicLong();
-        Future<String> request2 = executor.execute(corrId2::set);
+            executor.onResponseReceived(corrId2.get(), "2");
 
-        executor.onResponseReceived(corrId2.get(), "2");
+            String response2 = request2.toCompletionStage().toCompletableFuture().join();
+            assertThat(response2).isEqualTo("2");
 
-        String response2 = request2.toCompletionStage().toCompletableFuture().join();
-        assertThat(response2).isEqualTo("2");
+            executor.onResponseReceived(corrId1.get(), "1");
 
-        executor.onResponseReceived(corrId1.get(), "1");
-
-        String response1 = request1.toCompletionStage().toCompletableFuture().join();
-        assertThat(response1).isEqualTo("1");
+            String response1 = request1.toCompletionStage().toCompletableFuture().join();
+            assertThat(response1).isEqualTo("1");
+        }
     }
 
     @Test
     void cantCompleteRequestTwice()
     {
         AtomicLong countOfNotFound = new AtomicLong(0);
-        ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
-                .withHandlerForPromiseNotFound(aLong -> countOfNotFound.incrementAndGet());
+        try (ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
+                .withHandlerForPromisesNotCompletedDuringNormalOperations(n -> fail("Unexpected promises not complete. Count: " + n))
+                .withHandlerForPromiseNotFound(aLong -> countOfNotFound.incrementAndGet()))
+        {
 
-        AtomicLong corrId = new AtomicLong();
-        Future<String> request = executor.execute(corrId::set);
+            AtomicLong corrId = new AtomicLong();
+            Future<String> request = executor.execute(corrId::set);
 
-        executor.onResponseReceived(corrId.get(), "Hello");
-        executor.onResponseReceived(corrId.get(), "Hello2");
+            executor.onResponseReceived(corrId.get(), "Hello");
+            executor.onResponseReceived(corrId.get(), "Hello2");
 
-        String response = request.toCompletionStage().toCompletableFuture().join();
-        assertThat(response).isEqualTo("Hello");
-        assertThat(countOfNotFound.get()).isEqualTo(1);
+            String response = request.toCompletionStage().toCompletableFuture().join();
+            assertThat(response).isEqualTo("Hello");
+            assertThat(countOfNotFound.get()).isEqualTo(1);
+        }
     }
 }

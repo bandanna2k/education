@@ -3,16 +3,19 @@ package dnt.websockets.vertx;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>
+public class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>, Closeable
 {
     private final UniqueIdGenerator idGenerator;
     private final Map<Long, Promise<Response>> correlationIdToPromise = new HashMap<>();
 
     private Consumer<Long> handlerForPromiseNotFound = correlationId -> {};
+    private Consumer<Integer> handlerForPromisesNotCompletedDuringNormalOperations = count -> {};
 
     public ManualAsyncExecutor(UniqueIdGenerator idGenerator)
     {
@@ -22,6 +25,12 @@ public class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>
     public ManualAsyncExecutor<Response> withHandlerForPromiseNotFound(Consumer<Long> handler)
     {
         this.handlerForPromiseNotFound = handler;
+        return this;
+    }
+
+    public ManualAsyncExecutor<Response> withHandlerForPromisesNotCompletedDuringNormalOperations(Consumer<Integer> handler)
+    {
+        this.handlerForPromisesNotCompletedDuringNormalOperations = handler;
         return this;
     }
 
@@ -54,5 +63,22 @@ public class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>
     protected void handlePromiseNotFound(long correlationId)
     {
         this.handlerForPromiseNotFound.accept(correlationId);
+    }
+
+    @Override
+    public void close()
+    {
+        int size = correlationIdToPromise.size();
+        if(size == 0)
+        {
+            return;
+        }
+
+        correlationIdToPromise.forEach((correlationId, promise) -> {
+            promise.fail("Promise not closed during normal operations.");
+        });
+        correlationIdToPromise.clear();
+
+        this.handlerForPromisesNotCompletedDuringNormalOperations.accept(size);
     }
 }
