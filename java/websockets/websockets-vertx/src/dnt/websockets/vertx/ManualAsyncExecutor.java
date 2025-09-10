@@ -6,7 +6,7 @@ import io.vertx.core.Promise;
 import java.util.HashMap;
 import java.util.Map;
 
-class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>
+public class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>
 {
     private final UniqueIdGenerator idGenerator;
     private final Map<Long, Promise<Response>> correlationIdToPromise = new HashMap<>();

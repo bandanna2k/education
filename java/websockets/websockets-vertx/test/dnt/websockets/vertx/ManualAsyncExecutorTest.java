@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ManualAsyncExecutorTest
@@ -45,5 +46,27 @@ class ManualAsyncExecutorTest
                                     String response = request.toCompletionStage().toCompletableFuture().join();
                                     return true; // This return won't be reached if method times out
                                 }));
+    }
+
+    @Test
+    void canCompleteInAnyOrder()
+    {
+        AsyncExecutor<String> executor = ManualAsyncExecutorFactory.newExecutor();
+
+        AtomicLong corrId1 = new AtomicLong();
+        Future<String> request1 = executor.execute(corrId1::set);
+
+        AtomicLong corrId2 = new AtomicLong();
+        Future<String> request2 = executor.execute(corrId2::set);
+
+        executor.onResponseReceived(corrId2.get(), "2");
+
+        String response2 = request2.toCompletionStage().toCompletableFuture().join();
+        assertThat(response2).isEqualTo("2");
+
+        executor.onResponseReceived(corrId1.get(), "1");
+
+        String response1 = request1.toCompletionStage().toCompletableFuture().join();
+        assertThat(response1).isEqualTo("1");
     }
 }

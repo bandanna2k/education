@@ -1,12 +1,10 @@
 package dnt.websockets.vertx;
 
-import io.vertx.core.Vertx;
-
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class ManualAsyncExecutorFactory
 {
-    public static <T> ManualAsyncExecutor<T> newExecutor(Vertx vertx)
+    public static <T> ManualAsyncExecutor<T> newExecutor()
     {
         final UniqueIdGenerator uniqueIdGenerator = new UniqueIdGenerator()
         {

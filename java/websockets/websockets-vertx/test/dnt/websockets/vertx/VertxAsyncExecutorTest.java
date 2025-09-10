@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +22,7 @@ class VertxAsyncExecutorTest
     @Test
     void shouldCompleteExecutor()
     {
-        VertxAsyncExecutor<String> executor = new VertxAsyncExecutor<>(VERTX, idGenerator);
+        VertxAsyncExecutor<String> executor = newExecutor(VERTX);
 
         AtomicLong corrId = new AtomicLong();
         Future<String> request = executor.execute(corrId::set);
@@ -44,5 +45,27 @@ class VertxAsyncExecutorTest
                 .isThrownBy(() -> {
                     String response = request.toCompletionStage().toCompletableFuture().join();
                 });
+    }
+
+    @Test
+    void canCompleteInAnyOrder()
+    {
+        VertxAsyncExecutor<String> executor = newExecutor(VERTX);
+
+        AtomicLong corrId1 = new AtomicLong();
+        Future<String> request1 = executor.execute(corrId1::set);
+
+        AtomicLong corrId2 = new AtomicLong();
+        Future<String> request2 = executor.execute(corrId2::set);
+
+        executor.onResponseReceived(corrId2.get(), "2");
+
+        String response2 = request2.toCompletionStage().toCompletableFuture().join();
+        assertThat(response2).isEqualTo("2");
+
+        executor.onResponseReceived(corrId1.get(), "1");
+
+        String response1 = request1.toCompletionStage().toCompletableFuture().join();
+        assertThat(response1).isEqualTo("1");
     }
 }
