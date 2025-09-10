@@ -26,9 +26,8 @@ public class ClientExecutionLayer implements ExecutionLayer
     }
 
     @Override
-    public <T extends AbstractResponse> Future<Result<T, String>> clientRequestOnServer(AbstractRequest request)
+    public <T extends AbstractResponse> Future<Result<T, String>> clientRequestFromServer(AbstractRequest request)
     {
-        LOGGER.debug("Client --> Pojo     Server | Requesting {}", request);
         return executor.execute(correlationId -> publisher.send(request.attachCorrelationId(correlationId)))
                 .map(ClientExecutionLayer::checkForErrorResponse)
                 .recover(throwable ->

@@ -2,18 +2,13 @@ package dnt.websockets.integration.infrastructure;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dnt.websockets.client.ClientExecutionLayer;
 import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.infrastructure.ExecutionLayer;
-import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.integration.MessageCollector;
 import dnt.websockets.messages.*;
-import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerTextMessageHandler;
-import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
-import io.vertx.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +18,6 @@ import java.util.function.Supplier;
 public class IntegrationExecutionLayer implements ExecutionLayer
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationExecutionLayer.class);
-    private static final Vertx VERTX = Vertx.vertx();
 
     private final ServerTextMessageHandler serverTextMessageHandler;
     private final Map<String, ClientTextMessageHandler> clientTextMessageHandlers = new HashMap<>();
@@ -38,52 +32,9 @@ public class IntegrationExecutionLayer implements ExecutionLayer
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(); // Only use for rewriting a request
 
-    private final Publisher serverIntegrationPublisher = new Publisher() {
-        final ObjectMapper mapper = new ObjectMapper();
-        @Override
-        public void send(AbstractMessage message) {
-            try
-            {
-                String json = mapper.writeValueAsString(message);
-                clientTextMessageHandlers.values().forEach(handler -> handler.handle(json));
-            }
-            catch (JsonProcessingException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-    };
-    private final ServerExecutionLayer serverExecutionLayer = new ServerExecutionLayer(VertxAsyncExecutor.newExecutor(VERTX), serverIntegrationPublisher);
-    private final Publisher clientIntegrationPublisher = new Publisher()
-    {
-        final ObjectMapper mapper = new ObjectMapper();
-
-        @Override
-        public void send(AbstractMessage message)
-        {
-            try
-            {
-                String json = mapper.writeValueAsString(message);
-                serverTextMessageHandler.handle(json);
-            }
-            catch (JsonProcessingException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-    };
-    private final ClientExecutionLayer clientExecutionLayer = new ClientExecutionLayer(VertxAsyncExecutor.newExecutor(VERTX), clientIntegrationPublisher);
-
-
     public IntegrationExecutionLayer(MessageVisitor serverMessageProcessor,
                                      MessageVisitor clientMessageProcessor)
     {
-
-
-
-
-
-
         this.internalClientMessageCollector = new MessageCollector("Internal Client", clientMessageProcessor);
         this.internalServerMessageCollector = new MessageCollector("Internal Server", serverMessageProcessor);
 
@@ -98,74 +49,68 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     @Override
     public void serverCompleteResponse(AbstractResponse response)
     {
-        clientExecutionLayer.serverCompleteResponse(response);
         response.visit(this, internalClientMessageCollector);
     }
 
     @Override
     public void clientCompleteResponse(AbstractResponse response)
     {
-        serverExecutionLayer.clientCompleteResponse(response);
         response.visit(this, internalServerMessageCollector);
     }
 
     @Override
     public <T extends AbstractResponse> Future<Result<T, String>> serverRequestOnClient(AbstractServerRequest request)
     {
-        return serverExecutionLayer.serverRequestOnClient(request);
-
-//        final ClientTextMessageHandler clientTextMessageHandler = clientTextMessageHandlers.get(request.clientId);
-//        final Supplier<Result<T, Object>> requestProcessor = () ->
-//        {
-//            try
-//            {
-//                String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
-//                clientTextMessageHandler.handle(serialisedRequest);
-//                T lastMessage = internalServerMessageCollector.getLastMessage();
-//                if (lastMessage == null)
-//                {
-//                    LOGGER.error("Client  X- JSON <-- Server | No client response received {}", request);
-//                    return Result.failure("No response received");
-//                }
-//                assert canJacksonDeserialize(ServerTextMessageHandler.OBJECT_MAPPER, lastMessage)
-//                        : String.format("ServerTextMessageHandler Cannot serialise %s", lastMessage.getClass().getSimpleName());
-//                return intercept(request, lastMessage);
-//            }
-//            catch (JsonProcessingException e)
-//            {
-//                throw new RuntimeException(e);
-//            }
-//        };
-//        return request(requestProcessor);
+        final ClientTextMessageHandler clientTextMessageHandler = clientTextMessageHandlers.get(request.clientId);
+        final Supplier<Result<T, Object>> requestProcessor = () ->
+        {
+            try
+            {
+                String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
+                clientTextMessageHandler.handle(serialisedRequest);
+                T lastMessage = internalServerMessageCollector.getLastMessage();
+                if (lastMessage == null)
+                {
+                    LOGGER.error("Client  X- JSON <-- Server | No client response received {}", request);
+                    return Result.failure("No response received");
+                }
+                assert canJacksonDeserialize(ServerTextMessageHandler.OBJECT_MAPPER, lastMessage)
+                        : String.format("ServerTextMessageHandler Cannot serialise %s", lastMessage.getClass().getSimpleName());
+                return intercept(request, lastMessage);
+            }
+            catch (JsonProcessingException e)
+            {
+                throw new RuntimeException(e);
+            }
+        };
+        return request(requestProcessor);
     }
 
     @Override
-    public <T extends AbstractResponse> Future<Result<T, String>> clientRequestOnServer(AbstractRequest request)
+    public <T extends AbstractResponse> Future<Result<T, String>> clientRequestFromServer(AbstractRequest request)
     {
-        return clientExecutionLayer.clientRequestOnServer(request);
-
-//        final Supplier<Result<T, Object>> processRequest = () ->
-//        {
-//            try
-//            {
-//                String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
-//                serverTextMessageHandler.handle(serialisedRequest);
-//                T lastMessage = internalClientMessageCollector.getLastMessage();
-//                if (lastMessage == null)
-//                {
-//                    LOGGER.error("Client --> JSON -X  Server | No server response received {}", request);
-//                    return Result.failure("No response received");
-//                }
-//                assert canJacksonDeserialize(ClientTextMessageHandler.OBJECT_MAPPER, lastMessage)
-//                        : String.format("ClientTextMessageHandler Cannot serialise %s", lastMessage.getClass().getSimpleName());
-//                return intercept(request, lastMessage);
-//            }
-//            catch (JsonProcessingException e)
-//            {
-//                throw new RuntimeException(e);
-//            }
-//        };
-//        return request(processRequest);
+        final Supplier<Result<T, Object>> processRequest = () ->
+        {
+            try
+            {
+                String serialisedRequest = OBJECT_MAPPER.writeValueAsString(request);
+                serverTextMessageHandler.handle(serialisedRequest);
+                T lastMessage = internalClientMessageCollector.getLastMessage();
+                if (lastMessage == null)
+                {
+                    LOGGER.error("Client --> JSON -X  Server | No server response received {}", request);
+                    return Result.failure("No response received");
+                }
+                assert canJacksonDeserialize(ClientTextMessageHandler.OBJECT_MAPPER, lastMessage)
+                        : String.format("ClientTextMessageHandler Cannot serialise %s", lastMessage.getClass().getSimpleName());
+                return intercept(request, lastMessage);
+            }
+            catch (JsonProcessingException e)
+            {
+                throw new RuntimeException(e);
+            }
+        };
+        return request(processRequest);
     }
 
     private <T extends AbstractResponse> Future<Result<T, String>> request(Supplier<Result<T, Object>> processRequest)
@@ -204,31 +149,29 @@ public class IntegrationExecutionLayer implements ExecutionLayer
     @Override
     public void serverSend(AbstractMessage message)
     {
-        serverExecutionLayer.serverSend(message);
-//        try
-//        {
-//            final String json = OBJECT_MAPPER.writeValueAsString(message);
-//            clientTextMessageHandlers.values().forEach(clientTextMessageHandler ->
-//                    clientTextMessageHandler.handle(json));
-//        }
-//        catch (JsonProcessingException e)
-//        {
-//            throw new RuntimeException(e);
-//        }
+        try
+        {
+            final String json = OBJECT_MAPPER.writeValueAsString(message);
+            clientTextMessageHandlers.values().forEach(clientTextMessageHandler ->
+                    clientTextMessageHandler.handle(json));
+        }
+        catch (JsonProcessingException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void clientSend(AbstractMessage message)
     {
-        clientExecutionLayer.clientSend(message);
-//        try
-//        {
-//            serverTextMessageHandler.handle(ClientTextMessageHandler.OBJECT_MAPPER.writeValueAsString(message)); // Prove our serde works.
-//        }
-//        catch (JsonProcessingException e)
-//        {
-//            throw new RuntimeException(e);
-//        }
+        try
+        {
+            serverTextMessageHandler.handle(ClientTextMessageHandler.OBJECT_MAPPER.writeValueAsString(message)); // Prove our serde works.
+        }
+        catch (JsonProcessingException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     public static boolean canJacksonDeserialize(ObjectMapper mapper, AbstractMessage message)

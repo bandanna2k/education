@@ -78,13 +78,13 @@ public class WebSocketKlient implements ClientRequests
     @Override
     public Future<Result<GetPropertyResponse, String>> getProperty(String key)
     {
-        return executorLayer.clientRequestOnServer(new GetPropertyRequest(key));
+        return executorLayer.clientRequestFromServer(new GetPropertyRequest(key));
     }
 
     @Override
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
-        return executorLayer.clientRequestOnServer(new SetPropertyRequest(key, value));
+        return executorLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
     }
 
     public void pushMessage(ClientPushPulse clientPushPulse)

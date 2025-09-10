@@ -21,13 +21,13 @@ public class ClientDriver implements ClientRequests
     @Override
     public Future<Result<GetPropertyResponse, String>> getProperty(String key)
     {
-        return executionLayer.clientRequestOnServer(new GetPropertyRequest(key));
+        return executionLayer.clientRequestFromServer(new GetPropertyRequest(key));
     }
 
     @Override
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
-        return executionLayer.clientRequestOnServer(new SetPropertyRequest(key, value));
+        return executionLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
     }
 
     public void pushPulse(int rate, long sequence)
