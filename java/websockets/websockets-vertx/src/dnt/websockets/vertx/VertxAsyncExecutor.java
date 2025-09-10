@@ -7,18 +7,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class VertxAsyncExecutor<Response>
+public class VertxAsyncExecutor<Response> implements AsyncExecutor<Response>
 {
     private final Vertx vertx;
     private final UniqueIdGenerator uniqueIdGenerator;
     private final Map<Long, AsyncRequestTracking<Response>> asyncPromiseByCorrelationId = new HashMap<>();
     private volatile Throwable timeoutResponse;
     private volatile String timeoutMessage;
+    private final long timeoutMillis;
 
     public VertxAsyncExecutor(final Vertx vertx, final UniqueIdGenerator uniqueIdGenerator)
     {
+        this(vertx, uniqueIdGenerator, 5_000);
+    }
+
+    VertxAsyncExecutor(final Vertx vertx, final UniqueIdGenerator uniqueIdGenerator, long timeoutMillis)
+    {
         this.vertx = vertx;
         this.uniqueIdGenerator = uniqueIdGenerator;
+        this.timeoutMillis = timeoutMillis;
     }
 
     public VertxAsyncExecutor<Response> onTimeoutReturn(final Throwable timeoutResponse)
@@ -35,6 +42,7 @@ public class VertxAsyncExecutor<Response>
         return this;
     }
 
+    @Override
     public Future<Response> execute(final AsyncRequest asyncRequest)
     {
         final long correlationId = uniqueIdGenerator.generateId();
@@ -46,7 +54,7 @@ public class VertxAsyncExecutor<Response>
     private Promise<Response> createAndRegisterPromise(final long correlationId)
     {
         final Promise<Response> asyncPromise = Promise.promise();
-        final long timerId = vertx.setTimer(5_000, id -> timeout(correlationId));
+        final long timerId = vertx.setTimer(timeoutMillis, id -> timeout(correlationId));
         final AsyncRequestTracking<Response> existingPromise;
         synchronized (asyncPromiseByCorrelationId)
         {
@@ -62,6 +70,7 @@ public class VertxAsyncExecutor<Response>
         return asyncPromise;
     }
 
+    @Override
     public void onResponseReceived(final long correlationId, final Response response)
     {
         final AsyncRequestTracking<Response> asyncRequest;
@@ -129,20 +138,9 @@ public class VertxAsyncExecutor<Response>
         }
     }
 
-    public interface UniqueIdGenerator
-    {
-        long generateId();
-    }
-
-    @FunctionalInterface
-    public interface AsyncRequest
-    {
-        void invoke(long correlationId);
-    }
-
     public static <T> VertxAsyncExecutor<T> newExecutor(Vertx vertx)
     {
-        final VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
+        final UniqueIdGenerator uniqueIdGenerator = new UniqueIdGenerator()
         {
             private final AtomicLong nextCorrelationId = new AtomicLong(System.currentTimeMillis() % 100_000);
 

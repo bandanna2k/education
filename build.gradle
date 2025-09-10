@@ -39,4 +39,5 @@ test {
     dependsOn(':java:vertx:test')
     dependsOn(':java:websockets:infrastructure:test')
     dependsOn(':java:websockets:testing:integration:test')
+    dependsOn(':java:websockets:websockets-vertx:test')
 }
