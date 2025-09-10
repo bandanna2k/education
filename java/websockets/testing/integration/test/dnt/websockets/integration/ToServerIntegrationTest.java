@@ -58,6 +58,49 @@ public class ToServerIntegrationTest
     @Nested
     public class MainTests extends AbstractIntegrationTest implements ToServerTests
     {
+        @Test
+        public void clientShouldRequestAndSucceed()
+        {
+            client.setProperty("key: name", "value: sam");
+            client.getProperty("key: name", "expectedValue: sam");
+
+            server.verifyMessage("SetPropertyRequest");
+            client.verifyMessage("SetPropertyResponse");
+        }
+
+        @Test
+        public void clientShouldRequestAndFail()
+        {
+            shouldNotAcceptEmptyKeySettingProperty("session1");
+            shouldNotAcceptEmptyValueWhenSettingProperty("session1");
+            shouldNotAcceptNullKeyWhenSettingProperty("session1");
+            shouldNotAcceptNullValueWhenSettingProperty("session1");
+        }
+
+        @Test
+        public void clientShouldPushMessage()
+        {
+            client.pushPulse("rate: 60", "sequence: 1");
+            server.verifyMessage("ClientPushPulse");
+        }
+
+        @Test
+        public void shouldFailOnNoResponseReceived()
+        {
+            client.setProperty("key: do_not_send_response", "value: true",
+                    "expectSuccess: false", "expectedErrorMessage: No response received");
+        }
+
+        @Test
+        @Disabled
+        public void shouldSupportMultipleClients()
+        {
+            client("session1").setProperty("key: name", "value: sam", "expectSuccess: true");
+
+            client("session1").verifyMessage("SetPropertyResponse");
+            client("session2").verifyNoMoreMessages();
+        }
+
         @ParameterizedTest(name = "Test {index}: source={0}")
         @ValueSource(strings = { "session1", "session2" })
         public void clientShouldRequestAndSucceed(String source)
@@ -85,16 +128,6 @@ public class ToServerIntegrationTest
         {
             client(source).pushPulse("rate: 60", "sequence: 1");
             server.verifyMessage("ClientPushPulse");
-        }
-
-        @Test
-        @Disabled
-        public void shouldSupportMultipleClients()
-        {
-            client("session1").setProperty("key: name", "value: sam", "expectSuccess: true");
-
-            client("session1").verifyMessage("SetPropertyResponse");
-            client("session2").verifyNoMoreMessages();
         }
 
         @ParameterizedTest(name = "Test {index}: source={0}")
@@ -133,7 +166,7 @@ public class ToServerIntegrationTest
         @ValueSource(strings = { "session1", "session2" })
         public void shouldNotAcceptNullKeyWhenSettingProperty(String source)
         {
-            client.setProperty("key: <NULL>", "value: sam",
+            client(source).setProperty("key: <NULL>", "value: sam",
                     "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
         }
     }
