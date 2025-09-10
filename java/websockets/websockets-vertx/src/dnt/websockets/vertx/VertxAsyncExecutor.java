@@ -3,6 +3,7 @@ package dnt.websockets.vertx;
 import io.vertx.core.*;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
@@ -12,27 +13,11 @@ public class VertxAsyncExecutor<Response>
     private final Vertx vertx;
     private final UniqueIdGenerator uniqueIdGenerator;
     private final Map<Long, AsyncRequestTracking<Response>> asyncPromiseByCorrelationId = new HashMap<>();
-    private volatile Throwable timeoutResponse;
-    private volatile String timeoutMessage;
 
     public VertxAsyncExecutor(final Vertx vertx, final UniqueIdGenerator uniqueIdGenerator)
     {
         this.vertx = vertx;
         this.uniqueIdGenerator = uniqueIdGenerator;
-    }
-
-    public VertxAsyncExecutor<Response> onTimeoutReturn(final Throwable timeoutResponse)
-    {
-        assert timeoutMessage == null;
-        this.timeoutResponse = timeoutResponse;
-        return this;
-    }
-
-    public VertxAsyncExecutor<Response> onTimeoutReturn(final String timeoutMessage)
-    {
-        assert timeoutResponse == null;
-        this.timeoutMessage = timeoutMessage;
-        return this;
     }
 
     public Future<Response> execute(final AsyncRequest asyncRequest)
@@ -81,20 +66,6 @@ public class VertxAsyncExecutor<Response>
         asyncRequest.context.runOnContext(handler);
     }
 
-    public void onError(final long correlationId, final String message)
-    {
-        final AsyncRequestTracking<Response> asyncRequest;
-        synchronized (asyncPromiseByCorrelationId)
-        {
-            asyncRequest = asyncPromiseByCorrelationId.remove(correlationId);
-        }
-        if (asyncRequest != null)
-        {
-            vertx.cancelTimer(asyncRequest.timerId);
-            onRequestContext(asyncRequest, v -> asyncRequest.promise.fail(message));
-        }
-    }
-
     private void timeout(final long correlationId)
     {
         final AsyncRequestTracking<Response> asyncRequest;
@@ -104,14 +75,7 @@ public class VertxAsyncExecutor<Response>
         }
         if (asyncRequest != null)
         {
-            if (timeoutResponse != null)
-            {
-                onRequestContext(asyncRequest, v -> asyncRequest.promise.tryFail(timeoutResponse));
-            }
-            else
-            {
-                onRequestContext(asyncRequest, v -> asyncRequest.promise.tryFail(Objects.requireNonNullElse(timeoutMessage, "Request timed out with correlation id - " + correlationId)));
-            }
+            onRequestContext(asyncRequest, v -> asyncRequest.promise.tryFail("Request timed out with correlation id - " + correlationId));
         }
     }
 
@@ -134,12 +98,6 @@ public class VertxAsyncExecutor<Response>
         long generateId();
     }
 
-    @FunctionalInterface
-    public interface AsyncRequest
-    {
-        void invoke(long correlationId);
-    }
-
     public static <T> VertxAsyncExecutor<T> newExecutor(Vertx vertx)
     {
         final VertxAsyncExecutor.UniqueIdGenerator uniqueIdGenerator = new VertxAsyncExecutor.UniqueIdGenerator()
@@ -153,5 +111,20 @@ public class VertxAsyncExecutor<Response>
             }
         };
         return new VertxAsyncExecutor<>(vertx, uniqueIdGenerator);
+    }
+
+    public void shutdown()
+    {
+        synchronized (asyncPromiseByCorrelationId)
+        {
+            Iterator<Map.Entry<Long, AsyncRequestTracking<Response>>> iterator = asyncPromiseByCorrelationId.entrySet().iterator();
+            while (iterator.hasNext())
+            {
+                Map.Entry<Long, AsyncRequestTracking<Response>> entry = iterator.next();
+                long correlationId = entry.getKey();
+                timeout(correlationId);
+                iterator.remove();
+            }
+        }
     }
 }

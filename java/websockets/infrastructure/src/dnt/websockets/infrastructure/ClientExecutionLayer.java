@@ -8,7 +8,7 @@ import io.vertx.core.Future;
 
 interface ClientExecutionLayer
 {
-    default <T extends AbstractResponse> Future<Result<T, String>> clientRequestFromServer(AbstractRequest request)
+    default <T extends AbstractResponse> Future<Result<T, String>> clientRequestOnServer(AbstractRequest request)
     {
         throw new UnsupportedOperationException();
     }
