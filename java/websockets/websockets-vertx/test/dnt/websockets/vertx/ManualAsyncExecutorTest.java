@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class ManualAsyncExecutorTest
 {
@@ -68,5 +69,23 @@ class ManualAsyncExecutorTest
 
         String response1 = request1.toCompletionStage().toCompletableFuture().join();
         assertThat(response1).isEqualTo("1");
+    }
+
+    @Test
+    void cantCompleteRequestTwice()
+    {
+        AtomicLong countOfNotFound = new AtomicLong(0);
+        ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
+                .withHandlerForPromiseNotFound(aLong -> countOfNotFound.incrementAndGet());
+
+        AtomicLong corrId = new AtomicLong();
+        Future<String> request = executor.execute(corrId::set);
+
+        executor.onResponseReceived(corrId.get(), "Hello");
+        executor.onResponseReceived(corrId.get(), "Hello2");
+
+        String response = request.toCompletionStage().toCompletableFuture().join();
+        assertThat(response).isEqualTo("Hello");
+        assertThat(countOfNotFound.get()).isEqualTo(1);
     }
 }

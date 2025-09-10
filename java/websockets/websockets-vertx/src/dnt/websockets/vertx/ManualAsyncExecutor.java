@@ -5,15 +5,24 @@ import io.vertx.core.Promise;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>
 {
     private final UniqueIdGenerator idGenerator;
     private final Map<Long, Promise<Response>> correlationIdToPromise = new HashMap<>();
 
+    private Consumer<Long> handlerForPromiseNotFound = correlationId -> {};
+
     public ManualAsyncExecutor(UniqueIdGenerator idGenerator)
     {
         this.idGenerator = idGenerator;
+    }
+
+    public ManualAsyncExecutor<Response> withHandlerForPromiseNotFound(Consumer<Long> handler)
+    {
+        this.handlerForPromiseNotFound = handler;
+        return this;
     }
 
     @Override
@@ -31,7 +40,7 @@ public class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>
     @Override
     public void onResponseReceived(long correlationId, Response response)
     {
-        Promise<Response> promise = correlationIdToPromise.get(correlationId);
+        Promise<Response> promise = correlationIdToPromise.remove(correlationId);
         if (promise == null)
         {
             handlePromiseNotFound(correlationId);
@@ -44,6 +53,6 @@ public class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>
 
     protected void handlePromiseNotFound(long correlationId)
     {
-        throw new RuntimeException("Request not found for correlation ID: " + correlationId);
+        this.handlerForPromiseNotFound.accept(correlationId);
     }
 }

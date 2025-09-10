@@ -68,4 +68,19 @@ class VertxAsyncExecutorTest
         String response1 = request1.toCompletionStage().toCompletableFuture().join();
         assertThat(response1).isEqualTo("1");
     }
+
+    @Test
+    void cantCompleteRequestTwice()
+    {
+        AsyncExecutor<String> executor = new VertxAsyncExecutor<>(VERTX, idGenerator);
+
+        AtomicLong corrId = new AtomicLong();
+        Future<String> request = executor.execute(corrId::set);
+
+        executor.onResponseReceived(corrId.get(), "Hello");
+        executor.onResponseReceived(corrId.get(), "Hello2");
+
+        String response = request.toCompletionStage().toCompletableFuture().join();
+        assertThat(response).isEqualTo("Hello");
+    }
 }
