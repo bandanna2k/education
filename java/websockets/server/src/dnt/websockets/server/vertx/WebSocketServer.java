@@ -3,7 +3,6 @@ package dnt.websockets.server.vertx;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.messages.*;
-import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerRequests;
 import dnt.websockets.server.ServerTextMessageHandler;
@@ -20,9 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import static dnt.websockets.vertx.VertxAsyncExecutor.*;
+import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
 
 public class WebSocketServer implements ServerRequests
 {

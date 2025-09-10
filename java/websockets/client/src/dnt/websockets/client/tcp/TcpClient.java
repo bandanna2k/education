@@ -1,8 +1,8 @@
 package dnt.websockets.client.tcp;
 
-import dnt.websockets.client.ClientTextMessageHandler;
-import dnt.websockets.client.ClientRequests;
 import dnt.websockets.client.ClientExecutionLayer;
+import dnt.websockets.client.ClientRequests;
+import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.messages.*;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import static dnt.websockets.vertx.VertxAsyncExecutor.newExecutor;
+import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 
 public class TcpClient implements ClientRequests, Runnable

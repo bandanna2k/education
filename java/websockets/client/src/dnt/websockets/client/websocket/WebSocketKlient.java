@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
-import static dnt.websockets.vertx.VertxAsyncExecutor.newExecutor;
+import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
 
 public class WebSocketKlient implements ClientRequests
 {

@@ -1,8 +1,8 @@
 package dnt.websockets.client.eventbus;
 
 import dnt.websockets.client.ClientExecutionLayer;
-import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.client.ClientRequests;
+import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.messages.*;
 import dnt.websockets.server.eventbus.EventBusPublisher;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-import static dnt.websockets.vertx.VertxAsyncExecutor.newExecutor;
+import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
 
 public class EventBusClient implements ClientRequests
 {

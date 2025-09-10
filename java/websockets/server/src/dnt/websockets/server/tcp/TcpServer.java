@@ -1,13 +1,12 @@
 package dnt.websockets.server.tcp;
 
-import dnt.websockets.messages.AbstractMessage;
-import dnt.websockets.messages.MessageVisitor;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.infrastructure.Publisher;
+import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.MessageVisitor;
 import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
-import dnt.websockets.vertx.VertxAsyncExecutor;
 import io.vertx.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 
 public class TcpServer implements Runnable
@@ -67,7 +67,7 @@ public class TcpServer implements Runnable
         try(final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream())))
         {
             final Publisher messagePublisher = new TcpPublisher(socket);
-            final ExecutionLayer executorLayer = new ServerExecutionLayer(VertxAsyncExecutor.newExecutor(VERTX), messagePublisher); // Use vertx for now.
+            final ExecutionLayer executorLayer = new ServerExecutionLayer(newExecutor(VERTX), messagePublisher); // Use vertx for now.
             final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executorLayer, requestProcessor);
             executionLayers.add(executorLayer);
 
