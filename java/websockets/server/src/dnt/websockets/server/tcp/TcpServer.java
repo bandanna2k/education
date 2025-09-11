@@ -19,7 +19,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
+import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 
 public class TcpServer implements Runnable
@@ -67,7 +67,7 @@ public class TcpServer implements Runnable
         try(final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream())))
         {
             final Publisher messagePublisher = new TcpPublisher(socket);
-            final ExecutionLayer executorLayer = new ServerExecutionLayer(newExecutor(VERTX), messagePublisher); // Use vertx for now.
+            final ExecutionLayer executorLayer = new ServerExecutionLayer(newVertxExecutor(VERTX), messagePublisher); // Use vertx for now.
             final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executorLayer, requestProcessor);
             executionLayers.add(executorLayer);
 

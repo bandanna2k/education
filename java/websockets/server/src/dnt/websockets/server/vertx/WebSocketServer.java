@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
+import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 
 public class WebSocketServer implements ServerRequests
 {
@@ -72,7 +72,7 @@ public class WebSocketServer implements ServerRequests
         LOGGER.info("Websocket connected {}", uri);
 
         final Publisher publisher = new WebSocketPublisher(serverWebSocket);
-        final ExecutionLayer executionLayer = new ServerExecutionLayer(newExecutor(vertx), publisher);
+        final ExecutionLayer executionLayer = new ServerExecutionLayer(newVertxExecutor(vertx), publisher);
         final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, messageProcessor);
         serverWebSocket.textMessageHandler(textMessageHandler);
         executionLayers.put(clientId, executionLayer);
@@ -137,7 +137,7 @@ public class WebSocketServer implements ServerRequests
     private ServerTextMessageHandler newRestTextMessageHandler(RoutingContext ctx)
     {
         final LazyPublisher restPublisher = new LazyPublisher();
-        final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(newExecutor(vertx), restPublisher);
+        final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(newVertxExecutor(vertx), restPublisher);
         restPublisher.publisher = new RestPublisher(ctx);
         return new ServerTextMessageHandler(restExecutionLayer, messageProcessor);
     }

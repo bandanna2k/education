@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
+import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +22,7 @@ class VertxAsyncExecutorTest
     @Test
     void shouldCompleteExecutor()
     {
-        VertxAsyncExecutor<String> executor = newExecutor(VERTX);
+        VertxAsyncExecutor<String> executor = newVertxExecutor(VERTX);
 
         AtomicLong corrId = new AtomicLong();
         Future<String> request = executor.execute(corrId::set);
@@ -50,7 +50,7 @@ class VertxAsyncExecutorTest
     @Test
     void canCompleteInAnyOrder()
     {
-        VertxAsyncExecutor<String> executor = newExecutor(VERTX);
+        VertxAsyncExecutor<String> executor = newVertxExecutor(VERTX);
 
         AtomicLong corrId1 = new AtomicLong();
         Future<String> request1 = executor.execute(corrId1::set);

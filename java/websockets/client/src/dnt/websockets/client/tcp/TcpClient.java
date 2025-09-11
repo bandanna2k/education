@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
+import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 
 public class TcpClient implements ClientRequests, Runnable
@@ -56,7 +56,7 @@ public class TcpClient implements ClientRequests, Runnable
             LOGGER.info("Connected to server");
 
             final Publisher publisher = new TcpPublisher(socket);
-            executorLayer = new ClientExecutionLayer(newExecutor(VERTX), publisher);
+            executorLayer = new ClientExecutionLayer(newVertxExecutor(VERTX), publisher);
 
             ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
             try(final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream())))

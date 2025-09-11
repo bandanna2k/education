@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-import static dnt.websockets.vertx.VertxAsyncExecutorFactory.newExecutor;
+import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 
 public class EventBusClient implements ClientRequests
 {
@@ -76,7 +76,7 @@ public class EventBusClient implements ClientRequests
 
         DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
         EventBusPublisher publisher = new EventBusPublisher(eventBus, clientIncomingTopic, deliveryOptions);
-        executorLayer = new ClientExecutionLayer(newExecutor(vertx), publisher);
+        executorLayer = new ClientExecutionLayer(newVertxExecutor(vertx), publisher);
         textMessageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
     }
 
