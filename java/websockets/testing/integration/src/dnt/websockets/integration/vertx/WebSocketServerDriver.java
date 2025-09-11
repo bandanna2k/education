@@ -42,4 +42,9 @@ public class WebSocketServerDriver
     {
         return collector.getLastMessage();
     }
+
+    public void clearMessages()
+    {
+        collector.clear();
+    }
 }

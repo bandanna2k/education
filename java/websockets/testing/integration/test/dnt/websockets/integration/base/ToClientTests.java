@@ -8,8 +8,4 @@ public interface ToClientTests
 
     void serverShouldBroadcast();
     void shouldSupportMultipleClients();
-
-    void serverShouldRequestAndSucceed(String source);
-    void serverShouldRequestAndFail(String source);
-    void shouldFailOnNoResponseReceived(String source);
 }

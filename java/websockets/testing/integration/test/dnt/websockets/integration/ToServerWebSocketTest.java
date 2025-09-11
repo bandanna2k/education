@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.List;
+
 public class ToServerWebSocketTest
 {
     @Nested
@@ -24,36 +26,37 @@ public class ToServerWebSocketTest
     @Nested
     class MainTests extends AbstractIntegrationVertxTest implements ToServerTests
     {
-        @Test
+        @Override @Test
         public void clientShouldRequestAndSucceed()
         {
             client.setProperty("key: name", "value: sam");
             client.getProperty("key: name", "expectedValue: sam");
         }
 
-        @Test
+        @Override @Test
         public void clientShouldRequestAndFail()
         {
-            shouldNotAcceptEmptyValueWhenSettingProperty("source1");
-            shouldNotAcceptNullValueWhenSettingProperty("source1");
-            shouldNotAcceptEmptyKeySettingProperty("source1");
-            shouldNotAcceptNullKeyWhenSettingProperty("source1");
+            shouldNotAcceptEmptyValueWhenSettingProperty();
+            shouldNotAcceptNullValueWhenSettingProperty();
+            shouldNotAcceptEmptyKeySettingProperty();
+            shouldNotAcceptNullKeyWhenSettingProperty();
         }
 
-        @Test
+        @Override @Test
         public void clientShouldPushMessage()
         {
+            server.clearMessages();
             client.pushPulse("rate: 60", "sequence: 1");
             server.verifyMessage("ClientPushPulse");
         }
 
-        @Test
+        @Override @Test
         public void shouldFailOnNoResponseReceived()
         {
             client.setProperty("key: do_not_send_response", "value: true", "expectSuccess: false");
         }
 
-        @Test
+        @Override @Test
         public void shouldSupportMultipleClients()
         {
             client("source1").setProperty("key: name", "value: sam", "expectSuccess: true");
@@ -64,67 +67,129 @@ public class ToServerWebSocketTest
 
         @ParameterizedTest(name = "Test {index}: source={0}")
         @ValueSource(strings = { "source1", "source2" })
-        public void clientShouldRequestAndSucceed(String source)
+        public void shouldNotAcceptEmptyValueWhenSettingProperty()
+        {
+            client.setProperty("key: name", "value: ",
+                    "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
+        }
+
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "source1", "source2" })
+        public void shouldNotAcceptEmptyKeySettingProperty()
+        {
+            client.setProperty("key: ", "value: sam",
+                    "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
+        }
+
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "source1", "source2" })
+        public void shouldNotAcceptNullValueWhenSettingProperty()
+        {
+            client.setProperty("key: name", "value: <NULL>",
+                    "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
+        }
+
+        @ParameterizedTest(name = "Test {index}: source={0}")
+        @ValueSource(strings = { "source1", "source2" })
+        public void shouldNotAcceptNullKeyWhenSettingProperty()
+        {
+            client.setProperty("key: <NULL>", "value: sam",
+                    "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
+        }
+    }
+
+    private static final List<String> SOURCES = List.of("source1", "source2");
+
+    @Nested
+    class ParameterisedTests extends AbstractIntegrationVertxTest implements ToServerTests
+    {
+        @Override @Test
+        public void clientShouldRequestAndSucceed()
+        {
+            SOURCES.forEach(this::clientShouldRequestAndSucceed);
+        }
+        private void clientShouldRequestAndSucceed(String source)
         {
             client(source).setProperty("key: name", "value: sam");
             client(source).getProperty("key: name", "expectedValue: sam");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
-        public void clientShouldRequestAndFail(String source)
+        @Override @Test
+        public void clientShouldRequestAndFail()
         {
-            shouldNotAcceptEmptyValueWhenSettingProperty(source);
-            shouldNotAcceptNullValueWhenSettingProperty(source);
-            shouldNotAcceptEmptyKeySettingProperty(source);
-            shouldNotAcceptNullKeyWhenSettingProperty(source);
+            SOURCES.forEach(source -> {
+                shouldNotAcceptEmptyValueWhenSettingProperty(source);
+                shouldNotAcceptNullValueWhenSettingProperty(source);
+                shouldNotAcceptEmptyKeySettingProperty(source);
+                shouldNotAcceptNullKeyWhenSettingProperty(source);
+            });
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
-        public void clientShouldPushMessage(String source)
+        @Override @Test
+        public void clientShouldPushMessage()
+        {
+            SOURCES.forEach(this::clientShouldPushMessage);
+        }
+        private void clientShouldPushMessage(String source)
         {
             client(source).pushPulse("rate: 60", "sequence: 1");
             server.verifyMessage("ClientPushPulse");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
-        public void shouldFailOnNoResponseReceived(String source)
+        @Override @Test
+        public void shouldFailOnNoResponseReceived()
+        {
+            SOURCES.forEach(this::shouldFailOnNoResponseReceived);
+        }
+        private void shouldFailOnNoResponseReceived(String source)
         {
             client(source).setProperty("key: do_not_send_response", "value: true", "expectSuccess: false");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
-        public void shouldNotAcceptEmptyValueWhenSettingProperty(String source)
+        @Override @Test
+        public void shouldNotAcceptEmptyValueWhenSettingProperty()
+        {
+            SOURCES.forEach(this::shouldNotAcceptEmptyValueWhenSettingProperty);
+        }
+        private void shouldNotAcceptEmptyValueWhenSettingProperty(String source)
         {
             client(source).setProperty("key: name", "value: ",
                     "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
-        public void shouldNotAcceptEmptyKeySettingProperty(String source)
+        @Override @Test
+        public void shouldNotAcceptEmptyKeySettingProperty()
+        {
+            SOURCES.forEach(this::shouldNotAcceptEmptyKeySettingProperty);
+        }
+        private void shouldNotAcceptEmptyKeySettingProperty(String source)
         {
             client(source).setProperty("key: ", "value: sam",
                     "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
-        public void shouldNotAcceptNullValueWhenSettingProperty(String source)
+        @Override @Test
+        public void shouldNotAcceptNullValueWhenSettingProperty()
+        {
+            SOURCES.forEach(this::shouldNotAcceptNullValueWhenSettingProperty);
+        }
+        private void shouldNotAcceptNullValueWhenSettingProperty(String source)
         {
             client(source).setProperty("key: name", "value: <NULL>",
                     "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
-        public void shouldNotAcceptNullKeyWhenSettingProperty(String source)
+        @Override @Test
+        public void shouldNotAcceptNullKeyWhenSettingProperty()
+        {
+            SOURCES.forEach(this::shouldNotAcceptNullKeyWhenSettingProperty);
+        }
+        private void shouldNotAcceptNullKeyWhenSettingProperty(String source)
         {
             client(source).setProperty("key: <NULL>", "value: sam",
                     "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
         }
+
+        @Override public void shouldSupportMultipleClients() {}
     }
 }

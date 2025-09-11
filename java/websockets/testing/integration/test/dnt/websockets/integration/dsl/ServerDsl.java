@@ -65,4 +65,9 @@ public class ServerDsl
     {
         return future.toCompletionStage().toCompletableFuture().join();
     }
+
+    public void clearMessages()
+    {
+        this.collector.clear();
+    }
 }

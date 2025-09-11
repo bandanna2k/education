@@ -72,4 +72,9 @@ public class ServerWebSocketDsl
                     return abstractMessage == null;
                 });
     }
+
+    public void clearMessages()
+    {
+        serverDriver.clearMessages();
+    }
 }
