@@ -17,8 +17,7 @@ class ManualAsyncExecutorTest
     @Test
     void shouldCompleteExecutor()
     {
-        try(ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
-                .withHandlerForPromisesNotCompletedDuringNormalOperations(n -> fail("Unexpected promises not complete. Count: " + n)))
+        try(ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<>(idGenerator))
         {
             AtomicLong corrId = new AtomicLong();
             Future<String> request = executor.execute(corrId::set);
@@ -33,11 +32,10 @@ class ManualAsyncExecutorTest
     @Test
     void shouldNotCompleteExecutor()
     {
-        Assertions.assertThatExceptionOfType(AssertionError.class)
-
+        Assertions.assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> {
-                    try (ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
-                            .withHandlerForPromisesNotCompletedDuringNormalOperations(n -> fail("Unexpected promises not complete. Count: " + n))) {
+                    try(ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<>(idGenerator))
+                    {
                         AtomicLong corrId = new AtomicLong();
                         Future<String> request = executor.execute(corrId::set);
 
@@ -50,8 +48,7 @@ class ManualAsyncExecutorTest
     @Test
     void canCompleteInAnyOrder()
     {
-        try(ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
-                .withHandlerForPromisesNotCompletedDuringNormalOperations(n -> fail("Unexpected promises not complete. Count: " + n)))
+        try(ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<>(idGenerator))
         {
             AtomicLong corrId1 = new AtomicLong();
             Future<String> request1 = executor.execute(corrId1::set);
@@ -76,7 +73,6 @@ class ManualAsyncExecutorTest
     {
         AtomicLong countOfNotFound = new AtomicLong(0);
         try (ManualAsyncExecutor<String> executor = new ManualAsyncExecutor<String>(idGenerator)
-                .withHandlerForPromisesNotCompletedDuringNormalOperations(n -> fail("Unexpected promises not complete. Count: " + n))
                 .withHandlerForPromiseNotFound(aLong -> countOfNotFound.incrementAndGet()))
         {
 

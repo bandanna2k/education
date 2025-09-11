@@ -15,7 +15,7 @@ public class ManualAsyncExecutor<Response> implements AsyncExecutor<Response>, C
     private final Map<Long, Promise<Response>> correlationIdToPromise = new HashMap<>();
 
     private Consumer<Long> handlerForPromiseNotFound = correlationId -> {};
-    private Consumer<Integer> handlerForPromisesNotCompletedDuringNormalOperations = count -> {};
+    private Consumer<Integer> handlerForPromisesNotCompletedDuringNormalOperations = count -> { throw new IllegalStateException("Unexpected promises not complete. Count: " + count); };
 
     public ManualAsyncExecutor(UniqueIdGenerator idGenerator)
     {
