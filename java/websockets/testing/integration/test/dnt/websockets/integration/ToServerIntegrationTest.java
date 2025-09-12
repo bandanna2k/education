@@ -94,13 +94,10 @@ public class ToServerIntegrationTest
         }
 
         @Override @Test
-        @Disabled
         public void shouldSupportMultipleClients()
         {
             client("session1").setProperty("key: name", "value: sam", "expectSuccess: true");
-
-            client("session1").verifyMessage("SetPropertyResponse");
-            client("session2").verifyNoMoreMessages();
+            client("session2").getProperty("key: name", "expectedValue: sam");
         }
 
         @Override @Test

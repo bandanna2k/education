@@ -1,15 +1,15 @@
 package dnt.websockets.integration;
 
 import dnt.websockets.infrastructure.ExecutionLayer;
-import dnt.websockets.messages.GetStatusRequest;
-import dnt.websockets.messages.GetStatusResponse;
-import dnt.websockets.messages.ServerPushMessage;
+import dnt.websockets.messages.*;
 import dnt.websockets.server.ServerMessageProcessor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 
 public class ServerDriver
 {
+    private static int nextCorrelationId = 1;
+
     private final ExecutionLayer executionLayer;
     private final ServerMessageProcessor messageProcessor;
 
@@ -31,6 +31,11 @@ public class ServerDriver
 
     public Future<Result<GetStatusResponse, String>> getStatusFromClient(String client)
     {
-        return executionLayer.serverRequestOnClient(new GetStatusRequest(client));
+        return request(new GetStatusRequest(client));
+    }
+
+    private <T extends AbstractResponse> Future<Result<T, String>> request(AbstractRequest request)
+    {
+        return executionLayer.serverRequestOnClient(request.attachCorrelationId(nextCorrelationId++));
     }
 }

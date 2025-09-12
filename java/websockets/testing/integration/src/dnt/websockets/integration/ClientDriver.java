@@ -9,6 +9,8 @@ import io.vertx.core.Future;
 
 public class ClientDriver implements ClientRequests
 {
+    private static long nextCorrelationId = 1;
+
     private final ExecutionLayer executionLayer;
     private final ClientMessageProcessor clientMessageProcessor;
 
@@ -21,13 +23,18 @@ public class ClientDriver implements ClientRequests
     @Override
     public Future<Result<GetPropertyResponse, String>> getProperty(String key)
     {
-        return executionLayer.clientRequestFromServer(new GetPropertyRequest(key));
+        return request(new GetPropertyRequest(key));
     }
 
     @Override
     public Future<Result<SetPropertyResponse, String>> setProperty(String key, String value)
     {
-        return executionLayer.clientRequestFromServer(new SetPropertyRequest(key, value));
+        return request(new SetPropertyRequest(key, value));
+    }
+
+    private <T extends AbstractResponse> Future<Result<T, String>> request(AbstractRequest request)
+    {
+        return executionLayer.clientRequestFromServer(request.attachCorrelationId(nextCorrelationId++));
     }
 
     public void pushPulse(int rate, long sequence)
