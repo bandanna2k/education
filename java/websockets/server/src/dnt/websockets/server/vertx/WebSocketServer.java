@@ -6,6 +6,7 @@ import dnt.websockets.messages.*;
 import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerRequests;
 import dnt.websockets.server.ServerTextMessageHandler;
+import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -22,8 +23,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 
 public class WebSocketServer implements ServerRequests
 {
@@ -72,7 +71,8 @@ public class WebSocketServer implements ServerRequests
         LOGGER.info("Websocket connected {}", uri);
 
         final Publisher publisher = new WebSocketPublisher(serverWebSocket);
-        final ExecutionLayer executionLayer = new ServerExecutionLayer(newVertxExecutor(vertx), publisher);
+        final VertxAsyncExecutor<AbstractResponse> executor = new VertxAsyncExecutor.Builder(vertx).timeoutMillis(2_000L).build();
+        final ExecutionLayer executionLayer = new ServerExecutionLayer(executor, publisher);
         final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, messageProcessor);
         serverWebSocket.textMessageHandler(textMessageHandler);
         executionLayers.put(clientId, executionLayer);
@@ -137,7 +137,8 @@ public class WebSocketServer implements ServerRequests
     private ServerTextMessageHandler newRestTextMessageHandler(RoutingContext ctx)
     {
         final LazyPublisher restPublisher = new LazyPublisher();
-        final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(newVertxExecutor(vertx), restPublisher);
+        VertxAsyncExecutor<AbstractResponse> executor = new VertxAsyncExecutor.Builder(vertx).build();
+        final ServerExecutionLayer restExecutionLayer = new ServerExecutionLayer(executor, restPublisher);
         restPublisher.publisher = new RestPublisher(ctx);
         return new ServerTextMessageHandler(restExecutionLayer, messageProcessor);
     }

@@ -6,6 +6,7 @@ import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.messages.*;
 import dnt.websockets.server.eventbus.EventBusPublisher;
+import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -16,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
-
-import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 
 public class EventBusClient implements ClientRequests
 {
@@ -74,9 +73,10 @@ public class EventBusClient implements ClientRequests
             textMessageHandler.handle(message.body().toString());
         });
 
-        DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
-        EventBusPublisher publisher = new EventBusPublisher(eventBus, clientIncomingTopic, deliveryOptions);
-        executorLayer = new ClientExecutionLayer(newVertxExecutor(vertx), publisher);
+        final DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
+        final EventBusPublisher publisher = new EventBusPublisher(eventBus, clientIncomingTopic, deliveryOptions);
+        final VertxAsyncExecutor<AbstractResponse> executor = new VertxAsyncExecutor.Builder(vertx).build();
+        executorLayer = new ClientExecutionLayer(executor, publisher);
         textMessageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
     }
 

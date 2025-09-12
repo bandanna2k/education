@@ -6,6 +6,7 @@ import dnt.websockets.client.ClientTextMessageHandler;
 import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.messages.*;
 import dnt.websockets.server.vertx.WebSocketPublisher;
+import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -18,8 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-
-import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 
 public class WebSocketKlient implements ClientRequests
 {
@@ -69,7 +68,8 @@ public class WebSocketKlient implements ClientRequests
     private void handle(WebSocket webSocket)
     {
         Publisher publisher = new WebSocketPublisher(webSocket);
-        executorLayer = new ClientExecutionLayer(newVertxExecutor(vertx), publisher);
+        VertxAsyncExecutor<AbstractResponse> executor = new VertxAsyncExecutor.Builder(vertx).timeoutMillis(2_000L).build();
+        executorLayer = new ClientExecutionLayer(executor, publisher);
 
         ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, messageProcessor);
         webSocket.textMessageHandler(messageHandler);

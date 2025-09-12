@@ -4,6 +4,7 @@ import io.vertx.core.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class VertxAsyncExecutor<Response> implements AsyncExecutor<Response>
 {
@@ -96,6 +97,39 @@ public class VertxAsyncExecutor<Response> implements AsyncExecutor<Response>
             this.promise = promise;
             this.timerId = timerId;
             this.context = context;
+        }
+    }
+
+    public static class Builder
+    {
+        private final Vertx vertx;
+        private long initialCorrelationId = System.currentTimeMillis() % 100_000;
+        private long timeoutMillis = 5_000;
+
+        public Builder(Vertx vertx)
+        {
+            this.vertx = vertx;
+        }
+
+        public Builder timeoutMillis(long timeoutMillis)
+        {
+            this.timeoutMillis = timeoutMillis;
+            return this;
+        }
+
+        public <T> VertxAsyncExecutor<T> build()
+        {
+            final UniqueIdGenerator uniqueIdGenerator = new UniqueIdGenerator()
+            {
+                private final AtomicLong nextCorrelationId = new AtomicLong(initialCorrelationId);
+
+                @Override
+                public long generateId()
+                {
+                    return nextCorrelationId.getAndIncrement();
+                }
+            };
+            return new VertxAsyncExecutor<>(vertx, uniqueIdGenerator, timeoutMillis);
         }
     }
 }

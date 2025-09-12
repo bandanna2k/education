@@ -7,6 +7,7 @@ import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.messages.*;
 import dnt.websockets.server.tcp.TcpPublisher;
+import dnt.websockets.vertx.VertxAsyncExecutor;
 import education.common.result.Result;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -18,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 import static dnt.websockets.vertx.VertxFactory.newVertx;
 
 public class TcpClient implements ClientRequests, Runnable
@@ -56,7 +56,8 @@ public class TcpClient implements ClientRequests, Runnable
             LOGGER.info("Connected to server");
 
             final Publisher publisher = new TcpPublisher(socket);
-            executorLayer = new ClientExecutionLayer(newVertxExecutor(VERTX), publisher);
+            final VertxAsyncExecutor<AbstractResponse> executor = new VertxAsyncExecutor.Builder(VERTX).build();
+            executorLayer = new ClientExecutionLayer(executor, publisher);
 
             ClientTextMessageHandler messageHandler = new ClientTextMessageHandler(executorLayer, messageVisitor);
             try(final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream())))

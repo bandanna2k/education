@@ -3,9 +3,11 @@ package dnt.websockets.server.eventbus;
 import dnt.websockets.infrastructure.ExecutionLayer;
 import dnt.websockets.infrastructure.Publisher;
 import dnt.websockets.messages.AbstractMessage;
+import dnt.websockets.messages.AbstractResponse;
 import dnt.websockets.server.ServerExecutionLayer;
 import dnt.websockets.server.ServerMessageProcessor;
 import dnt.websockets.server.ServerTextMessageHandler;
+import dnt.websockets.vertx.VertxAsyncExecutor;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
@@ -16,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-
-import static dnt.websockets.vertx.AsyncExecutorFactory.newVertxExecutor;
 
 public class EventBusServer
 {
@@ -72,7 +72,8 @@ public class EventBusServer
 
             final DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
             final Publisher publisher = new EventBusPublisher(eventBus, serverOutgoingTopic, deliveryOptions);
-            final ExecutionLayer executionLayer = new ServerExecutionLayer(newVertxExecutor(vertx), publisher);
+            final VertxAsyncExecutor<AbstractResponse> executor = new VertxAsyncExecutor.Builder(vertx).timeoutMillis(2_000L).build();
+            final ExecutionLayer executionLayer = new ServerExecutionLayer(executor, publisher);
             final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
             textMessageHandlers.add(textMessageHandler);
             senderIdToTextMessageHandler.put(senderId, textMessageHandler);
