@@ -130,21 +130,21 @@ public class ToServerIntegrationTest
     }
 
     @Nested
-    public class ParameterisedTests extends AbstractIntegrationTest implements ToServerTests
+    public class MultiSessionTests extends AbstractIntegrationTest implements ToServerTests
     {
         @Override @Test
         public void clientShouldRequestAndSucceed()
         {
             SESSIONS.forEach(this::clientShouldRequestAndSucceed);
         }
-        private void clientShouldRequestAndSucceed(String source)
+        private void clientShouldRequestAndSucceed(String session)
         {
             server.clearMessages();
-            client(source).setProperty("key: name", "value: sam");
-            client(source).getProperty("key: name", "expectedValue: sam");
+            client(session).setProperty("key: name", "value: sam");
+            client(session).getProperty("key: name", "expectedValue: sam");
 
             server.verifyMessage("SetPropertyRequest");
-            client(source).verifyMessage("SetPropertyResponse");
+            client(session).verifyMessage("SetPropertyResponse");
         }
 
         @Override @Test
@@ -163,9 +163,9 @@ public class ToServerIntegrationTest
         {
             SESSIONS.forEach(this::clientShouldPushMessage);
         }
-        private void clientShouldPushMessage(String source)
+        private void clientShouldPushMessage(String session)
         {
-            client(source).pushPulse("rate: 60", "sequence: 1");
+            client(session).pushPulse("rate: 60", "sequence: 1");
             server.verifyMessage("ClientPushPulse");
         }
 
@@ -174,9 +174,9 @@ public class ToServerIntegrationTest
         {
             SESSIONS.forEach(this::shouldFailOnNoResponseReceived);
         }
-        private void shouldFailOnNoResponseReceived(String source)
+        private void shouldFailOnNoResponseReceived(String session)
         {
-            client(source).setProperty("key: do_not_send_response", "value: true",
+            client(session).setProperty("key: do_not_send_response", "value: true",
                     "expectSuccess: false", "expectedErrorMessage: No response received");
         }
 
@@ -188,9 +188,9 @@ public class ToServerIntegrationTest
         {
             SESSIONS.forEach(this::shouldNotAcceptEmptyValueWhenSettingProperty);
         }
-        private void shouldNotAcceptEmptyValueWhenSettingProperty(String source)
+        private void shouldNotAcceptEmptyValueWhenSettingProperty(String session)
         {
-            client(source).setProperty("key: name", "value: ",
+            client(session).setProperty("key: name", "value: ",
                     "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
         }
 
@@ -199,9 +199,9 @@ public class ToServerIntegrationTest
         {
             SESSIONS.forEach(this::shouldNotAcceptEmptyKeySettingProperty);
         }
-        private void shouldNotAcceptEmptyKeySettingProperty(String source)
+        private void shouldNotAcceptEmptyKeySettingProperty(String session)
         {
-            client(source).setProperty("key: ", "value: sam",
+            client(session).setProperty("key: ", "value: sam",
                     "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
         }
 
@@ -210,9 +210,9 @@ public class ToServerIntegrationTest
         {
             SESSIONS.forEach(this::shouldNotAcceptNullValueWhenSettingProperty);
         }
-        private void shouldNotAcceptNullValueWhenSettingProperty(String source)
+        private void shouldNotAcceptNullValueWhenSettingProperty(String session)
         {
-            client(source).setProperty("key: name", "value: <NULL>",
+            client(session).setProperty("key: name", "value: <NULL>",
                     "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
         }
 
@@ -221,9 +221,9 @@ public class ToServerIntegrationTest
         {
             SESSIONS.forEach(this::shouldNotAcceptNullKeyWhenSettingProperty);
         }
-        private void shouldNotAcceptNullKeyWhenSettingProperty(String source)
+        private void shouldNotAcceptNullKeyWhenSettingProperty(String session)
         {
-            client(source).setProperty("key: <NULL>", "value: sam",
+            client(session).setProperty("key: <NULL>", "value: sam",
                     "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
         }
     }

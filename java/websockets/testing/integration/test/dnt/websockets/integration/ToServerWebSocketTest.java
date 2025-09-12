@@ -65,32 +65,28 @@ public class ToServerWebSocketTest
             client("source2").verifyNoMoreMessages();
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
+        @Override @Test
         public void shouldNotAcceptEmptyValueWhenSettingProperty()
         {
             client.setProperty("key: name", "value: ",
                     "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
+        @Override @Test
         public void shouldNotAcceptEmptyKeySettingProperty()
         {
             client.setProperty("key: ", "value: sam",
                     "expectSuccess: false", "expectedErrorMessage: Key cannot be empty.");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
+        @Override @Test
         public void shouldNotAcceptNullValueWhenSettingProperty()
         {
             client.setProperty("key: name", "value: <NULL>",
                     "expectSuccess: false", "expectedErrorMessage: Value cannot be empty.");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
+        @Override @Test
         public void shouldNotAcceptNullKeyWhenSettingProperty()
         {
             client.setProperty("key: <NULL>", "value: sam",
@@ -101,7 +97,7 @@ public class ToServerWebSocketTest
     private static final List<String> SOURCES = List.of("source1", "source2");
 
     @Nested
-    class ParameterisedTests extends AbstractIntegrationVertxTest implements ToServerTests
+    class MultiSourceTests extends AbstractIntegrationVertxTest implements ToServerTests
     {
         @Override @Test
         public void clientShouldRequestAndSucceed()

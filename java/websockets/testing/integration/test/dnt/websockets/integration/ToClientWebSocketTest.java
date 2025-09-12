@@ -7,38 +7,35 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.List;
+
 public class ToClientWebSocketTest
 {
     @Nested
-    class MainTests extends AbstractIntegrationVertxTest implements ToClientTests
-    {
+    class MainTests extends AbstractIntegrationVertxTest implements ToClientTests {
         @Test
-        public void serverShouldRequestAndSucceed()
-        {
+        public void serverShouldRequestAndSucceed() {
             server.getStatusFromClient("client: source1", "expectedStatus: Wicked");
             client.setStatus("Fantastic");
             server.getStatusFromClient("client: source1", "expectedStatus: Fantastic");
         }
 
         @Test
-        public void serverShouldRequestAndFail()
-        {
+        public void serverShouldRequestAndFail() {
             server.getStatusFromClient("client: source1", "expectedStatus: Wicked");
             client.setStatus("fail_requests");
             server.getStatusFromClient("client: source1", "expectedErrorMessage: Request not accepted at this time.");
         }
 
         @Test
-        public void shouldFailOnNoResponseReceived()
-        {
+        public void shouldFailOnNoResponseReceived() {
             server.getStatusFromClient("client: source1", "expectedStatus: Wicked");
             client.setStatus("do_not_send_response");
             server.getStatusFromClient("client: source1", "expectedErrorMessage: Request timed out");
         }
 
         @Test
-        public void serverShouldBroadcast()
-        {
+        public void serverShouldBroadcast() {
             client("source1").verifyNoMoreMessages();
             client("source2").verifyNoMoreMessages();
 
@@ -51,8 +48,7 @@ public class ToClientWebSocketTest
         }
 
         @Test
-        public void shouldSupportMultipleClients()
-        {
+        public void shouldSupportMultipleClients() {
             client("source1").setStatus("OK");
             client("source2").setStatus("Fine");
 
@@ -63,32 +59,50 @@ public class ToClientWebSocketTest
             server.verifyMessage("GetStatusResponse");
             server.verifyNoMoreMessages();
         }
+    }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
-        public void serverShouldRequestAndSucceed(String source)
+    private static final List<String> SOURCES = List.of("source1", "source2");
+
+    @Nested
+    class MultiSourceTests extends AbstractIntegrationVertxTest implements ToClientTests
+    {
+        @Override @Test
+        public void serverShouldRequestAndSucceed()
+        {
+            SOURCES.forEach(this::serverShouldRequestAndSucceed);
+        }
+        private void serverShouldRequestAndSucceed(String source)
         {
             server.getStatusFromClient("client: " + source, "expectedStatus: Wicked");
             client(source).setStatus("Fantastic");
             server.getStatusFromClient("client: " + source, "expectedStatus: Fantastic");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
-        public void serverShouldRequestAndFail(String source)
+        @Override @Test
+        public void serverShouldRequestAndFail()
+        {
+            SOURCES.forEach(this::serverShouldRequestAndFail);
+        }
+        private void serverShouldRequestAndFail(String source)
         {
             server.getStatusFromClient("client: " + source, "expectedStatus: Wicked");
             client(source).setStatus("fail_requests");
             server.getStatusFromClient("client: " + source, "expectedErrorMessage: Request not accepted at this time.");
         }
 
-        @ParameterizedTest(name = "Test {index}: source={0}")
-        @ValueSource(strings = { "source1", "source2" })
+        @Override @Test
+        public void shouldFailOnNoResponseReceived()
+        {
+            SOURCES.forEach(this::shouldFailOnNoResponseReceived);
+        }
         public void shouldFailOnNoResponseReceived(String source)
         {
             server.getStatusFromClient("client: " + source, "expectedStatus: Wicked");
             client(source).setStatus("do_not_send_response");
             server.getStatusFromClient("client: " + source, "expectedErrorMessage: Request timed out");
         }
+
+        @Override public void serverShouldBroadcast() {}
+        @Override public void shouldSupportMultipleClients() {}
     }
 }

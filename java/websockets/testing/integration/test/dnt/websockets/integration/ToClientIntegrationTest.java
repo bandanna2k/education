@@ -65,20 +65,20 @@ public class ToClientIntegrationTest
     }
 
     @Nested
-    class ParameterisedTests extends AbstractIntegrationTest implements ToClientTests
+    class MultiSessionTests extends AbstractIntegrationTest implements ToClientTests
     {
         @Override @Test
         public void serverShouldRequestAndSucceed()
         {
             SESSIONS.forEach(this::serverShouldRequestAndSucceed);
         }
-        public void serverShouldRequestAndSucceed(String source)
+        public void serverShouldRequestAndSucceed(String session)
         {
-            server.getStatusFromClient("client: " + source, "expectedStatus: Wicked");
-            client(source).setStatus("Fantastic");
-            server.getStatusFromClient("client: " + source, "expectedStatus: Fantastic");
+            server.getStatusFromClient("client: " + session, "expectedStatus: Wicked");
+            client(session).setStatus("Fantastic");
+            server.getStatusFromClient("client: " + session, "expectedStatus: Fantastic");
 
-            client(source).verifyMessage("GetStatusRequest");
+            client(session).verifyMessage("GetStatusRequest");
             server.verifyMessage("GetStatusResponse");
         }
 
@@ -87,11 +87,11 @@ public class ToClientIntegrationTest
         {
             SESSIONS.forEach(this::serverShouldRequestAndFail);
         }
-        public void serverShouldRequestAndFail(String source)
+        public void serverShouldRequestAndFail(String session)
         {
-            server.getStatusFromClient("client: " + source, "expectedStatus: Wicked");
-            client(source).setStatus("fail_requests");
-            server.getStatusFromClient("client: " + source, "expectedErrorMessage: Request not accepted at this time.");
+            server.getStatusFromClient("client: " + session, "expectedStatus: Wicked");
+            client(session).setStatus("fail_requests");
+            server.getStatusFromClient("client: " + session, "expectedErrorMessage: Request not accepted at this time.");
         }
 
         @Override @Test
@@ -99,11 +99,11 @@ public class ToClientIntegrationTest
         {
             SESSIONS.forEach(this::shouldFailOnNoResponseReceived);
         }
-        public void shouldFailOnNoResponseReceived(String source)
+        public void shouldFailOnNoResponseReceived(String session)
         {
-            server.getStatusFromClient("client: " + source, "expectedStatus: Wicked");
-            client(source).setStatus("do_not_send_response");
-            server.getStatusFromClient("client: " + source, "expectedErrorMessage: No response received");
+            server.getStatusFromClient("client: " + session, "expectedStatus: Wicked");
+            client(session).setStatus("do_not_send_response");
+            server.getStatusFromClient("client: " + session, "expectedErrorMessage: No response received");
         }
 
         @Override public void serverShouldBroadcast() {}

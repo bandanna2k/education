@@ -32,6 +32,7 @@ allprojects {
 }
 
 test {
+    useJUnitPlatform()
     dependsOn(':java:common:test')
     dependsOn(':java:syntax:test')
     dependsOn(':java:jackson:test')
