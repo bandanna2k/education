@@ -52,12 +52,6 @@ public class ServerTextMessageHandler implements Handler<String>
         message.visit(executionLayer, processor);
     }
 
-    public void send(AbstractMessage message)
-    {
-        LOGGER.debug("Client     Pojo <--- Server | Sending {}", message);
-        executionLayer.serverSend(message);
-    }
-
     private static ObjectMapper newServerObjectMapper()
     {
         ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.ALWAYS);

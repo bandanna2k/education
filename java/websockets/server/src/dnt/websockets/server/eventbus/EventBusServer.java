@@ -23,7 +23,7 @@ public class EventBusServer
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventBusServer.class);
 
-    private final List<ServerTextMessageHandler> textMessageHandlers = new ArrayList<>();
+    private final List<ExecutionLayer> executionLayersForBroadcast = new ArrayList<>();
     private final Vertx vertx;
     private final ServerMessageProcessor requestProcessor = new ServerMessageProcessor();
     private final Map<String, String> registeredClients = new HashMap<>();
@@ -73,9 +73,11 @@ public class EventBusServer
             final DeliveryOptions deliveryOptions = new DeliveryOptions().addHeader("senderId", senderId);
             final Publisher publisher = new EventBusPublisher(eventBus, serverOutgoingTopic, deliveryOptions);
             final VertxAsyncExecutor<AbstractResponse> executor = new VertxAsyncExecutor.Builder(vertx).timeoutMillis(2_000L).build();
+
             final ExecutionLayer executionLayer = new ServerExecutionLayer(executor, publisher);
+            executionLayersForBroadcast.add(executionLayer);
+
             final ServerTextMessageHandler textMessageHandler = new ServerTextMessageHandler(executionLayer, requestProcessor);
-            textMessageHandlers.add(textMessageHandler);
             senderIdToTextMessageHandler.put(senderId, textMessageHandler);
 
             eventBus.consumer(clientIncomingTopic, clientToServerMessage ->
@@ -102,14 +104,14 @@ public class EventBusServer
 
     public void broadcast(AbstractMessage message)
     {
-        Iterator<ServerTextMessageHandler> iterator = textMessageHandlers.iterator();
+        Iterator<ExecutionLayer> iterator = executionLayersForBroadcast.iterator();
         while (iterator.hasNext())
         {
-            ServerTextMessageHandler next;
+            ExecutionLayer next;
             try
             {
                 next = iterator.next();
-                next.send(message);
+                next.serverSend(message);
             }
             catch (Exception e)
             {

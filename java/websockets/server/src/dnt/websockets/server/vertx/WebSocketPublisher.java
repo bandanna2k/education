@@ -24,7 +24,7 @@ public class WebSocketPublisher implements Publisher
     @Override
     public void send(AbstractMessage message)
     {
-        LOGGER.debug("Client --> Pojo     Server | {}", message);
+        LOGGER.debug("Client --> Pojo     Server | Publishing {}", message);
         try
         {
             serverWebSocket.writeTextMessage(OBJECT_MAPPER.writeValueAsString(message));
