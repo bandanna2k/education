@@ -1,0 +1,5 @@
+version: 1
+directory:
+  accounts:
+    - name: 'Tom'
+      age: 20

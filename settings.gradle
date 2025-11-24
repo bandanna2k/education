@@ -6,6 +6,7 @@ include 'java:syntax'
 include 'java:jackson'
 include 'java:maths'
 include 'java:vertx'
+include 'java:yaml'
 
 include 'java:websockets:communications'
 include 'java:websockets:infrastructure'

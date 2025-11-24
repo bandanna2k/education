@@ -28,6 +28,7 @@ public class TestFutures
                     Object o1 = compositeFuture.resultAt(1);
                     log(o);
                     log(o1);
+                    log("Both futures completed");
                 })
                 .onFailure(Throwable::printStackTrace)
                 .toCompletionStage().toCompletableFuture().join();
