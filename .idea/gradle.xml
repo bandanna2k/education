@@ -9,6 +9,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/ai" />
+            <option value="$PROJECT_DIR$/ai/infra" />
+            <option value="$PROJECT_DIR$/ai/local-llm" />
             <option value="$PROJECT_DIR$/java" />
             <option value="$PROJECT_DIR$/java/common" />
             <option value="$PROJECT_DIR$/java/jackson" />
@@ -24,6 +27,7 @@
             <option value="$PROJECT_DIR$/java/websockets/testing" />
             <option value="$PROJECT_DIR$/java/websockets/testing/integration" />
             <option value="$PROJECT_DIR$/java/websockets/websockets-vertx" />
+            <option value="$PROJECT_DIR$/java/yaml" />
           </set>
         </option>
       </GradleProjectSettings>
