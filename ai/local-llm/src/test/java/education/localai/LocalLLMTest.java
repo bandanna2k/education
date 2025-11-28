@@ -21,26 +21,6 @@ import java.io.IOException;
 
 public class LocalLLMTest extends LocalLLMBase {
 
-    private static GenericContainer<?> llmContainer;
-
-    @BeforeAll
-    static void beforeAll()
-    {
-        llmContainer = new GenericContainer<>(DockerImageName.parse("ollama-with-llama3_2"))
-                .withCreateContainerCmdModifier(cmd -> cmd
-                        .withName("ollama")
-                        .withHostConfig(
-                                new HostConfig().withPortBindings(
-                                        new PortBinding(Ports.Binding.bindPort(11434), new ExposedPort(11434))))
-                );
-        llmContainer.start();
-    }
-    @AfterAll
-    static void afterAll()
-    {
-        llmContainer.stop();
-    }
-
     private static final String QUESTION1 = """
 My name is David.
 
