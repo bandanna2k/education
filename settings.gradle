@@ -14,3 +14,7 @@ include 'java:websockets:websockets-vertx'
 include 'java:websockets:client'
 include 'java:websockets:server'
 include 'java:websockets:testing:integration'
+
+include 'ai'
+include 'ai:infra'
+include 'ai:local-llm'
