@@ -22,19 +22,22 @@ import java.io.IOException;
 public class LocalLLMTest extends LocalLLMBase {
 
     private static final String QUESTION1 = """
-My name is David.
-
 Question: What is my name?
 Answer:""";
     private static final String QUESTION2 = """
 Question: What is the height of a tennis net in the middle?
+Answer:""";
+    private static final String QUESTION3 = """
+Question: Give me the most difficult question you can think off, maximum 5 words?
 Answer:""";
 
 
     @ParameterizedTest
     @ValueSource(strings = {
             QUESTION1,
-            QUESTION2
+            "Context: My name is David. " + QUESTION1,
+            QUESTION2,
+            QUESTION3
     })
     void shouldGetHeightOfTheTennisNet(final String prompt) throws OllamaException
     {
