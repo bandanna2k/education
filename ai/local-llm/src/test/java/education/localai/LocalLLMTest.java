@@ -17,6 +17,9 @@ public class LocalLLMTest extends LocalLLMBase {
             "Question: How much do you know? Answer:",
             "Question: What should we have for dinner tonight? Answer:",
             "Question: Can you write a paragraph about the Mary Celeste? Answer:",
+            "Question: Describe a fictitious animal? Answer:",
+            "Question: I have an apple, a mango, an egg and some flour, create me a recipe? Answer:",
+            "Question: I have banana, sugar, bread dough, flour and capsicum, create me a recipe? Answer:",
     })
     void shouldAnswerQuestions(final String prompt) throws OllamaException
     {
