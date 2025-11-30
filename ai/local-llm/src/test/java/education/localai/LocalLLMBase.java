@@ -21,7 +21,7 @@ class LocalLLMBase {
 
     @BeforeAll
     static void beforeAll() {
-        llmContainer = new GenericContainer<>(DockerImageName.parse("ollama-with-llama3_2"))
+        llmContainer = new GenericContainer<>(DockerImageName.parse("ollama-with-models"))
                 .withCreateContainerCmdModifier(cmd -> cmd
                         .withName("ollama")
                         .withHostConfig(

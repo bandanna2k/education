@@ -1,1 +1,1 @@
-docker build -t ollama-with-llama3_2 .
+docker build -t ollama-with-models .
