@@ -2,15 +2,37 @@ package education.adventofcode.year2025;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
+import java.util.stream.Stream;
 
-public class Day1
+import static java.lang.Math.floorMod;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Day1Test extends TestBase
 {
-    @ParameterizedTest
-    @ValueSource(strings = { TEST, REAL })
-    void solve(final String input)
+    @Test
+    void division()
+    {
+        assertThat(999/100).isEqualTo(99);
+    }
+    @Test
+    void modNegValue()
+    {
+        assertThat(-1 % 10).isEqualTo(-1);
+        assertThat(floorMod(-1, 10)).isEqualTo(9);
+    }
+
+    private static Stream<Arguments> inputs() {
+        return Stream.of(
+                Arguments.of(TEST, 6),
+                Arguments.of(REAL, 6228)
+        );
+    }
+    @ParameterizedTest(name = "Expected {1}")
+    @MethodSource("inputs")
+    void solve(final String input, final int expected)
     {
         final int max = 99 + 1;
         int n = 50;
@@ -20,19 +42,48 @@ public class Day1
         String[] split = cleaned.split("\n");
         for (String line : split)
         {
+            debug_(line + "\t");
+
             char c = line.charAt(0);
             int count = Integer.parseInt(line.substring(1));
+
+            int clicks = count / max;
+            debug_(clicks + " ");
+            zeroCount += (clicks);
+
+            count = floorMod(count, max);
             switch (c)
             {
-                case 'L' -> n = (n - count) % max;
-                case 'R' -> n = (n + count) % max;
+                case 'L' -> {
+                    if(n != 0 && (n - count) < 0)
+                    {
+                        zeroCount++;
+                    }
+
+                    n = floorMod(n - count, max);
+                    debug_("n=" + n + "\t");
+                }
+                case 'R' -> {
+                    if(n != 0 && (n + count) > max)
+                    {
+                        zeroCount++;
+                    }
+
+                    n = floorMod(n + count, max);
+                    debug_("n=" + n + "\t");
+                }
             }
-            zeroCount += (n == 0 ) ? 1 : 0;
+            if(n == 0)
+            {
+                zeroCount++;
+            }
+            debug("\t\t" + zeroCount);
         }
-        System.out.println("Answer:" + zeroCount);
+        info("Answer:" + zeroCount);
+        assertThat(zeroCount).isEqualTo(expected);
     }
 
-    private final String TEST = """
+    private static final String TEST = """
             L68
             L30
             R48
@@ -44,7 +95,7 @@ public class Day1
             R14
             L82
             """;
-    private final String REAL = """
+    private static final String REAL = """
 R21
 L37
 L12
