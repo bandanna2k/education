@@ -30,7 +30,7 @@ class LocalLLMBase {
         llmContainer.start();
 
         ollama = new Ollama("http://localhost:11434/");
-        ollama.setRequestTimeoutSeconds(10_000);
+        ollama.setRequestTimeoutSeconds(30_000);
 
         int seed = 3;
         seededOptions = new OptionsBuilder()
