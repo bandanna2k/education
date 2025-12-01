@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/advent-of-code/2025/education.advent-of-code.2025.test.iml" filepath="$PROJECT_DIR$/.idea/modules/advent-of-code/2025/education.advent-of-code.2025.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/education.main.iml" filepath="$PROJECT_DIR$/.idea/modules/education.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/education.test.iml" filepath="$PROJECT_DIR$/.idea/modules/education.test.iml" group="education" />
       <module fileurl="file://$PROJECT_DIR$/java/kafka/kafka.iml" filepath="$PROJECT_DIR$/java/kafka/kafka.iml" />

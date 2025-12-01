@@ -13,14 +13,14 @@ dependencies {
 
     implementation          'org.seleniumhq.selenium:selenium-java:4.35.0'
     implementation          'org.testcontainers:selenium:1.21.3'
-    implementation          'org.testcontainers:testcontainers:1.21.3'
+    implementation          'org.testcontainers:testcontainers:2.0.2'
 
     testImplementation      'com.lmax:simple-dsl:3.0.0'
     testImplementation      'org.assertj:assertj-core:3.27.4'
     testImplementation      'org.awaitility:awaitility:4.3.0'
     testImplementation      'org.seleniumhq.selenium:selenium-java:4.35.0'
-    testImplementation      'org.testcontainers:selenium:1.21.3'
-    testImplementation      'org.testcontainers:testcontainers:1.21.3'
+    testImplementation      'org.testcontainers:selenium:2.0.2'
+    testImplementation      'org.testcontainers:testcontainers:2.0.2'
 }
 
 sourceSets {
