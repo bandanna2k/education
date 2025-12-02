@@ -1,6 +1,6 @@
-package education.adventofcode.year2025;
+package education.adventofcode.year2025.day2;
 
-import org.junit.jupiter.api.Test;
+import education.adventofcode.year2025.TestBase;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,26 +9,30 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 import static java.lang.Math.floorMod;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Day2Test extends TestBase
+public class Part1Test extends TestBase
 {
-    private static Stream<Arguments> inputs() {
+    private static Stream<Arguments> part1() {
         return Stream.of(
                 Arguments.of("/day2test.csv", 1227775554),
                 Arguments.of("/day2real.csv", 38437576669L)
         );
     }
+
     @ParameterizedTest(name = "Expected {1}")
-    @MethodSource("inputs")
-    void solve(final String input, final long expected) throws IOException
+    @MethodSource("part1")
+    void part1(final String input, final long expected) throws IOException
     {
         int invalidIds = 0;
         long sumInvalidIds = 0;
-        try (InputStream inputStream = Day2Test.class.getResourceAsStream(input))
+        try (InputStream inputStream = Part1Test.class.getResourceAsStream(input))
         {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);

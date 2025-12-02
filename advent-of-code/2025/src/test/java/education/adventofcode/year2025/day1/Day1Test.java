@@ -1,5 +1,6 @@
-package education.adventofcode.year2025;
+package education.adventofcode.year2025.day1;
 
+import education.adventofcode.year2025.TestBase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
