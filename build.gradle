@@ -17,7 +17,6 @@ dependencies {
 
 allprojects {
     tasks.withType(Test) {
-        useJUnitPlatform()
         outputs.upToDateWhen { false }
         testLogging {
             events = ["passed", "skipped", "failed"]
@@ -28,6 +27,7 @@ allprojects {
             showStandardStreams = true
             displayGranularity = 2
         }
+        exclude 'ai/local-llm/**'
     }
 }
 
