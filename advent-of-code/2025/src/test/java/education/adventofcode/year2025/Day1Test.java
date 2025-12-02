@@ -15,7 +15,7 @@ public class Day1Test extends TestBase
     @Test
     void division()
     {
-        assertThat(999/100).isEqualTo(99);
+        assertThat(999/100).isEqualTo(9);
     }
     @Test
     void modNegValue()
