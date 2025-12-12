@@ -16,7 +16,6 @@ include 'java:websockets:server'
 include 'java:websockets:testing:integration'
 
 include 'ai'
-include 'ai:infra'
 include 'ai:local-llm'
 
 include 'advent-of-code:2025'
