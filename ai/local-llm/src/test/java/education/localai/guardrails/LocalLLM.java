@@ -59,7 +59,7 @@ public class LocalLLM implements AutoCloseable
         Result<Void, String> resultInputSafety = checkInputSafety(question);
         return resultInputSafety.map(
                 s -> {
-                    return "";
+                    return askWithMainModel(question).success();
                 },
                 error -> error);
     }
