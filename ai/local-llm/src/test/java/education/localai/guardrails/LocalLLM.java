@@ -20,7 +20,7 @@ import static education.common.result.Result.success;
 
 public class LocalLLM implements AutoCloseable
 {
-    private final String GUARD_MODEL = "llama-guard3";
+    private final String GUARD_MODEL = "llama-guard3:8b";
     private final String MAIN_MODEL = "llama3.2";
 
     private GenericContainer<?> llmContainer;
@@ -70,7 +70,7 @@ public class LocalLLM implements AutoCloseable
         guardContainer.close();
     }
 
-    Result<String, String> askQuestionNoGuard(String question)
+    public Result<String, String> ask(String question)
     {
         Result<Void, String> resultInputSafety = checkInputSafety(question);
         return resultInputSafety.map(
@@ -80,7 +80,7 @@ public class LocalLLM implements AutoCloseable
                 error -> error);
     }
 
-    private Result<String, String> generateWithMainModel(String userInput) {
+    Result<String, String> askWithMainModel(String userInput) {
         String prompt = "User: " + userInput + "\n\nAssistant:";
 
         OllamaGenerateRequest request = OllamaGenerateRequest.builder()
@@ -88,11 +88,9 @@ public class LocalLLM implements AutoCloseable
                 .withPrompt(prompt)
                 .withOptions(seededOptions)
                 .build();
-
-        OllamaResult ollamaResult = null;
         try
         {
-            ollamaResult = ollama.generate(request, null);
+            OllamaResult ollamaResult = ollama.generate(request, null);
             return success(ollamaResult.getResponse().trim());
         }
         catch (OllamaException e)
@@ -100,7 +98,6 @@ public class LocalLLM implements AutoCloseable
             return Result.failure(e.getMessage());
         }
     }
-
 
     // Check if input is safe
     public Result<Void, String> checkInputSafety(String userInput)
