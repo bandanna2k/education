@@ -24,31 +24,18 @@ public class LocalLLM implements AutoCloseable
     private final String MAIN_MODEL = "llama3.2";
 
     private GenericContainer<?> llmContainer;
-    private GenericContainer<?> guardContainer;
     private Ollama ollama;
     private Options seededOptions;
 
     public LocalLLM()
     {
-        int guardPort = 11434;
-        int llmPort = 11435;
-
-        guardContainer = new GenericContainer<>(DockerImageName.parse("ollama-with-models"))
-                .withCreateContainerCmdModifier(cmd -> cmd
-                        .withName("ollama-guard")
-                        .withHostConfig(
-                                new HostConfig().withPortBindings(
-                                        new PortBinding(Ports.Binding.bindPort(11434), new ExposedPort(guardPort))))
-                );
-
         llmContainer = new GenericContainer<>(DockerImageName.parse("ollama-with-models"))
                 .withCreateContainerCmdModifier(cmd -> cmd
                         .withName("ollama")
                         .withHostConfig(
                                 new HostConfig().withPortBindings(
-                                        new PortBinding(Ports.Binding.bindPort(11434), new ExposedPort(llmPort))))
+                                        new PortBinding(Ports.Binding.bindPort(11434), new ExposedPort(11434))))
                 );
-        guardContainer.start();
         llmContainer.start();
 
         ollama = new Ollama("http://localhost:11434/");
@@ -65,9 +52,6 @@ public class LocalLLM implements AutoCloseable
     {
         llmContainer.stop();
         llmContainer.close();
-
-        guardContainer.stop();
-        guardContainer.close();
     }
 
     public Result<String, String> ask(String question)
