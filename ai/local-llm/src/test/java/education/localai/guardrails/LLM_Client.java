@@ -16,15 +16,12 @@ import static education.common.result.Result.success;
 public class LLM_Client
 {
     private static final String GUARD_MODEL = "llama-guard3:8b";
+    private static final String GUARD_MODEL_FAST = "llama-guard3:1b";
 
     private final Ollama ollama;
     private final Options seededOptions;
     private final String model;
 
-    public LLM_Client()
-    {
-        this("llama3.2");
-    }
     public LLM_Client(String model)
     {
         this.model = model;
@@ -95,7 +92,7 @@ public class LLM_Client
         try
         {
             OllamaGenerateRequest request = OllamaGenerateRequest.builder()
-                    .withModel(GUARD_MODEL)
+                    .withModel(GUARD_MODEL_FAST)
                     .withPrompt(guardPrompt)
                     .withOptions(seededOptions)
                     .build();

@@ -10,7 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GuardRailsTest extends GuardedLLM_Base
 {
-    private final LLM_Client llmClient = new LLM_Client("wizardlm2:7b");
+    public static final String LLM_MODEL = "llama3.2";
+    public static final String FAST_MODEL = "wizardlm2:7b";
+
+
+    private final LLM_Client llmClient = new LLM_Client(FAST_MODEL);
 
     @Test
     void shouldPassAllGuards()
