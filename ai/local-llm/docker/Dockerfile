@@ -8,3 +8,6 @@ RUN ollama serve & sleep 5 && ollama pull llama-guard3:8b && pkill ollama
 
 # Imagery model
 RUN ollama serve & sleep 5 && ollama pull moondream:1.8b && pkill ollama
+
+# Fast LLM
+RUN ollama serve & sleep 5 && ollama pull wizardlm2:7b && pkill ollama

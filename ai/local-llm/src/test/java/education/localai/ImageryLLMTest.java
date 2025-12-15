@@ -19,7 +19,7 @@ public class ImageryLLMTest extends LocalLLMBase
     })
     void shouldDescribeImage(final String resource) throws OllamaException, IOException
     {
-        File image = new File(LocalLLMTest.class.getResource(resource).getPath());
+        File image = new File(LLMAdapterTest.class.getResource(resource).getPath());
         {
             OllamaGenerateRequest request = OllamaGenerateRequest.builder()
                     .withModel("moondream:1.8b")

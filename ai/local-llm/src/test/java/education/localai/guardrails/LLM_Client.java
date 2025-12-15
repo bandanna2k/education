@@ -1,9 +1,5 @@
 package education.localai.guardrails;
 
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.HostConfig;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
 import education.common.result.Result;
 import io.github.ollama4j.Ollama;
 import io.github.ollama4j.exceptions.OllamaException;
@@ -11,33 +7,27 @@ import io.github.ollama4j.models.generate.OllamaGenerateRequest;
 import io.github.ollama4j.models.response.OllamaResult;
 import io.github.ollama4j.utils.Options;
 import io.github.ollama4j.utils.OptionsBuilder;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.Optional;
 
+import static education.common.result.Result.failure;
 import static education.common.result.Result.success;
 
-public class LocalLLM implements AutoCloseable
+public class LLM_Client
 {
-    private final String GUARD_MODEL = "llama-guard3:8b";
-    private final String MAIN_MODEL = "llama3.2";
+    private static final String GUARD_MODEL = "llama-guard3:8b";
 
-    private GenericContainer<?> llmContainer;
-    private Ollama ollama;
-    private Options seededOptions;
+    private final Ollama ollama;
+    private final Options seededOptions;
+    private final String model;
 
-    public LocalLLM()
+    public LLM_Client()
     {
-        llmContainer = new GenericContainer<>(DockerImageName.parse("ollama-with-models"))
-                .withCreateContainerCmdModifier(cmd -> cmd
-                        .withName("ollama")
-                        .withHostConfig(
-                                new HostConfig().withPortBindings(
-                                        new PortBinding(Ports.Binding.bindPort(11434), new ExposedPort(11434))))
-                );
-        llmContainer.start();
-
+        this("llama3.2");
+    }
+    public LLM_Client(String model)
+    {
+        this.model = model;
         ollama = new Ollama("http://localhost:11434/");
         ollama.setRequestTimeoutSeconds(30_000);
 
@@ -47,28 +37,31 @@ public class LocalLLM implements AutoCloseable
                 .build();
     }
 
-    @Override
-    public void close()
+    public Result<String, QuestionError> ask(String question)
     {
-        llmContainer.stop();
-        llmContainer.close();
+        Result<Void, QuestionError> resultInputSafety = checkInputSafety(question);
+        if (resultInputSafety.hasFailed()) {
+            return failure(resultInputSafety.error());
+        }
+
+        Result<String, QuestionError> resultWithMainModel = askWithMainModel(question);
+        if (resultWithMainModel.hasFailed()) {
+            return failure(resultWithMainModel.error());
+        }
+
+        String answerFromMainModel = resultWithMainModel.success();
+        Result<Void, QuestionError> resultOutputSafety = checkOutputSafety(question, answerFromMainModel);
+        if (resultOutputSafety.hasFailed())
+            return failure(resultOutputSafety.error());
+
+        return success(answerFromMainModel);
     }
 
-    public Result<String, String> ask(String question)
-    {
-        Result<Void, String> resultInputSafety = checkInputSafety(question);
-        return resultInputSafety.map(
-                s -> {
-                    return askWithMainModel(question).success();
-                },
-                error -> error);
-    }
-
-    Result<String, String> askWithMainModel(String userInput) {
+    Result<String, QuestionError> askWithMainModel(String userInput) {
         String prompt = "User: " + userInput + "\n\nAssistant:";
 
         OllamaGenerateRequest request = OllamaGenerateRequest.builder()
-                .withModel(MAIN_MODEL)
+                .withModel(model)
                 .withPrompt(prompt)
                 .withOptions(seededOptions)
                 .build();
@@ -79,25 +72,25 @@ public class LocalLLM implements AutoCloseable
         }
         catch (OllamaException e)
         {
-            return Result.failure(e.getMessage());
+            return Result.failure(new QuestionError(GuardType.MainModel, e.getMessage()));
         }
     }
 
     // Check if input is safe
-    public Result<Void, String> checkInputSafety(String userInput)
+    public Result<Void, QuestionError> checkInputSafety(String userInput)
     {
         String guardPrompt = buildGuardPrompt("User", userInput, Optional.empty());
-        return evaluateWithGuard(guardPrompt);
+        return evaluateWithGuard(guardPrompt, GuardType.Input);
     }
 
     // Check if output is safe
-    public Result<Void, String> checkOutputSafety(String userInput, String llmOutput)
+    public Result<Void, QuestionError> checkOutputSafety(String userInput, String llmOutput)
     {
         String guardPrompt = buildGuardPrompt("Agent", userInput, Optional.of(llmOutput));
-        return evaluateWithGuard(guardPrompt);
+        return evaluateWithGuard(guardPrompt, GuardType.Output);
     }
 
-    private Result<Void, String> evaluateWithGuard(String guardPrompt)
+    private Result<Void, QuestionError> evaluateWithGuard(String guardPrompt, GuardType guardType)
     {
         try
         {
@@ -116,12 +109,12 @@ public class LocalLLM implements AutoCloseable
             }
             else
             {
-                return Result.failure(answer);
+                return Result.failure(new QuestionError(guardType, answer));
             }
         }
         catch (OllamaException e)
         {
-            return Result.failure(e.getMessage());
+            return Result.failure(new QuestionError(guardType, e.getMessage()));
         }
     }
 
@@ -173,4 +166,5 @@ public class LocalLLM implements AutoCloseable
 
         return prompt.toString();
     }
+
 }

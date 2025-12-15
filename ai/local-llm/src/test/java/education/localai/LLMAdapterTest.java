@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class LocalLLMTest extends LocalLLMBase {
+public class LLMAdapterTest extends LocalLLMBase {
 
     @ParameterizedTest
     @ValueSource(strings = {
