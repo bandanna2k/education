@@ -34,27 +34,31 @@ public class LLM_Client
                 .build();
     }
 
-    public Result<String, QuestionError> ask(String question)
+    public Result<Answer, String> ask(String question)
     {
-        Result<Void, QuestionError> resultInputSafety = checkInputSafety(question);
-        if (resultInputSafety.hasFailed()) {
-            return failure(resultInputSafety.error());
-        }
+        Answer.Builder builder = new Answer.Builder();
+        builder.question(question);
 
-        Result<String, QuestionError> resultWithMainModel = askWithMainModel(question);
-        if (resultWithMainModel.hasFailed()) {
+        Result<Void, String> resultInputSafety = checkInputSafety(question);
+        resultInputSafety.ifError(builder::inputGuardError);
+
+        Result<String, String> resultWithMainModel = askWithMainModel(question);
+        if(resultWithMainModel.isSuccess())
+        {
+            builder.answerUnguarded(resultWithMainModel.success());
+        }
+        else
+        {
             return failure(resultWithMainModel.error());
         }
 
-        String answerFromMainModel = resultWithMainModel.success();
-        Result<Void, QuestionError> resultOutputSafety = checkOutputSafety(question, answerFromMainModel);
-        if (resultOutputSafety.hasFailed())
-            return failure(resultOutputSafety.error());
+        Result<Void, String> resultOutputSafety = checkOutputSafety(question, builder.answerUnguarded());
+        resultOutputSafety.ifError(builder::outputGuardError);
 
-        return success(answerFromMainModel);
+        return success(builder.build());
     }
 
-    Result<String, QuestionError> askWithMainModel(String userInput) {
+    private Result<String, String> askWithMainModel(String userInput) {
         String prompt = "User: " + userInput + "\n\nAssistant:";
 
         OllamaGenerateRequest request = OllamaGenerateRequest.builder()
@@ -69,25 +73,25 @@ public class LLM_Client
         }
         catch (OllamaException e)
         {
-            return Result.failure(new QuestionError(GuardType.MainModel, e.getMessage()));
+            return Result.failure(e.getMessage());
         }
     }
 
     // Check if input is safe
-    public Result<Void, QuestionError> checkInputSafety(String userInput)
+    public Result<Void, String> checkInputSafety(String userInput)
     {
         String guardPrompt = buildGuardPrompt("User", userInput, Optional.empty());
         return evaluateWithGuard(guardPrompt, GuardType.Input);
     }
 
     // Check if output is safe
-    public Result<Void, QuestionError> checkOutputSafety(String userInput, String llmOutput)
+    public Result<Void, String> checkOutputSafety(String userInput, String llmOutput)
     {
         String guardPrompt = buildGuardPrompt("Agent", userInput, Optional.of(llmOutput));
         return evaluateWithGuard(guardPrompt, GuardType.Output);
     }
 
-    private Result<Void, QuestionError> evaluateWithGuard(String guardPrompt, GuardType guardType)
+    private Result<Void, String> evaluateWithGuard(String guardPrompt, GuardType guardType)
     {
         try
         {
@@ -98,20 +102,20 @@ public class LLM_Client
                     .build();
 
             OllamaResult result = ollama.generate(request, null);
-            String answer = result.getResponse().toLowerCase();
+            String answerGuarded = result.getResponse().toLowerCase();
 
-            if (answer.contains("safe") && !answer.contains("unsafe"))
+            if (answerGuarded.contains("safe") && !answerGuarded.contains("unsafe"))
             {
                 return success(null);
             }
             else
             {
-                return Result.failure(new QuestionError(guardType, answer));
+                return Result.failure(answerGuarded);
             }
         }
         catch (OllamaException e)
         {
-            return Result.failure(new QuestionError(guardType, e.getMessage()));
+            return Result.failure(e.getMessage());
         }
     }
 
