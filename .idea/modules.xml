@@ -32,7 +32,6 @@
       <module fileurl="file://$PROJECT_DIR$/java/takari-unit-test-runner/other-unit-tests/other-unit-tests.iml" filepath="$PROJECT_DIR$/java/takari-unit-test-runner/other-unit-tests/other-unit-tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" filepath="$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/testContainers/testContainers.iml" filepath="$PROJECT_DIR$/java/testContainers/testContainers.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ai/text-to-image/text-to-image.iml" filepath="$PROJECT_DIR$/ai/text-to-image/text-to-image.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
     </modules>
   </component>
