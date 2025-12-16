@@ -30,7 +30,7 @@ public class LLM_Client
         ollama = new Ollama("http://localhost:11434/");
         ollama.setRequestTimeoutSeconds(30_000);
 
-        int seed = 3;
+        int seed = 4;
         seededOptions = new OptionsBuilder()
                 .setSeed(seed)
                 .build();
