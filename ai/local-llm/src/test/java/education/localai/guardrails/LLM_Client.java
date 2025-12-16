@@ -81,17 +81,17 @@ public class LLM_Client
     public Result<Void, String> checkInputSafety(String userInput)
     {
         String guardPrompt = buildGuardPrompt("User", userInput, Optional.empty());
-        return evaluateWithGuard(guardPrompt, GuardType.Input);
+        return evaluateWithGuard(guardPrompt);
     }
 
     // Check if output is safe
     public Result<Void, String> checkOutputSafety(String userInput, String llmOutput)
     {
         String guardPrompt = buildGuardPrompt("Agent", userInput, Optional.of(llmOutput));
-        return evaluateWithGuard(guardPrompt, GuardType.Output);
+        return evaluateWithGuard(guardPrompt);
     }
 
-    private Result<Void, String> evaluateWithGuard(String guardPrompt, GuardType guardType)
+    private Result<Void, String> evaluateWithGuard(String guardPrompt)
     {
         try
         {
