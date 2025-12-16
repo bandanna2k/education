@@ -8,7 +8,9 @@ import io.github.ollama4j.models.response.OllamaResult;
 import io.github.ollama4j.utils.Options;
 import io.github.ollama4j.utils.OptionsBuilder;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static education.common.result.Result.failure;
 import static education.common.result.Result.success;
@@ -81,14 +83,16 @@ public class LLM_Client
     public Result<Void, String> checkInputSafety(String userInput)
     {
         String guardPrompt = buildGuardPrompt("User", userInput, Optional.empty());
-        return evaluateWithGuard(guardPrompt);
+        return evaluateWithGuard(guardPrompt).mapError(error ->
+                String.join(",", error.split("[ |\\n]")));
     }
 
     // Check if output is safe
     public Result<Void, String> checkOutputSafety(String userInput, String llmOutput)
     {
         String guardPrompt = buildGuardPrompt("Agent", userInput, Optional.of(llmOutput));
-        return evaluateWithGuard(guardPrompt);
+        return evaluateWithGuard(guardPrompt).mapError(error ->
+                String.join(",", error.split("[ |\\n]")));
     }
 
     private Result<Void, String> evaluateWithGuard(String guardPrompt)
