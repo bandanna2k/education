@@ -90,4 +90,9 @@ public final class Answer
             return this;
         }
     }
+
+    @Override
+    public String toString() {
+        return getAnswer();
+    }
 }
