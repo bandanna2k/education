@@ -2,15 +2,19 @@ from flask import Flask, request, send_file
 from diffusers import StableDiffusionPipeline
 import torch
 import io
-from PIL import Image
+import os
 
 app = Flask(__name__)
+
+# Force local-only mode
+os.environ['HF_HUB_OFFLINE'] = '1'
 
 device = "cpu"
 pipe = StableDiffusionPipeline.from_pretrained(
     "runwayml/stable-diffusion-v1-5",
     torch_dtype=torch.float32,
-    cache_dir="/tmp/models"
+    cache_dir="/app/models",
+    local_files_only=True
 )
 pipe = pipe.to(device)
 
