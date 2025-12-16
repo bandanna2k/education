@@ -5,6 +5,26 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/advent-of-code/2025/education.advent-of-code.2025.test.iml" filepath="$PROJECT_DIR$/.idea/modules/advent-of-code/2025/education.advent-of-code.2025.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ai/local-llm/education.ai.local-llm.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ai/local-llm/education.ai.local-llm.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ai/local-llm/education.ai.local-llm.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ai/local-llm/education.ai.local-llm.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/common/education.java.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/common/education.java.common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/common/education.java.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/common/education.java.common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/maths/education.java.maths.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/maths/education.java.maths.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/maths/education.java.maths.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/maths/education.java.maths.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/selenium/education.java.selenium.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/selenium/education.java.selenium.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/syntax/education.java.syntax.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/syntax/education.java.syntax.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/syntax/education.java.syntax.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/syntax/education.java.syntax.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/vertx/education.java.vertx.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/vertx/education.java.vertx.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/vertx/education.java.vertx.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/vertx/education.java.vertx.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/websockets/client/education.java.websockets.client.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/websockets/client/education.java.websockets.client.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/websockets/infrastructure/education.java.websockets.infrastructure.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/websockets/infrastructure/education.java.websockets.infrastructure.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/websockets/infrastructure/education.java.websockets.infrastructure.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/websockets/infrastructure/education.java.websockets.infrastructure.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/websockets/server/education.java.websockets.server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/websockets/server/education.java.websockets.server.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/websockets/testing/integration/education.java.websockets.testing.integration.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/websockets/testing/integration/education.java.websockets.testing.integration.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/websockets/testing/integration/education.java.websockets.testing.integration.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/websockets/testing/integration/education.java.websockets.testing.integration.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/websockets/websockets-vertx/education.java.websockets.websockets-vertx.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/websockets/websockets-vertx/education.java.websockets.websockets-vertx.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/websockets/websockets-vertx/education.java.websockets.websockets-vertx.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/websockets/websockets-vertx/education.java.websockets.websockets-vertx.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/yaml/education.java.yaml.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/yaml/education.java.yaml.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/education.main.iml" filepath="$PROJECT_DIR$/.idea/modules/education.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/education.test.iml" filepath="$PROJECT_DIR$/.idea/modules/education.test.iml" group="education" />
       <module fileurl="file://$PROJECT_DIR$/java/kafka/kafka.iml" filepath="$PROJECT_DIR$/java/kafka/kafka.iml" />
@@ -12,6 +32,7 @@
       <module fileurl="file://$PROJECT_DIR$/java/takari-unit-test-runner/other-unit-tests/other-unit-tests.iml" filepath="$PROJECT_DIR$/java/takari-unit-test-runner/other-unit-tests/other-unit-tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" filepath="$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/testContainers/testContainers.iml" filepath="$PROJECT_DIR$/java/testContainers/testContainers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ai/text-to-image/text-to-image.iml" filepath="$PROJECT_DIR$/ai/text-to-image/text-to-image.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
     </modules>
   </component>
