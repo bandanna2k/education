@@ -22,8 +22,24 @@ pipe = pipe.to(device)
 def generate():
     data = request.json
     prompt = data.get('prompt', '')
+    seed = data.get('seed', None)
+    width = int(data.get('width', 512))
+    height = int(data.get('height', 512))
+    steps = int(data.get('steps', 20))
+    guidance_scale = float(data.get('guidance_scale', 7.5))
 
-    image = pipe(prompt, num_inference_steps=20).images[0]
+    generator = None
+    if seed is not None:
+        generator = torch.Generator(device=device).manual_seed(int(seed))
+
+    image = pipe(
+        prompt=prompt,
+        height=height,
+        width=width,
+        num_inference_steps=steps,
+        guidance_scale=guidance_scale,
+        generator=generator
+    ).images[0]
 
     img_io = io.BytesIO()
     image.save(img_io, 'PNG')

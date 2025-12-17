@@ -24,7 +24,7 @@ class TextToImageTest extends TextToImageBase {
         WebClient client = WebClient.create(vertx);
 
         String outputPath = String.format("/tmp/downloaded-image-%s.png", Instant.now());
-        Prompt prompt = new Prompt("1", "A dog chasing a cat. Style = cartoon.");
+        Prompt prompt = new Prompt("A dog chasing a cat.");
 
         Future<HttpResponse<Buffer>> future = client.post(5000, "localhost", "/generate")
                 .sendJson(prompt)
@@ -34,6 +34,7 @@ class TextToImageTest extends TextToImageBase {
 
                         vertx.fileSystem().writeFile(outputPath, imageBuffer)
                                 .onSuccess(v -> {
+                                    System.out.println("Downloaded: " + outputPath);
                                     System.out.println("Downloaded: " + imageBuffer.length() + " bytes");
                                     vertx.close();
                                 })
@@ -56,11 +57,13 @@ class TextToImageTest extends TextToImageBase {
 
     public static class Prompt {
         public final String prompt;
-        public final String seed;
+        public final int width = 768;
+        public final int height = 1024;
+        public final int steps = 30;
+        public final String guidance_scale = "7.5";
 
-        public Prompt(String seed, String prompt) {
+        public Prompt(String prompt) {
             this.prompt = prompt;
-            this.seed = seed;
         }
     }
 }
