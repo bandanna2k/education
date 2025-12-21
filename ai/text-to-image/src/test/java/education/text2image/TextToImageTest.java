@@ -24,7 +24,8 @@ class TextToImageTest extends TextToImageBase {
         WebClient client = WebClient.create(vertx);
 
         String outputPath = String.format("/tmp/downloaded-image-%s.png", Instant.now());
-        Prompt prompt = new Prompt("A dog chasing a cat.");
+        Prompt prompt1 = new Prompt("Woman sitting on rock by stream painting — serene nature scene artwork");
+        Prompt prompt = new Prompt("A team of young mystery solvers and their talking dog , cartoon line art , clean outlines, retro vibe");
 
         Future<HttpResponse<Buffer>> future = client.post(5000, "localhost", "/generate")
                 .sendJson(prompt)
