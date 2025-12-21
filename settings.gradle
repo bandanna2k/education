@@ -18,6 +18,7 @@ include 'java:websockets:testing:integration'
 include 'ai'
 include 'ai:local-llm'
 include 'ai:text-to-image'
+include 'ai:text-to-image:automatic1111'
 
 include 'advent-of-code:2025'
 
