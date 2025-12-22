@@ -41,5 +41,4 @@ test {
     dependsOn(':java:websockets:infrastructure:test')
     dependsOn(':java:websockets:testing:integration:test')
     dependsOn(':java:websockets:websockets-vertx:test')
-    dependsOn(':advent-of-code:2025:test')
 }
