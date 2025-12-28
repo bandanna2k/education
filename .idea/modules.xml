@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/advent-of-code/2025/education.advent-of-code.2025.test.iml" filepath="$PROJECT_DIR$/.idea/modules/advent-of-code/2025/education.advent-of-code.2025.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/common/education.java.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/common/education.java.common.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/common/education.java.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/common/education.java.common.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.main.iml" />
