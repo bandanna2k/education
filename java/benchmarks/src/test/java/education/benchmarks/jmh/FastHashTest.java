@@ -6,6 +6,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.openjdk.jmh.runner.options.TimeValue;
 
 import java.util.concurrent.TimeUnit;
 
@@ -62,8 +63,13 @@ public class FastHashTest
     public void launchBenchmark() throws RunnerException
     {
         Options opt = new OptionsBuilder()
-                .include(FastHashTest.class.getSimpleName()).warmupIterations(5)
-                .measurementIterations(10).forks(1).build();
+                .include(this.getClass().getSimpleName())
+                .warmupTime(TimeValue.seconds(2))
+                .warmupIterations(2)
+                .measurementTime(TimeValue.seconds(2))
+                .measurementIterations(2)
+                .forks(1)
+                .build();
         new Runner(opt).run();
     }
 }

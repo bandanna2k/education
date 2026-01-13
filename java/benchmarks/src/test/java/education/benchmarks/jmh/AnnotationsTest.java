@@ -29,11 +29,17 @@ public class AnnotationsTest {
     @Measurement(batchSize = -1, iterations = 10, time = 10, timeUnit = TimeUnit.MILLISECONDS)
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void test() throws Exception {
-        Thread.sleep(ThreadLocalRandom.current().nextInt(0, iterations));
+        final int randomVal = ThreadLocalRandom.current().nextInt(0, iterations);
+        long sum = 0;
+        for (int i = 0; i < randomVal; i++)
+        {
+             sum += i;
+        }
+        System.out.println(sum);
     }
 
 
-    @Test
+//    @Test
     public void benchmark() throws Exception {
         String[] argv = {};
         org.openjdk.jmh.Main.main(argv);

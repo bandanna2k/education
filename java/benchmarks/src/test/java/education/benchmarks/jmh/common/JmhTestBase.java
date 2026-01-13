@@ -10,7 +10,7 @@ import org.openjdk.jmh.runner.options.TimeValue;
 
 import java.util.concurrent.TimeUnit;
 
-public class JmhTestBase {
+public abstract class JmhTestBase {
     @Test
     public void runBenchmarks() throws RunnerException {
         Options options = new OptionsBuilder()
