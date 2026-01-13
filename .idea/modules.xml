@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/benchmarks/education.java.benchmarks.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/benchmarks/education.java.benchmarks.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/benchmarks/education.java.benchmarks.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/benchmarks/education.java.benchmarks.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/common/education.java.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/common/education.java.common.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/common/education.java.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/common/education.java.common.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.main.iml" />

@@ -1,4 +1,4 @@
-package education.benchmarks.jmh.absolute;
+package education.maths;
 
 public abstract class Absolute
 {
