@@ -7,6 +7,7 @@ include 'java:jackson'
 include 'java:maths'
 include 'java:vertx'
 include 'java:yaml'
+include 'java:benchmarks'
 
 include 'java:websockets:communications'
 include 'java:websockets:infrastructure'
@@ -16,4 +17,3 @@ include 'java:websockets:server'
 include 'java:websockets:testing:integration'
 
 include 'advent-of-code:2025'
-

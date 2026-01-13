@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/benchmarks/education.java.benchmarks.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/benchmarks/education.java.benchmarks.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/common/education.java.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/common/education.java.common.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/common/education.java.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/java/common/education.java.common.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.main.iml" filepath="$PROJECT_DIR$/.idea/modules/java/jackson/education.java.jackson.main.iml" />
@@ -27,6 +28,7 @@
       <module fileurl="file://$PROJECT_DIR$/java/kafka/kafka.iml" filepath="$PROJECT_DIR$/java/kafka/kafka.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/kafka-with-spring/kafka-with-spring.iml" filepath="$PROJECT_DIR$/java/kafka-with-spring/kafka-with-spring.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/takari-unit-test-runner/other-unit-tests/other-unit-tests.iml" filepath="$PROJECT_DIR$/java/takari-unit-test-runner/other-unit-tests/other-unit-tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/python/python.iml" filepath="$PROJECT_DIR$/python/python.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" filepath="$PROJECT_DIR$/java/takari-unit-test-runner/takari-unit-test-runner.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/testContainers/testContainers.iml" filepath="$PROJECT_DIR$/java/testContainers/testContainers.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
