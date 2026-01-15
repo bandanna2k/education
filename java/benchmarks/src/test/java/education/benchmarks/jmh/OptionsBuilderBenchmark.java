@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class OptionsBuilderTest {
+public class OptionsBuilderBenchmark {
     @Test
     public void launchBenchmark() throws RunnerException {
         Options options = new OptionsBuilder()

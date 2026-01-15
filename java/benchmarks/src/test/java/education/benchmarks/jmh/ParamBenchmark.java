@@ -1,6 +1,6 @@
 package education.benchmarks.jmh;
 
-import education.benchmarks.jmh.common.JmhTestBase;
+import education.benchmarks.jmh.common.BenchmarkBase;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
@@ -8,7 +8,7 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
 @State(Scope.Thread)
-public class JmhParamTest extends JmhTestBase
+public class ParamBenchmark extends BenchmarkBase
 {
     @Param({ "10", "20", "30"})
     public int arg;

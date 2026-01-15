@@ -1,5 +1,6 @@
 package education.benchmarks.jmh;
 
+import education.maths.Absolute;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
@@ -8,65 +9,47 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.TimeValue;
 
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
-import static education.FastHash.*;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-public class FastHashTest
+public class AbsoluteLongBenchmark
 {
+    private static final int MAX_METHOD_CALLS = 1000;
+
+    private final Random random = new SecureRandom("Random".getBytes(StandardCharsets.UTF_8));
+
     @Benchmark
-    public long murmur()   {
+    public long Math_Abs() {
         long answer = 0;
-        for(long x = 0; x < 100000; x++) {
-            answer += murmur64(x);
+        for(long x = 0; x < MAX_METHOD_CALLS; x++) {
+            answer += Math.abs(random.nextLong());
         }
         return answer;
     }
 
     @Benchmark
-    public int murmur_32()   {
-        int answer1 = 0;
-        int answer2 = 0;
-        for(long x = 0; x < 100000; x++) {
-            long h = murmur64(x);
-            answer1 += (int) h;
-            answer2 += (int) (h >>> 32);
-        }
-        return answer1 + answer2;
-    }
-
-    @Benchmark
-    public int fast2_32()   {
-        int answer1 = 0;
-        int answer2 = 0;
-
-        for(long x = 0; x < 100000; x++) {
-            answer1 += hash32_1(x);
-            answer2 += hash32_2(x);
-
-        }
-        return answer1 + answer2;
-    }
-    @Benchmark
-    public long fast64()   {
+    public long Absolute_abs() {
         long answer = 0;
-        for(long x = 0; x < 100000; x++) {
-            answer += hash64(x);
+        for(long x = 0; x < MAX_METHOD_CALLS; x++) {
+            answer += Absolute.abs(random.nextLong());
         }
         return answer;
     }
+
 
     @Test
     public void launchBenchmark() throws RunnerException
     {
         Options opt = new OptionsBuilder()
                 .include(this.getClass().getSimpleName())
-                .warmupTime(TimeValue.seconds(2))
+                .warmupTime(TimeValue.seconds(5))
                 .warmupIterations(2)
-                .measurementTime(TimeValue.seconds(2))
+                .measurementTime(TimeValue.seconds(5))
                 .measurementIterations(2)
                 .forks(1)
                 .build();

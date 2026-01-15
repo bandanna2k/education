@@ -11,4 +11,9 @@ public abstract class Absolute
         // Then subtract mask: -(-1) = +1 for negatives, -(0) = 0 for positives
         return (value ^ mask) - mask;
     }
+
+    public static int abs(int value) {
+        int mask = value >> 31;
+        return (value + mask) ^ mask;
+    }
 }

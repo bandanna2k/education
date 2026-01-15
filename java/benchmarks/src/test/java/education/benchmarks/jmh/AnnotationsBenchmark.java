@@ -1,6 +1,5 @@
 package education.benchmarks.jmh;
 
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -8,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @Threads(1)
-public class AnnotationsTest {
+public class AnnotationsBenchmark {
     @Param({"10", "100", "1000"})
     public int iterations;
 
