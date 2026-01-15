@@ -1,6 +1,5 @@
-package education.onebrc;
+package education.onebrc.memorymapping;
 
-import education.onebrc.filegenerator.CSVGenerator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -59,12 +58,12 @@ public class FileReadingTest {
     }
 
     @BeforeAll
-    public static void needsXmx2g()
+    public static void needsXmx16g()
     {
         long maxMemoryBytes = Runtime.getRuntime().maxMemory();
         long maxMemMb = ((maxMemoryBytes / 1000) / 1000);
         long maxMemGb = ((maxMemMb / 1000));
-        assertThat(maxMemGb).isGreaterThanOrEqualTo(2);
+        assertThat(maxMemGb).isGreaterThanOrEqualTo(16);
     }
 
     @BeforeAll

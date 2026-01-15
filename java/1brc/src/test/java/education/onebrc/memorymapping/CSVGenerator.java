@@ -1,4 +1,4 @@
-package education.onebrc.filegenerator;
+package education.onebrc.memorymapping;
 
 import java.io.*;
 import java.util.Random;
@@ -19,22 +19,26 @@ public class CSVGenerator {
             "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Young", "Walker", "Allen"
     };
 
-    private static final long TARGET_SIZE = 1_000_000_000L; // 1GB in bytes
     private static final int BUFFER_SIZE = 1_000_000; // 1MB buffer
     private final Random random = new Random();
+    private final int targetSize;
+    private String pathname;
 
-    public static void main(String[] args) throws IOException
-    {
-        new CSVGenerator().go();
+    public CSVGenerator() {
+        this(1000, "/home/northd/data.csv");
+    }
+    public CSVGenerator(int countOf1MbBuffers, String filename) {
+        this.targetSize = countOf1MbBuffers * BUFFER_SIZE;
+        this.pathname = filename;
     }
 
     public void go() throws IOException
     {
-        File file = new File("/home/northd/data.csv");
+        File file = new File(pathname);
         if(file.exists())
             return;
 
-        System.out.println("Generating 1GB CSV file...");
+        System.out.println("Generating file...");
         System.out.println("Output file: " + file);
         System.out.println();
 
@@ -58,7 +62,7 @@ public class CSVGenerator {
             bytesWritten += header.getBytes().length;
 
             // Generate data until we reach ~1GB
-            while (bytesWritten < TARGET_SIZE) {
+            while (bytesWritten < targetSize) {
                 String name = generateRandomName();
                 int timeInSeconds = generateRandomTime();
                 String line = name + "," + timeInSeconds + "\n";
