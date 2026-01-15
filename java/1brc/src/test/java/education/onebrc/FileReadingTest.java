@@ -1,5 +1,6 @@
 package education.onebrc;
 
+import education.onebrc.filegenerator.CSVGenerator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -66,5 +67,9 @@ public class FileReadingTest {
         assertThat(maxMemGb).isGreaterThanOrEqualTo(2);
     }
 
-
+    @BeforeAll
+    public static void writeFile() throws IOException
+    {
+        new CSVGenerator().go();
+    }
 }

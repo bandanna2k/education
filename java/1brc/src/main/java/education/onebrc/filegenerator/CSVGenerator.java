@@ -21,16 +21,25 @@ public class CSVGenerator {
 
     private static final long TARGET_SIZE = 1_000_000_000L; // 1GB in bytes
     private static final int BUFFER_SIZE = 1_000_000; // 1MB buffer
-    private static final Random random = new Random();
+    private final Random random = new Random();
 
-    public static void main(String[] args) throws IOException {
-        String filename = "/home/northd/data.csv";
+    public static void main(String[] args) throws IOException
+    {
+        new CSVGenerator().go();
+    }
+
+    public void go() throws IOException
+    {
+        File file = new File("/home/northd/data.csv");
+        if(file.exists())
+            return;
+
         System.out.println("Generating 1GB CSV file...");
-        System.out.println("Output file: " + filename);
+        System.out.println("Output file: " + file);
         System.out.println();
 
         long startTime = System.currentTimeMillis();
-        long bytesWritten = generateCSV(filename);
+        long bytesWritten = generateCSV(file);
         long endTime = System.currentTimeMillis();
 
         System.out.println("? File generation complete!");
@@ -38,11 +47,11 @@ public class CSVGenerator {
         System.out.println("Time taken: " + ((endTime - startTime) / 1000.0) + " seconds");
     }
 
-    private static long generateCSV(String filename) throws IOException {
+    private long generateCSV(File file) throws IOException {
         long bytesWritten = 0;
         StringBuilder buffer = new StringBuilder(BUFFER_SIZE);
 
-        try (FileWriter writer = new FileWriter(filename)) {
+        try (FileWriter writer = new FileWriter(file)) {
             // Write header
             String header = "Name,5K_Time_Seconds\n";
             writer.write(header);
@@ -78,13 +87,13 @@ public class CSVGenerator {
         return bytesWritten;
     }
 
-    private static String generateRandomName() {
+    private String generateRandomName() {
         String firstName = FIRST_NAMES[random.nextInt(FIRST_NAMES.length)];
         String lastName = LAST_NAMES[random.nextInt(LAST_NAMES.length)];
         return firstName + " " + lastName;
     }
 
-    private static int generateRandomTime() {
+    private int generateRandomTime() {
         // 17 minutes = 1020 seconds
         // 59 minutes = 3540 seconds
         return 1020 + random.nextInt(2521); // 2521 = 3540 - 1020 + 1
