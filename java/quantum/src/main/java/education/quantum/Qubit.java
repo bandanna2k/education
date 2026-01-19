@@ -7,7 +7,7 @@ public class Qubit {
 
     public Qubit(double alpha, double beta) {
         // Normalize to ensure |α|² + |β|² = 1
-        double norm = Math.sqrt(alpha * alpha + beta * beta);
+        double norm = Math.sqrt((alpha * alpha) + (beta * beta));
         this.alpha = alpha / norm;
         this.beta = beta / norm;
     }
