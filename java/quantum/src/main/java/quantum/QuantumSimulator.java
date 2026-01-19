@@ -2,6 +2,8 @@ package quantum;
 
 public class QuantumSimulator {
 
+    private static final double SQRT_2 = Math.sqrt(2);
+
     // Represents a qubit state as |ψ⟩ = α|0⟩ + β|1⟩
     static class Qubit {
         double alpha; // amplitude for |0⟩
@@ -43,7 +45,7 @@ public class QuantumSimulator {
 
     // Hadamard gate - creates superposition
     static Qubit hadamard(Qubit q) {
-        double sqrt2 = Math.sqrt(2);
+        double sqrt2 = SQRT_2;
         double newAlpha = (q.alpha + q.beta) / sqrt2;
         double newBeta = (q.alpha - q.beta) / sqrt2;
         return new Qubit(newAlpha, newBeta);
