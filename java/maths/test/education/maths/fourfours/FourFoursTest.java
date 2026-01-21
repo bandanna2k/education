@@ -1,11 +1,10 @@
 package education.maths.fourfours;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static java.lang.Math.*;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Fail.fail;
 
 /*
 4% = 0.04
@@ -55,9 +54,8 @@ public class FourFoursTest {
     }
 
     @Test
-    @Disabled
     void shouldCalculate09() {
-        assertThat(4444).isEqualTo(9);
+        assertThat(pow(sqrt(4) + (4/4), sqrt(4))).isEqualTo(9);
     }
 
     @Test
@@ -99,9 +97,8 @@ public class FourFoursTest {
     }
 
     @Test
-    @Disabled
     void shouldCalculate17() {
-        assertThat(4444).isEqualTo(17);
+        assertThat((4*4)+(4/4)).isEqualTo(17);
     }
 
     @Test
