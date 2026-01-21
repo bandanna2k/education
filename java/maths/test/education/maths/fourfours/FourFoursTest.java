@@ -76,9 +76,8 @@ public class FourFoursTest {
     }
 
     @Test
-    @Disabled
     void shouldCalculate13() {
-        assertThat(4444).isEqualTo(13);
+        assertThat(((factorial4() + sqrt(4)) * sqrt(4)) / 4).isEqualTo(13);
     }
 
     @Test
