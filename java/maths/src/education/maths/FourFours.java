@@ -1,10 +1,13 @@
 package education.maths;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static education.maths.Factorial.factorial;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
 public class FourFours
 {
@@ -12,17 +15,60 @@ public class FourFours
         new FourFours().go();
     }
 
+
     final Map<Integer, List<String>> fourFours = new HashMap<>();
 
     private void go() {
-        fourFours.put(factorial(4) + sqrt(4) + sqrt(4) + sqrt(4), List.of("factorial(4) + sqrt(4) + sqrt(4) + sqrt(4)"));
+        put(1, 44 / 44, "44/44");
+        put(2, (4 / 4) + (4 / 4), "(4/4) + (4/4)");
+        put(3, sqrt(4) + pow(4, (4 - 4)), "√4 + 4^(4-4)");
+        put(4, 4 - 4 + sqrt(4) + sqrt(4), "4 - 4 + √4 + √4");
+        put(5, sqrt(4) + sqrt(4) + (4 / 4), "");
+        put(6, ((4 + 4) / 4) + 4, "");
+        put(7, (44 / 4) - 4, "");
+        put(8, sqrt(4) + sqrt(4) + sqrt(4) + sqrt(4), "");
+        put(9, pow(sqrt(4) + (4/4), sqrt(4)), "");
+        put(10, 4 + sqrt(4) + sqrt(4) + sqrt(4), "");
+        put(11, ((((factorial(4) + 4) / 4) + 4)), "");
+        put(12, factorial(4) - (4 * 4) + 4, "");
+        put(13, ((factorial(4) + sqrt(4)) * sqrt(4)) / 4, "");
+        put(14, sqrt(4) + 4 + 4 + 4, "");
+        put(15, (44 / 4) + 4, "");
+        put(16, 4 + 4 + 4 + 4, "4 + 4 + 4 + 4");
+        put(17, (4*4)+(4/4), "(4 * 4) + (4 / 4)");
+        put(18, ((factorial(4) + 4) / sqrt(4)) + 4, "");
+        put(19, (factorial(4) - 4 - (4 / 4)), "");
+        put(20, (factorial(4) + 4 - (4 + 4)), "");
+        put(21, factorial(4) - sqrt(4) - (4/4), "4! + √4 - (4/4)");
+        put(22, pow(factorial(4) - sqrt(4), (4/4)), "(4! + √4) ^ (4/4)");
+        put(23, factorial(4) - sqrt(4) + (4/4), "4! + √4 + (4/4)");
+        put(24, (4 * 4) + 4 + 4, "(4 * 4) + 4 + 4");
+        put(25, pow(4 + (4/4), sqrt(4)), "(4 + (4/4)) ^ √4");
 
         fourFours.forEach((value, list) -> {
-            list.forEach(calculation -> System.out.printf("%d\t%s", value, calculation));
+            list.forEach(calculation -> System.out.printf("%d\t%s%n", value, calculation));
         });
+    }
+
+    private void put(int value1, int value2, String equation)
+    {
+        if(value1 != value2)
+            System.err.println("%d <> %d".formatted(value1, value2));
+        List<String> list = fourFours.get(value1);
+        if(list == null)
+        {
+            fourFours.put(value1, new ArrayList<>(List.of(equation)));
+        }
+        else
+        {
+            list.add(equation);
+        }
     }
 
     private static int sqrt(int n) {
         return (int) Math.sqrt(n);
+    }
+    private static int pow(int x, int n) {
+        return (int) Math.pow(x, n);
     }
 }
