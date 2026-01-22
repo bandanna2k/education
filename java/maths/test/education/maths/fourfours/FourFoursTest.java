@@ -2,6 +2,7 @@ package education.maths.fourfours;
 
 import org.junit.jupiter.api.Test;
 
+import static education.maths.Factorial.factorial;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -119,13 +120,5 @@ public class FourFoursTest {
 
     private static long factorial4() {
         return factorial(4);
-    }
-
-    private static long factorial(long value) {
-        long result = 1;
-        for (int i = 1; i <= value; i++) {
-            result *= i;
-        }
-        return result;
     }
 }
