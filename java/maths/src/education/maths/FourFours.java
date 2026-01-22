@@ -1,9 +1,6 @@
 package education.maths;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static education.maths.Factorial.factorial;
 import static java.lang.Math.pow;
@@ -16,7 +13,7 @@ public class FourFours
     }
 
 
-    final Map<Integer, List<String>> fourFours = new HashMap<>();
+    final Map<Integer, List<String>> fourFours = new TreeMap<>();
 
     private void go() {
         put(1, 44 / 44, "44/44");
@@ -49,7 +46,7 @@ public class FourFours
         put(28, ((4 * 4) - sqrt(4)) * sqrt(4), "((4 * 4) - √4) * √4");
         put(29, factorial(4) + 4 + (4/4), "4! + 4 + (4/4)");
         put(30, factorial(4) + 4 + (4/sqrt(4)), "4! + 4 + (4/√4)");
-
+        put(31, factorial(4) + ((factorial(4) + 4) / 4), "(4! + ((4! + 4 / 4)");
         put(32, 4 * 4 * (4 / sqrt(4)), "(4 * 4) + (4/√4)");
 
         put(36, ((4 * 4) + sqrt(4)) * sqrt(4), "((4 * 4) + √4) * √4");
@@ -61,6 +58,9 @@ public class FourFours
         put(44, 44 * (4/4), "44 * (4/4)");
         put(45, 44 + (4/4), "44 + (4/4)");
         put(46, 44 + (4/sqrt(4)), "44 + (4/√4)");
+        put(47, (factorial(4) * sqrt(4)) - (4/4), "(4! * √4) - (4/4)");
+        put(48, (factorial(4) * sqrt(4)) * (4/4), "(4! * √4) * (4/4)");
+        put(49, (factorial(4) * sqrt(4)) + (4/4), "(4! * √4) + (4/4)");
 
         put(112, (int) ((Math.pow(4.0, 4.0) - 4.0) * recurring4()), "((4 ^ 4) - 4) * .4r");
 
