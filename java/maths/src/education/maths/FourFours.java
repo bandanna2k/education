@@ -47,11 +47,31 @@ public class FourFours
         put(26, factorial(4) + sqrt(4) + 4 - 4, "4! + √4 + 4 - 4");
         put(27, factorial(4) + sqrt(4) + (4/4), "4! + √4 + (4/4)");
         put(28, ((4 * 4) - sqrt(4)) * sqrt(4), "((4 * 4) - √4) * √4");
+        put(29, factorial(4) + 4 + (4/4), "4! + 4 + (4/4)");
+        put(30, factorial(4) + 4 + (4/sqrt(4)), "4! + 4 + (4/√4)");
+
+        put(32, 4 * 4 * (4 / sqrt(4)), "(4 * 4) + (4/√4)");
+
         put(36, ((4 * 4) + sqrt(4)) * sqrt(4), "((4 * 4) + √4) * √4");
+
+        put(40, 44 - 4 - 4 + 4, "44 - 4 - 4 + 4");
+        put(41, 44 - sqrt(4) - (4/4), "44 - √4 - (4/4)");
+        put(42, 44 - (4/sqrt(4)), "44 - (4/√4)");
+        put(43, 44 - (4/4), "44 - (4/4)");
+        put(44, 44 * (4/4), "44 * (4/4)");
+        put(45, 44 + (4/4), "44 + (4/4)");
+        put(46, 44 + (4/sqrt(4)), "44 + (4/√4)");
+
+        put(112, (int) ((Math.pow(4.0, 4.0) - 4.0) * recurring4()), "((4 ^ 4) - 4) * .4r");
 
         fourFours.forEach((value, list) -> {
             list.forEach(calculation -> System.out.printf("%d\t%s%n", value, calculation));
         });
+    }
+
+    private double recurring4()
+    {
+        return (4.0 / 9.0) * 1.00000001;
     }
 
     private void put(int value1, int value2, String equation)
