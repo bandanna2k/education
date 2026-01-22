@@ -1,0 +1,33 @@
+C4Context
+    title System Context diagram for Internet Banking System
+    Enterprise_Boundary(lmax0, "LMAX") {
+        Person(customerA, "Customer", "A customer of LMAX, with personal accounts.")
+        Person(customerB, "Bank")
+
+        System(SystemAA, "Internet Banking System", "Allows customers to view information about their bank accounts, and make payments.")
+
+        Enterprise_Boundary(d1, "Digital") {
+            System(systemDigital, "Exchange", "Lots of microservices. Lots of servers")
+            SystemDb(systemDigitalDb, "DB")
+        }
+        Enterprise_Boundary(f1, "FIAT") {
+
+            System(systemFiat, "Exchange", "Lots of microservices. Lots of servers")
+            SystemDb(systemFiatDb, "DB")
+
+            Boundary(f3, "FIAT Exchange") {
+                System(systemFiatEv, "EV", "MTF matching engine.")
+                System(SystemFiatEms, "EMS", "Broker risk for the exchange.")
+            }
+        }
+    }
+
+    Rel(customerA, systemFiat, "Uses")
+    Rel(customerB, systemFiat, "Uses")
+    Rel(customerA, systemDigital, "Uses")
+    Rel(customerB, systemDigital, "Uses")
+
+    Rel(systemDigital, systemDigitalDb, "R/W")
+    Rel(systemFiat, systemFiatDb, "R/W")
+
+
