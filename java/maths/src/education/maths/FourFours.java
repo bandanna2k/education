@@ -44,6 +44,10 @@ public class FourFours
         put(23, factorial(4) - sqrt(4) + (4/4), "4! + √4 + (4/4)");
         put(24, (4 * 4) + 4 + 4, "(4 * 4) + 4 + 4");
         put(25, pow(4 + (4/4), sqrt(4)), "(4 + (4/4)) ^ √4");
+        put(26, factorial(4) + sqrt(4) + 4 - 4, "4! + √4 + 4 - 4");
+        put(27, factorial(4) + sqrt(4) + (4/4), "4! + √4 + (4/4)");
+        put(28, ((4 * 4) - sqrt(4)) * sqrt(4), "((4 * 4) - √4) * √4");
+        put(36, ((4 * 4) + sqrt(4)) * sqrt(4), "((4 * 4) + √4) * √4");
 
         fourFours.forEach((value, list) -> {
             list.forEach(calculation -> System.out.printf("%d\t%s%n", value, calculation));
