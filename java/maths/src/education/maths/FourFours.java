@@ -16,6 +16,9 @@ public class FourFours
     final Map<Integer, List<String>> fourFours = new TreeMap<>();
 
     private void go() {
+
+        double recurring4 = recurring4();
+
         put(1, 44 / 44, "44/44");
         put(2, (4 / 4) + (4 / 4), "(4/4) + (4/4)");
         put(3, sqrt(4) + pow(4, (4 - 4)), "√4 + 4^(4-4)");
@@ -63,6 +66,21 @@ public class FourFours
         put(47, (factorial(4) * sqrt(4)) - (4/4), "(4! * √4) - (4/4)");
         put(48, (factorial(4) * sqrt(4)) * (4/4), "(4! * √4) * (4/4)");
         put(49, (factorial(4) * sqrt(4)) + (4/4), "(4! * √4) + (4/4)");
+
+
+
+        put(81, (int) (((4 / recurring4) / recurring4) * 4), "((4 / .4r) / .4r) * 4");
+
+        put(90, (44 * sqrt(2)) + sqrt(4), "(44 * √4) + √4");
+
+        put(92, (44 * sqrt(2)) + 4, "(44 * √4) + 4");
+
+        put(94, (factorial(4) * 4) - (4/sqrt(4)), "(4! * 4) - (4/√4)");
+        put(95, (factorial(4) * 4) - (4/4), "(4! * 4) - (4/4)");
+        put(96, (factorial(4) * 4) - 4 + 4, "(4! * 4) - 4 + 4");
+        put(97, (factorial(4) * 4) + (4/4), "(4! * 4) + (4/4)");
+        put(98, (factorial(4) * 4) + (4/sqrt(4)), "(4! * 4) + (4/√4)");
+
 
         put(112, (int) ((Math.pow(4.0, 4.0) - 4.0) * recurring4()), "((4 ^ 4) - 4) * .4r");
 
