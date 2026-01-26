@@ -17,7 +17,8 @@ public class FourFours
 
     private void go() {
 
-        double recurring4 = recurring4();
+        double recurring4 = (4.0 / 9.0) * 1.00000001;
+        double recurringRoot4 = (Math.sqrt(4.0) / 9.0) * 1.00000001;
 
         put(1, 44 / 44, "44/44");
         put(2, (4 / 4) + (4 / 4), "(4/4) + (4/4)");
@@ -67,31 +68,60 @@ public class FourFours
         put(48, (factorial(4) * sqrt(4)) * (4/4), "(4! * √4) * (4/4)");
         put(49, (factorial(4) * sqrt(4)) + (4/4), "(4! * √4) + (4/4)");
 
+        put(48, (factorial(4) * sqrt(4)) * (4/4), "(4! * √4) * (4/4)");
 
+        put(50, (factorial(4) * sqrt(4)) + 4 - sqrt(4), "(4! * √4) + 4 - √4");
 
-        put(81, (int) (((4 / recurring4) / recurring4) * 4), "((4 / .4r) / .4r) * 4");
+        put(52, (factorial(4) * sqrt(4)) + sqrt(4) + sqrt(4), "(4! * √4) + √4 + √4");
 
-        put(90, (44 * sqrt(2)) + sqrt(4), "(44 * √4) + √4");
+        put(54, (factorial(4) * sqrt(4)) + sqrt(4) + 4, "(4! * √4) + √4 + 4");
 
-        put(92, (44 * sqrt(2)) + 4, "(44 * √4) + 4");
+        put(56, (factorial(4) * sqrt(4)) + 4 + 4, "(4! * √4) + 4 + 4");
+
+        put(58, ((factorial(4) + 4) * sqrt(4)) + sqrt(4), "((4! + 4) * √4) + √4");
+
+        put(60, ((factorial(4) + 4) * sqrt(4)) + 4, "((4! + 4) * √4) + 4");
+
+        put(62, (4*4*4)-sqrt(4), "(4 * 4 * 4) - √4");
+
+        put(64, 4*4*(sqrt(4)+sqrt(4)), "(4 * 4 * (√4 + √4))");
+
+        put(66, (4*4*4)+sqrt(4), "(4 * 4 * 4) + √4");
+
+        put(68, (factorial(4) * 4) - factorial(4) - 4, "(4! * 4) - (4! - 4)");
+
+        put(70, (factorial(4) * 4) - factorial(4) - sqrt(4), "(4! * 4) - (4! - √4)");
+
+        put(74, (factorial(4) * 4) - factorial(4) + sqrt(4), "(4! * 4) - (4! + √4)");
+        put(75, (int)((factorial(4) / (.4 + .4)) / .4), "((4! / .4) / (.4 + .4)) / .4");
+        put(76, (factorial(4) * 4) - factorial(4) + 4, "(4! * 4) - (4! + 4)");
+
+        put(78, ((factorial(4) - 4) * 4) - sqrt(4), "((4! - 4) * 4) - √4");
+
+        put(82, ((factorial(4) - 4) * 4) + sqrt(4), "((4! - 4) * 4) + √4");
+        //        put(81, (int) (((4.0 / recurring4) / recurring4) * 4.0), "((4 / .4r) / .4r) * 4");
+        put(84, ((factorial(4) - 4) * 4) + 4, "((4! - 4) * 4) + 4");
+//        put(85, (int)((4 * 4) + (4 / 4) / recurringRoot4), "(4 * 4) + (4 / 4)");
+//        put(86, ((factorial(4)) * 4), "((4! - 4) * 4) + 4");
+
+        put(88, (factorial(4) * 4) - 4 - 4, "(4! * 4) - 4 - 4");
+
+        put(90, (factorial(4) * 4) - 4 - sqrt(4), "(4! * 4) - 4 - √4");
+
+        put(92, (factorial(4) * 4) - sqrt(4) - sqrt(4), "(4! * 4) - √4 - √4");
 
         put(94, (factorial(4) * 4) - (4/sqrt(4)), "(4! * 4) - (4/√4)");
         put(95, (factorial(4) * 4) - (4/4), "(4! * 4) - (4/4)");
         put(96, (factorial(4) * 4) - 4 + 4, "(4! * 4) - 4 + 4");
         put(97, (factorial(4) * 4) + (4/4), "(4! * 4) + (4/4)");
         put(98, (factorial(4) * 4) + (4/sqrt(4)), "(4! * 4) + (4/√4)");
+        put(100, (factorial(4) + (4/4)) * 4, "(4! + (4/4) * 4");
 
-
-        put(112, (int) ((Math.pow(4.0, 4.0) - 4.0) * recurring4()), "((4 ^ 4) - 4) * .4r");
+        put(112, (int) ((Math.pow(4.0, 4.0) - 4.0) * recurring4), "((4 ^ 4) - 4) * .4r");
 
         fourFours.forEach((value, list) -> {
             list.forEach(calculation -> System.out.printf("%d\t%s%n", value, calculation));
         });
-    }
-
-    private double recurring4()
-    {
-        return (4.0 / 9.0) * 1.00000001;
     }
 
     private void put(int value1, int value2, String equation)
