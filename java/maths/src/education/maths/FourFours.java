@@ -68,9 +68,10 @@ public class FourFours
         put(48, (factorial(4) * sqrt(4)) * (4/4), "(4! * √4) * (4/4)");
         put(49, (factorial(4) * sqrt(4)) + (4/4), "(4! * √4) + (4/4)");
 
+        put(47, (int)(((factorial(4) / inverse(4)) - sqrt(4)) / sqrt(4)), "((4! / 4′) - √4) / √4");
         put(48, (factorial(4) * sqrt(4)) * (4/4), "(4! * √4) * (4/4)");
-
-        put(50, (factorial(4) * sqrt(4)) + 4 - sqrt(4), "(4! * √4) + 4 - √4");
+        put(49, (int)(((factorial(4) / inverse(4)) + sqrt(4)) / sqrt(4)), "");
+        put(50, (factorial(4) * sqrt(4)) + 4 - sqrt(4), "((4! / 4′) + √4) / √4");
 
         put(52, (factorial(4) * sqrt(4)) + sqrt(4) + sqrt(4), "(4! * √4) + √4 + √4");
 
@@ -144,5 +145,10 @@ public class FourFours
     }
     private static int pow(int x, int n) {
         return (int) Math.pow(x, n);
+    }
+
+    private static double inverse(double x)
+    {
+        return 1.0 / x;
     }
 }
