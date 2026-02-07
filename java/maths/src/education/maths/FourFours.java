@@ -72,15 +72,15 @@ public class FourFours
         put(48, (factorial(4) * sqrt(4)) * (4/4), "(4! * √4) * (4/4)");
         put(49, (int)(((factorial(4) / inverse(4)) + sqrt(4)) / sqrt(4)), "");
         put(50, (factorial(4) * sqrt(4)) + 4 - sqrt(4), "((4! / 4′) + √4) / √4");
-
+        put(51, (int)(sqrt(4) / percent(4)) + (4/4), "(4.4 / 4%) - 4");
         put(52, (factorial(4) * sqrt(4)) + sqrt(4) + sqrt(4), "(4! * √4) + √4 + √4");
-
+//        put(53, (int)(4.4 / percent(4)) - sqrt(4), "(4.4 / 4%) - √4");
         put(54, (factorial(4) * sqrt(4)) + sqrt(4) + 4, "(4! * √4) + √4 + 4");
-
+        put(55, (int)(4.4 / percent(4)) / sqrt(4), "(4.4 / 4%) / √4");
         put(56, (factorial(4) * sqrt(4)) + 4 + 4, "(4! * √4) + 4 + 4");
-
+//        put(57, (int)(4.4 / percent(4)) + sqrt(4), "(4.4 / 4%) + √4");
         put(58, ((factorial(4) + 4) * sqrt(4)) + sqrt(4), "((4! + 4) * √4) + √4");
-
+//        put(59, (int)(4.4 / percent(4)) + 4, "(4.4 / 4%) + 4");
         put(60, ((factorial(4) + 4) * sqrt(4)) + 4, "((4! + 4) * √4) + 4");
 
         put(62, (4*4*4)-sqrt(4), "(4 * 4 * 4) - √4");
@@ -116,6 +116,7 @@ public class FourFours
         put(96, (factorial(4) * 4) - 4 + 4, "(4! * 4) - 4 + 4");
         put(97, (factorial(4) * 4) + (4/4), "(4! * 4) + (4/4)");
         put(98, (factorial(4) * 4) + (4/sqrt(4)), "(4! * 4) + (4/√4)");
+        put(99, (int)((4.0 + (inverse(4) / sqrt(4))) / inverse(factorial(4))), "(4 + (4' / √4) / ((4!)')");
         put(100, (factorial(4) + (4/4)) * 4, "(4! + (4/4) * 4");
 
         put(112, (int) ((Math.pow(4.0, 4.0) - 4.0) * recurring4), "((4 ^ 4) - 4) * .4r");
@@ -150,5 +151,10 @@ public class FourFours
     private static double inverse(double x)
     {
         return 1.0 / x;
+    }
+
+    private static double percent(double x)
+    {
+        return (x / 100.0);
     }
 }
