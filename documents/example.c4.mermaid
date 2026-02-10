@@ -1,10 +1,8 @@
 C4Context
-    title System Context diagram for Internet Banking System
+    title LMAX Product Line
     Enterprise_Boundary(lmax0, "LMAX") {
         Person(customerA, "Customer", "A customer of LMAX, with personal accounts.")
         Person(customerB, "Bank")
-
-        System(SystemAA, "Internet Banking System", "Allows customers to view information about their bank accounts, and make payments.")
 
         Enterprise_Boundary(d1, "Digital") {
             System(systemDigital, "Exchange", "Lots of microservices. Lots of servers")
