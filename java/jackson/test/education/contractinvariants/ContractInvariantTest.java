@@ -1,5 +1,8 @@
 package education.contractinvariants;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.javacrumbs.jsonunit.core.Configuration;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.BaseMatcher;
@@ -26,7 +29,7 @@ public class ContractInvariantTest {
 
 
     @Test
-    void shouldPassWithNoPhoneNumber() {
+    void shouldPassWithNoPhoneNumber() throws JsonProcessingException {
         final String message = """
                 {
                   "id": 123,
@@ -34,11 +37,16 @@ public class ContractInvariantTest {
                   "email": "john@example.com"
                 }
                 """;
+        assertContract(message);
+    }
+
+    private void assertContract(String message) throws JsonProcessingException {
+        validatePhone(message);
         assertJsonEquals(contract, message, config);
     }
 
     @Test
-    void shouldFailWithBadPhoneNumber() {
+    void shouldFailWithBadPhoneNumber() throws JsonProcessingException {
         final String message = """
                 {
                   "id": 123,
@@ -47,11 +55,12 @@ public class ContractInvariantTest {
                   "phone": "555-123-4567"
                 }
                 """;
-        assertJsonEquals(contract, message, config);
+        Assertions.assertThatExceptionOfType(AssertionFailedError.class)
+                .isThrownBy(() -> assertContract(message));
     }
 
     @Test
-    void shouldPassWithIntegerPhoneNumber() {
+    void shouldPassWithIntegerPhoneNumber() throws JsonProcessingException {
         final String message = """
                 {
                   "id": 123,
@@ -60,7 +69,7 @@ public class ContractInvariantTest {
                   "phone": "0"
                 }
                 """;
-        assertJsonEquals(contract, message, config);
+        assertContract(message);
     }
 
     @Test
@@ -73,7 +82,7 @@ public class ContractInvariantTest {
                 }
                 """;
         Assertions.assertThatExceptionOfType(AssertionFailedError.class)
-                        .isThrownBy(() -> assertJsonEquals(contract, message, config));
+                        .isThrownBy(() -> assertContract(message));
     }
 
     public static class NullOrIntegerMatcher extends BaseMatcher<Object> {
@@ -90,6 +99,21 @@ public class ContractInvariantTest {
         @Override
         public void describeTo(Description description) {
             description.appendText("integer or null");
+        }
+    }
+
+    private static void validatePhone(String message) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree(message);
+
+        if (node.has("phone")) {
+            JsonNode phone = node.get("phone");
+            try {
+                Long.parseLong(phone.asText());
+            } catch (NumberFormatException e) {
+                throw new AssertionFailedError(
+                        "phone must be integer or null, got: " + phone);
+            }
         }
     }
 }
