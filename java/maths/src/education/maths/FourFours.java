@@ -110,7 +110,7 @@ public class FourFours
         put(90, (factorial(4) * 4) - 4 - sqrt(4), "(4! * 4) - 4 - √4");
 
         put(92, (factorial(4) * 4) - sqrt(4) - sqrt(4), "(4! * 4) - √4 - √4");
-
+        put(93, (int)((4.0 - (inverse(4) / sqrt(4))) / inverse(factorial(4))), "(4 - (4' / √4) / ((4!)')");
         put(94, (factorial(4) * 4) - (4/sqrt(4)), "(4! * 4) - (4/√4)");
         put(95, (factorial(4) * 4) - (4/4), "(4! * 4) - (4/4)");
         put(96, (factorial(4) * 4) - 4 + 4, "(4! * 4) - 4 + 4");
@@ -120,6 +120,7 @@ public class FourFours
         put(100, (factorial(4) + (4/4)) * 4, "(4! + (4/4) * 4");
 
         put(112, (int) ((Math.pow(4.0, 4.0) - 4.0) * recurring4), "((4 ^ 4) - 4) * .4r");
+        put(0, (int)((sqrt(4) + (inverse(4) / sqrt(4))) / inverse(factorial(4))), "(4 - (4' / √4) / ((4!)')");
 
         fourFours.forEach((value, list) -> {
             list.forEach(calculation -> System.out.printf("%d\t%s%n", value, calculation));
