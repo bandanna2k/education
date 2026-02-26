@@ -1,7 +1,7 @@
 package education.networking.udp;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.assertj.core.api.Assert;
+import org.junit.jupiter.api.Test;
 
 import static education.networking.udp.Constants.WAIT_TIME;
 
@@ -23,8 +23,8 @@ public class StreamerTest
             listenerThread.start();
 
             streamerThread.join();
-        } catch (InterruptedException ex) {
-            Assert.fail();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             listenerThread.interrupt();
         }
@@ -39,7 +39,7 @@ public class StreamerTest
     @Test
     public void listenersShouldHearStreamer()
     {
-        Streamer streamer = new Streamer(5050, 10);
+        education.networking.udp.Streamer streamer = new education.networking.udp.Streamer(5050, 10);
         Thread streamerThread = new Thread(streamer);
 
         Listener listener1 = new Listener(5050);
@@ -60,7 +60,7 @@ public class StreamerTest
         }
         catch(InterruptedException ex)
         {
-            Assert.fail();
+            throw new RuntimeException(ex);
         }
         finally
         {

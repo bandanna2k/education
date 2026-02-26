@@ -1,6 +1,6 @@
 package education.networking.udp;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.net.*;
 import java.util.List;
