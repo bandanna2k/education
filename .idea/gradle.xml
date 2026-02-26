@@ -14,8 +14,11 @@
             <option value="$PROJECT_DIR$/java/ai" />
             <option value="$PROJECT_DIR$/java/benchmarks" />
             <option value="$PROJECT_DIR$/java/common" />
+            <option value="$PROJECT_DIR$/java/cryptography" />
+            <option value="$PROJECT_DIR$/java/designpatterns" />
             <option value="$PROJECT_DIR$/java/jackson" />
             <option value="$PROJECT_DIR$/java/maths" />
+            <option value="$PROJECT_DIR$/java/networking" />
             <option value="$PROJECT_DIR$/java/quantum" />
             <option value="$PROJECT_DIR$/java/selenium" />
             <option value="$PROJECT_DIR$/java/simpledsl" />
