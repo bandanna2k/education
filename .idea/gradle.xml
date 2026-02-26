@@ -11,12 +11,14 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/java" />
             <option value="$PROJECT_DIR$/java/1brc" />
+            <option value="$PROJECT_DIR$/java/ai" />
             <option value="$PROJECT_DIR$/java/benchmarks" />
             <option value="$PROJECT_DIR$/java/common" />
             <option value="$PROJECT_DIR$/java/jackson" />
             <option value="$PROJECT_DIR$/java/maths" />
             <option value="$PROJECT_DIR$/java/quantum" />
             <option value="$PROJECT_DIR$/java/selenium" />
+            <option value="$PROJECT_DIR$/java/simpledsl" />
             <option value="$PROJECT_DIR$/java/syntax" />
             <option value="$PROJECT_DIR$/java/vertx" />
             <option value="$PROJECT_DIR$/java/websockets" />

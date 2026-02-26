@@ -1,7 +1,7 @@
 package education.ai.perceptron;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
@@ -9,7 +9,7 @@ public class PerceptronLearningTest
 {
     private Random random;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception
     {
         random = new Random(1);

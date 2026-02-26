@@ -32,6 +32,7 @@ allprojects {
 
 test {
     useJUnitPlatform()
+    dependsOn(':java:ai:test')
     dependsOn(':java:common:test')
     dependsOn(':java:yaml:test')
     dependsOn(':java:syntax:test')

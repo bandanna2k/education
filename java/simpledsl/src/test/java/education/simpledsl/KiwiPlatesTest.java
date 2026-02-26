@@ -1,8 +1,8 @@
 package education.simpledsl;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class KiwiPlatesTest extends KiwiPlatesTestBase
+public class KiwiPlatesTest extends education.simpledsl.KiwiPlatesTestBase
 {
     @Test
     public void shouldCancelOrder()

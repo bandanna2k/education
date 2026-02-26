@@ -1,13 +1,15 @@
 rootProject.name = 'education'
 
-include 'java:selenium'
+include 'java:ai'
+include 'java:benchmarks'
 include 'java:common'
-include 'java:syntax'
 include 'java:jackson'
 include 'java:maths'
+include 'java:selenium'
+include 'java:simpledsl'
+include 'java:syntax'
 include 'java:vertx'
 include 'java:yaml'
-include 'java:benchmarks'
 
 include 'java:websockets:communications'
 include 'java:websockets:infrastructure'

@@ -1,8 +1,8 @@
 package education.ai.neuralNetworks;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class NeuralNetworkTest extends NeuralNetworkBase
+public class NeuralNetworkTest extends education.ai.neuralNetworks.NeuralNetworkBase
 {
     @Test
     public void shouldBuildNeuralNetwork()

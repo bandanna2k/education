@@ -1,10 +1,8 @@
 package education.simpledsl;
 
-import com.lmax.simpledsl.api.DslParams;
-
 public class KiwiPlatesTestBase
 {
-    protected BrowserDsl browser;
+    protected BrowserDsl browser = new BrowserDsl();
 
 
     protected static class BrowserDsl
