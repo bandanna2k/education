@@ -20,24 +20,20 @@ public class CSVGenerator {
     };
 
     private static final int BUFFER_SIZE = 1_000_000; // 1MB buffer
-    private final Random random = new Random();
+    private final Random random = new Random(1);
     private final int targetSize;
-    private String pathname;
+    private final File file;
 
-    public CSVGenerator() {
-        this(1000, "/home/northd/data.csv");
+    public CSVGenerator() throws IOException {
+        this(1000, File.createTempFile(null, null));
     }
-    public CSVGenerator(int countOf1MbBuffers, String filename) {
+    public CSVGenerator(int countOf1MbBuffers, File file) {
         this.targetSize = countOf1MbBuffers * BUFFER_SIZE;
-        this.pathname = filename;
+        this.file = file;
     }
 
     public void go() throws IOException
     {
-        File file = new File(pathname);
-        if(file.exists())
-            return;
-
         System.out.println("Generating file...");
         System.out.println("Output file: " + file);
         System.out.println();
@@ -83,7 +79,7 @@ public class CSVGenerator {
             }
 
             // Flush remaining buffer
-            if (buffer.length() > 0) {
+            if (!buffer.isEmpty()) {
                 writer.append(buffer);
             }
         }
