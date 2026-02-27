@@ -25,7 +25,7 @@ public class CSVGenerator {
     private final File file;
 
     public CSVGenerator() throws IOException {
-        this(1000, File.createTempFile(null, null));
+        this(1000, File.createTempFile("data", null));
     }
     public CSVGenerator(int countOf1MbBuffers, File file) {
         this.targetSize = countOf1MbBuffers * BUFFER_SIZE;

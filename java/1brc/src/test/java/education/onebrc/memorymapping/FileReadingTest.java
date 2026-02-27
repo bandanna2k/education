@@ -1,6 +1,7 @@
 package education.onebrc.memorymapping;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -14,11 +15,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileReadingTest {
 
-    private final String filePath = "/home/northd/data.csv"; // Replace with your CSV file path
+    private static final File FILE;
+    static
+    {
+        try {
+            FILE = File.createTempFile("data", null);
+            new CSVGenerator(50, FILE).go();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
     void read1() throws IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE))) {
             String line;
 
             List<String> mostRecent = null;
@@ -31,7 +41,7 @@ public class FileReadingTest {
 
     @Test
     void read2WithMemoryMapping() throws IOException {
-        try (RandomAccessFile file = new RandomAccessFile(filePath, "r");
+        try (RandomAccessFile file = new RandomAccessFile(FILE, "r");
              FileChannel channel = file.getChannel()) {
 
             MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
