@@ -4,13 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.Option;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
+import java.util.Set;
+
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class ContractInvariantTest {
@@ -27,6 +31,12 @@ public class ContractInvariantTest {
             .empty()
             .withMatcher("nullOrInteger", new NullOrIntegerMatcher());
 
+    @Test
+    void shouldBeStrict()
+    {
+        Set<Option> options = config.getOptions();
+        assertThat(options.contains(Option.IGNORING_EXTRA_FIELDS)).isFalse();
+    }
 
     @Test
     void shouldPassWithNoPhoneNumber() throws JsonProcessingException {
