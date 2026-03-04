@@ -22,3 +22,6 @@ include 'java:websockets:server'
 include 'java:websockets:testing:integration'
 include 'java:1brc'
 include 'java:quantum'
+
+include 'java:shading:module1'
+include 'java:shading:module2'
