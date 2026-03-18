@@ -1,20 +1,12 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'io.github.goooler.shadow' version '8.1.8'
 }
 
 repositories {
     mavenCentral()
 }
-
-dependencies {
-    testImplementation      platform('org.junit:junit-bom:5.10.0')
-    testImplementation      'org.junit.jupiter:junit-jupiter-engine:5.13.4'
-    testRuntimeOnly         'org.junit.platform:junit-platform-launcher'
-
-
-}
-
-
 
 sourceSets {
     main {
@@ -26,3 +18,24 @@ sourceSets {
         }
     }
 }
+
+shadowJar {
+    archiveClassifier.set('')
+    relocate 'education', 'education.shaded'
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) {
+            groupId = 'education'
+            artifactId = 'module2-shaded'
+            version = '0.1'
+            artifact shadowJar
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
+
+assemble.dependsOn             shadowJar

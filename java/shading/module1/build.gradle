@@ -1,22 +1,20 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
+// Firstly requires:
+//    ./gradlew :java:shading:module2:publishToMavenLocal
+
 dependencies {
-    implementation      fileTree(dir: '../..', include: ['**/*.jar'])
+    implementation          'education:module2-shaded:0.1'
 }
 
-shadowJar {
-    archiveClassifier.set('')         // output: my-app.jar (not my-app-all.jar)
-    mergeServiceFiles()
-
-    relocate 'education', 'education.shaded'
-}
+compileJava.dependsOn       ':java:shading:module2:publishToMavenLocal'
 
 sourceSets {
     main {
@@ -28,3 +26,4 @@ sourceSets {
         }
     }
 }
+
