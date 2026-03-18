@@ -8,8 +8,6 @@ public class KiwiPlatesTest extends education.simpledsl.KiwiPlatesTestBase
     public void shouldCancelOrder()
     {
         browser("session1").createOrder();
-
-
         browser("session2").createOrder();
     }
 }

@@ -17,6 +17,25 @@ dependencies {
     implementation          'com.lmax:simple-dsl:3.0.0'
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        resources {
+            srcDirs = ['resources']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['test']
+        }
+        resources {
+            srcDirs = ['resources']
+        }
+    }
+}
+
 test {
     useJUnitPlatform()
 }
