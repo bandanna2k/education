@@ -1,6 +1,5 @@
 package education.syntax;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -32,5 +31,14 @@ public class AssertTest
                 () -> assertThat(o).describedAs("Is not null").isNotNull(),
                 () -> assertThat(o).describedAs("Is instance of").isInstanceOf(Object.class)
         );
+    }
+
+    @Test
+    void multipleAsserts() {
+        assertThat("the quick brown fox")
+                .satisfies(
+                a -> assertThat(a).as("contains").contains("quick"),
+                a -> assertThat(a).as("contains").contains("brown"),
+                a -> assertThat(a).as("contains").contains("fox"));
     }
 }
