@@ -1,5 +1,6 @@
 package education.openapi;
 
+import education.openapi.codefirst.Application;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;

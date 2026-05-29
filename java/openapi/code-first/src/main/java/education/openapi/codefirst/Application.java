@@ -5,9 +5,9 @@ import education.openapi.codefirst.components.AccountRequest;
 import education.openapi.codefirst.components.Balance;
 import education.openapi.codefirst.components.ErrorResponse;
 import education.openapi.codefirst.components.TransactionRequest;
-import io.swagger.client.api.BalanceApi;
-import io.swagger.client.api.DepositApi;
-import io.swagger.client.api.WithdrawalApi;
+import education.openapi.codefirst.endpoints.BalanceApi;
+import education.openapi.codefirst.endpoints.DepositApi;
+import education.openapi.codefirst.endpoints.WithdrawalApi;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -20,12 +20,13 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Application implements BalanceApi, DepositApi, WithdrawalApi {
+public class Application implements BalanceApi, DepositApi, WithdrawalApi
+{
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final Vertx vertx;
-    private final Map<Long, BigDecimal> balances = new ConcurrentHashMap<>();
+    private final Map<String, BigDecimal> balances = new ConcurrentHashMap<>();
     private HttpServer server;
 
     public Application(Vertx vertx) {
@@ -65,32 +66,32 @@ public class Application implements BalanceApi, DepositApi, WithdrawalApi {
 
     @Override
     public Balance getBalance(AccountRequest accountRequest) {
-        BigDecimal amount = balances.getOrDefault(accountRequest.getAccountId(), BigDecimal.ZERO);
-        return new Balance().balance(amount.toPlainString());
+        BigDecimal amount = balances.getOrDefault(accountRequest.accountId, BigDecimal.ZERO);
+        return new Balance(amount.toPlainString());
     }
 
     // --- DepositApi ---
 
     @Override
     public Balance postDeposit(TransactionRequest transactionRequest) {
-        BigDecimal amount = BigDecimal.valueOf(transactionRequest.getAmount());
+        BigDecimal amount = new BigDecimal(transactionRequest.amount);
         BigDecimal newBalance = balances.merge(
-                transactionRequest.getAccountId(), amount, BigDecimal::add);
-        return new Balance().balance(newBalance.toPlainString());
+                transactionRequest.accountId, amount, BigDecimal::add);
+        return new Balance(newBalance.toPlainString());
     }
 
     // --- WithdrawalApi ---
 
     @Override
     public Balance postWithdrawal(TransactionRequest transactionRequest) {
-        BigDecimal amount = BigDecimal.valueOf(transactionRequest.getAmount());
-        long accountId = transactionRequest.getAccountId();
+        BigDecimal amount = new BigDecimal(transactionRequest.amount);
+        String accountId = transactionRequest.accountId;
         BigDecimal current = balances.getOrDefault(accountId, BigDecimal.ZERO);
         if (current.compareTo(amount) < 0) {
             throw new InsufficientFundsException("Insufficient funds: balance is " + current.toPlainString());
         }
         BigDecimal newBalance = balances.merge(accountId, amount.negate(), BigDecimal::add);
-        return new Balance().balance(newBalance.toPlainString());
+        return new Balance(newBalance.toPlainString());
     }
 
     // --- Vert.x route handlers ---
@@ -140,7 +141,7 @@ public class Application implements BalanceApi, DepositApi, WithdrawalApi {
     }
 
     private void respondError(RoutingContext ctx, int status, String code, String message) {
-        ErrorResponse error = new ErrorResponse().code(code).message(message);
+        ErrorResponse error = new ErrorResponse(code, message);
         respondJson(ctx, status, error);
     }
 
