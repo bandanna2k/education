@@ -1,13 +1,17 @@
 package education.openapi.codefirst.components;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.Objects;
-
-
+@Schema(
+    name = "Balance",
+    description = "Account balance information"
+)
 public class Balance
 {
+    @Schema(
+        description = "The balance amount as a string",
+        example = "100.50"
+    )
     public String balance;
 
   public Balance()

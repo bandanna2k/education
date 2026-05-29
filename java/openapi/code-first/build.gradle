@@ -12,9 +12,14 @@ dependencies {
 
     // Dependencies required by openapi-generator jaxrs-spec models
     implementation          'com.fasterxml.jackson.core:jackson-databind:2.17.2'
-    compileOnly             'javax.ws.rs:javax.ws.rs-api:2.1.1'
-    compileOnly             'javax.validation:validation-api:2.0.1.Final'
-    compileOnly             'javax.annotation:javax.annotation-api:1.3.2'
+    implementation          'io.swagger.core.v3:swagger-annotations:2.2.21'
+    implementation          'io.swagger.core.v3:swagger-core:2.2.21'
+    implementation          'io.swagger.core.v3:swagger-models:2.2.21'
+    implementation          'io.swagger.core.v3:swagger-jaxrs2:2.2.21'
+    implementation          'javax.ws.rs:javax.ws.rs-api:2.1.1'
+    implementation          'javax.validation:validation-api:2.0.1.Final'
+    implementation          'javax.annotation:javax.annotation-api:1.3.2'
+    implementation          'org.slf4j:slf4j-simple:1.7.36'
 
     testImplementation      platform('org.junit:junit-bom:5.10.0')
     testImplementation      'org.junit.jupiter:junit-jupiter-engine:5.13.4'
@@ -25,4 +30,11 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+task generateSpec(type: JavaExec, dependsOn: 'classes') {
+    group = 'openapi'
+    description = 'Generates OpenAPI spec.yaml from Swagger annotations'
+    mainClass = 'education.openapi.codefirst.SpecGenerator'
+    classpath = sourceSets.main.runtimeClasspath
 }
