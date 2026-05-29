@@ -1,80 +1,52 @@
 plugins {
     id 'java'
     id 'idea'
+    id 'org.openapi.generator' version '7.5.0'
 }
 
 def generatedRoot = "$projectDir/generated"
-def generatedJava = "$generatedRoot/src/main/java"
-def vertxVersion = '4.5.15'
-
-def swaggerCliJarPath = "$buildDir/tools/swagger-codegen-cli.jar"
+def generatedJava = "$generatedRoot/src/gen/java"
 
 repositories {
     mavenCentral()
 }
 
-configurations {
-    swaggerCodegenCli
-}
-
 dependencies {
-    swaggerCodegenCli       'io.swagger.codegen.v3:swagger-codegen-cli:3.0.68'
+    implementation          "io.vertx:vertx-core:5.0.12"
+    implementation          "io.vertx:vertx-web:5.0.12"
 
-    implementation          "io.vertx:vertx-core:${vertxVersion}"
-    implementation          "io.vertx:vertx-web:${vertxVersion}"
-
-    // Dependencies required by swagger-codegen Java stubs/models
-    implementation          'io.swagger.core.v3:swagger-annotations:2.2.22'
+    // Dependencies required by openapi-generator jaxrs-spec models
     implementation          'com.fasterxml.jackson.core:jackson-databind:2.17.2'
+    compileOnly             'javax.ws.rs:javax.ws.rs-api:2.1.1'
+    compileOnly             'javax.validation:validation-api:2.0.1.Final'
     compileOnly             'javax.annotation:javax.annotation-api:1.3.2'
 
     testImplementation      platform('org.junit:junit-bom:5.10.0')
     testImplementation      'org.junit.jupiter:junit-jupiter-engine:5.13.4'
     testRuntimeOnly         'org.junit.platform:junit-platform-launcher'
-    testImplementation      "io.vertx:vertx-web-client:${vertxVersion}"
+    testImplementation      "io.vertx:vertx-web-client:5.0.12"
     testImplementation      'org.assertj:assertj-core:3.27.7'
 }
 
-tasks.register('cleanGeneratedSwagger', Delete) {
-    delete generatedRoot
-}
-
-tasks.register('syncSwaggerCodegenCliJar', Copy) {
-    from(configurations.swaggerCodegenCli)
-    into("$buildDir/tools")
-    rename { 'swagger-codegen-cli.jar' }
-}
-
-tasks.register('generateSpec', Exec) {
-    dependsOn tasks.cleanGeneratedSwagger
-    dependsOn tasks.syncSwaggerCodegenCliJar
-
-    workingDir projectDir
-    commandLine 'java', '-jar', swaggerCliJarPath,
-            'generate',
-            '-i', "$projectDir/src/main/resources/spec.yaml",
-            '-l', 'java',
-            '-o', generatedRoot
-
-    doLast {
-        delete "$generatedRoot/docs"
-        delete "$generatedRoot/src/test"
-        delete "$generatedRoot/gradle"
-        delete "$generatedRoot/.swagger-codegen"
-        delete "$generatedRoot/.swagger-codegen-ignore"
-        delete "$generatedRoot/.gitignore"
-        delete "$generatedRoot/.travis.yml"
-        delete "$generatedRoot/README.md"
-        delete "$generatedRoot/build.gradle"
-        delete "$generatedRoot/build.sbt"
-        delete "$generatedRoot/settings.gradle"
-        delete "$generatedRoot/gradle.properties"
-        delete "$generatedRoot/pom.xml"
-        delete "$generatedRoot/gradlew"
-        delete "$generatedRoot/gradlew.bat"
-        delete "$generatedRoot/git_push.sh"
-        delete "$generatedRoot/src/main/AndroidManifest.xml"
-    }
+openApiGenerate {
+    generatorName           = 'jaxrs-spec'
+    inputSpec               = "$projectDir/src/main/resources/spec.yaml"
+    outputDir               = generatedRoot
+    apiPackage              = 'io.swagger.client.api'
+    modelPackage            = 'io.swagger.client.model'
+    invokerPackage          = 'io.swagger.client'
+    generateApiTests        = false
+    generateModelTests      = false
+    generateApiDocumentation = false
+    generateModelDocumentation = false
+    configOptions           = [
+        interfaceOnly               : 'true',
+        returnResponse              : 'false',
+        useSwaggerAnnotations       : 'false',
+        dateLibrary                 : 'java8',
+        hideGenerationTimestamp     : 'true'
+    ]
+    cleanupOutput           = true
 }
 
 sourceSets {
@@ -103,11 +75,11 @@ idea {
 }
 
 tasks.named('compileJava') {
-    dependsOn tasks.generateSpec
+    dependsOn tasks.openApiGenerate
 }
 
 tasks.named('compileTestJava') {
-    dependsOn tasks.generateSpec
+    dependsOn tasks.openApiGenerate
 }
 
 test {

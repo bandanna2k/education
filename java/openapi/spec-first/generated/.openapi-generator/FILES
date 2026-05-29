@@ -1,0 +1,13 @@
+.openapi-generator-ignore
+README.md
+pom.xml
+src/gen/java/io/swagger/client/RestApplication.java
+src/gen/java/io/swagger/client/RestResourceRoot.java
+src/gen/java/io/swagger/client/api/BalanceApi.java
+src/gen/java/io/swagger/client/api/DepositApi.java
+src/gen/java/io/swagger/client/api/WithdrawalApi.java
+src/gen/java/io/swagger/client/model/AccountRequest.java
+src/gen/java/io/swagger/client/model/Balance.java
+src/gen/java/io/swagger/client/model/ErrorResponse.java
+src/gen/java/io/swagger/client/model/TransactionRequest.java
+src/main/openapi/openapi.yaml
