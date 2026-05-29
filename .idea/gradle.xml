@@ -19,13 +19,14 @@
             <option value="$PROJECT_DIR$/java/maths" />
             <option value="$PROJECT_DIR$/java/networking" />
             <option value="$PROJECT_DIR$/java/openapi" />
+            <option value="$PROJECT_DIR$/java/openapi/code-first" />
             <option value="$PROJECT_DIR$/java/openapi/spec-first" />
             <option value="$PROJECT_DIR$/java/quantum" />
             <option value="$PROJECT_DIR$/java/selenium" />
-            <option value="$PROJECT_DIR$/java/simpledsl" />
             <option value="$PROJECT_DIR$/java/shading" />
             <option value="$PROJECT_DIR$/java/shading/module1" />
             <option value="$PROJECT_DIR$/java/shading/module2" />
+            <option value="$PROJECT_DIR$/java/simpledsl" />
             <option value="$PROJECT_DIR$/java/syntax" />
             <option value="$PROJECT_DIR$/java/vertx" />
             <option value="$PROJECT_DIR$/java/websockets" />

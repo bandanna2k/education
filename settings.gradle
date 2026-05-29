@@ -14,6 +14,7 @@ include 'java:syntax'
 include 'java:vertx'
 include 'java:yaml'
 
+include 'java:openapi:code-first'
 include 'java:openapi:spec-first'
 
 include 'java:websockets:communications'
