@@ -18,6 +18,8 @@
             <option value="$PROJECT_DIR$/java/jackson" />
             <option value="$PROJECT_DIR$/java/maths" />
             <option value="$PROJECT_DIR$/java/networking" />
+            <option value="$PROJECT_DIR$/java/openapi" />
+            <option value="$PROJECT_DIR$/java/openapi/spec-first" />
             <option value="$PROJECT_DIR$/java/quantum" />
             <option value="$PROJECT_DIR$/java/selenium" />
             <option value="$PROJECT_DIR$/java/simpledsl" />

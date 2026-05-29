@@ -1,0 +1,33 @@
+sequenceDiagram
+
+    title Event Sourcing for Dummies
+
+    participant Customer
+    participant Kafka
+    participant Bank
+    participant Database
+
+    par Command
+    Customer->>Kafka:Deposit / Withdraw POJO (JSON)<br>POST /deposit /withdraw
+    Kafka->>Bank:Deposit / Withdraw POJO (JSON)<br>POST /deposit /withdraw
+    end
+
+    par Handling
+    note over Bank:Validation
+    end
+
+    Kafka->>Customer:Response
+    Bank->>Kafka:Response
+
+
+    par Query
+    par Projection
+
+    note over Bank: AccountDao
+
+    Bank->>Database:balance update
+
+    Database->>Customer:GET /balance (REST)
+
+    end
+    end

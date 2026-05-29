@@ -16,7 +16,7 @@ dependencies {
 
     implementation          project(':java:common')
 
-    testImplementation      'org.assertj:assertj-core:3.27.4'
+    testImplementation      'org.assertj:assertj-core:3.27.7'
 }
 
 test {

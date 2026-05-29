@@ -15,7 +15,7 @@ dependencies {
     implementation          'io.vertx:vertx-core:5.0.5'
     implementation          project(':java:common')
 
-    testImplementation      'org.assertj:assertj-core:3.27.4'
+    testImplementation      'org.assertj:assertj-core:3.27.7'
     testImplementation      'org.reflections:reflections:0.10.2'
 }
 

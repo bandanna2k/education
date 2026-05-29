@@ -1,0 +1,10 @@
+sequenceDiagram
+
+    title Event Sourcing for Dummies
+
+    participant Producer
+    participant Kafka
+    participant Consumer
+
+    Producer->Kafka:POJO (JSON)
+    Kafka->Consumer:POJO (JSON)

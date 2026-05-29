@@ -1,0 +1,115 @@
+openapi: 3.0.3
+info:
+  title: Bank API
+  version: 1.0.0
+
+paths:
+  /balance:
+    get:
+      operationId: getBalance
+      tags: [Balance]
+      summary: Get account balance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+      responses:
+        '200':
+          description: Current balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /deposit:
+    post:
+      operationId: postDeposit
+      tags: [Deposit]
+      summary: Deposit funds
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+      responses:
+        '200':
+          description: Updated balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /withdrawal:
+    post:
+      operationId: postWithdrawal
+      tags: [Withdrawal]
+      summary: Withdraw funds
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+      responses:
+        '200':
+          description: Updated balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    AccountRequest:
+      type: object
+      required: [accountId]
+      properties:
+        accountId:
+          type: integer
+          format: int64
+
+    TransactionRequest:
+      type: object
+      required: [accountId, amount]
+      properties:
+        accountId:
+          type: integer
+          format: int64
+        amount:
+          type: number
+          format: double
+
+    Balance:
+      type: object
+      properties:
+        balance:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
