@@ -17,15 +17,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 @Path("/deposit")
-@Tag(
-    name = "Deposit",
-    description = "Deposit funds into an account"
-)
 public interface DepositApi {
 
     @POST
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
     @Operation(
         summary = "Deposit funds",
         description = "Deposits the specified amount into the account",
@@ -46,5 +40,5 @@ public interface DepositApi {
             schema = @Schema(implementation = Balance.class)
         )
     )
-    Balance postDeposit(@Valid @NotNull TransactionRequest transactionRequest);
+    Balance postDeposit(TransactionRequest transactionRequest);
 }

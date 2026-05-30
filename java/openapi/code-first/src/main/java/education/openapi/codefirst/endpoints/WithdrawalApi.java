@@ -15,15 +15,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 @Path("/withdrawal")
-@Tag(
-    name = "Withdrawal",
-    description = "Withdraw funds from an account"
-)
 public interface WithdrawalApi {
 
     @POST
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
     @Operation(
         summary = "Withdraw funds",
         description = "Withdraws the specified amount from the account",

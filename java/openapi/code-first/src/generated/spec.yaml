@@ -6,13 +6,6 @@ info:
 servers:
 - url: http://localhost:8080
   description: Development server
-tags:
-- name: Balance
-  description: Get account balance information
-- name: Deposit
-  description: Deposit funds into an account
-- name: Withdrawal
-  description: Withdraw funds from an account
 paths:
   /balance:
     get:
