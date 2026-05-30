@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class SpecGenerator
 {
-    private static final String GENERATED_FOLDER = "src/generated";
+    private static final String GENERATED_FOLDER = "generated";
     private static final String SPEC_FILE_NAME = "spec.yaml";
 
     public OpenAPI generate()
@@ -75,8 +75,8 @@ public class SpecGenerator
     }
 
     private void writeSpecFile(OpenAPI openAPI) throws IOException {
-        // Create generated folder if it doesn't exist
-        Path generatedPath = Paths.get(GENERATED_FOLDER);
+        // Create generated folder next to src/main and src/test in code-first module.
+        Path generatedPath = resolveGeneratedPath();
         Files.createDirectories(generatedPath);
 
         // Write spec.yaml file
@@ -88,6 +88,23 @@ public class SpecGenerator
         }
 
         System.out.println("Generated spec file: " + specFilePath.toAbsolutePath());
+    }
+
+    private Path resolveGeneratedPath()
+    {
+        Path cwd = Paths.get("").toAbsolutePath();
+        Path moduleSrc = cwd.resolve("src");
+
+        if (Files.isDirectory(moduleSrc.resolve("main")) && Files.isDirectory(moduleSrc.resolve("test"))) {
+            return moduleSrc.resolve(GENERATED_FOLDER);
+        }
+
+        Path workspaceModuleSrc = cwd.resolve("java/openapi/code-first/src");
+        if (Files.isDirectory(workspaceModuleSrc.resolve("main")) && Files.isDirectory(workspaceModuleSrc.resolve("test"))) {
+            return workspaceModuleSrc.resolve(GENERATED_FOLDER);
+        }
+
+        return moduleSrc.resolve(GENERATED_FOLDER);
     }
 
     public static void main(String[] args) {

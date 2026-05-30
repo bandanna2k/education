@@ -1,0 +1,112 @@
+openapi: 3.0.1
+info:
+  title: Account Management API
+  description: "API for managing account deposits, withdrawals, and balance inquiries"
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+  description: Development server
+tags:
+- name: Balance
+  description: Get account balance information
+- name: Deposit
+  description: Deposit funds into an account
+- name: Withdrawal
+  description: Withdraw funds from an account
+paths:
+  /balance:
+    get:
+      tags:
+      - Balance
+      summary: Get account balance
+      description: Retrieves the current balance for a given account
+      operationId: getBalance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountRequest"
+        required: true
+      responses:
+        "200":
+          description: Balance retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Balance"
+  /deposit:
+    post:
+      tags:
+      - Deposit
+      summary: Deposit funds
+      description: Deposits the specified amount into the account
+      operationId: postDeposit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequest"
+        required: true
+      responses:
+        "200":
+          description: Deposit completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Balance"
+  /withdrawal:
+    post:
+      tags:
+      - Withdrawal
+      summary: Withdraw funds
+      description: Withdraws the specified amount from the account
+      operationId: postWithdrawal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequest"
+        required: true
+      responses:
+        "200":
+          description: Withdrawal completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Balance"
+        "400":
+          description: Withdrawal failed (insufficient funds or invalid request)
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    AccountRequest:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The unique account identifier
+          example: account-123
+      description: Request object containing account information
+    Balance:
+      type: object
+      properties:
+        balance:
+          type: string
+          description: The balance amount as a string
+          example: "100.5"
+      description: Account balance information
+    TransactionRequest:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: The unique account identifier
+          example: account-123
+        amount:
+          type: string
+          description: The transaction amount as a string
+          example: "50.0"
+      description: Request object for deposit and withdrawal transactions
