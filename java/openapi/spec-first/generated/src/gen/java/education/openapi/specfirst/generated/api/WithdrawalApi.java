@@ -1,8 +1,8 @@
-package io.swagger.client.api;
+package education.openapi.specfirst.generated.api;
 
-import io.swagger.client.model.Balance;
-import io.swagger.client.model.ErrorResponse;
-import io.swagger.client.model.TransactionRequest;
+import education.openapi.specfirst.generated.model.Balance;
+import education.openapi.specfirst.generated.model.ErrorResponse;
+import education.openapi.specfirst.generated.model.TransactionRequest;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;

@@ -1,4 +1,4 @@
-package io.swagger.client.model;
+package education.openapi.specfirst.generated.model;
 
 import javax.validation.constraints.*;
 import javax.validation.Valid;

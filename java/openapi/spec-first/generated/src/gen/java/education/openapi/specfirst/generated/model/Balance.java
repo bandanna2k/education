@@ -1,4 +1,4 @@
-package io.swagger.client.model;
+package education.openapi.specfirst.generated.model;
 
 import javax.validation.constraints.*;
 import javax.validation.Valid;
@@ -11,46 +11,27 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 
 
-@JsonTypeName("ErrorResponse")
+@JsonTypeName("Balance")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", comments = "Generator version: 7.5.0")
-public class ErrorResponse   {
-  private String code;
-  private String message;
+public class Balance   {
+  private String balance;
 
   /**
    **/
-  public ErrorResponse code(String code) {
-    this.code = code;
+  public Balance balance(String balance) {
+    this.balance = balance;
     return this;
   }
 
   
-  @JsonProperty("code")
-  public String getCode() {
-    return code;
+  @JsonProperty("balance")
+  public String getBalance() {
+    return balance;
   }
 
-  @JsonProperty("code")
-  public void setCode(String code) {
-    this.code = code;
-  }
-
-  /**
-   **/
-  public ErrorResponse message(String message) {
-    this.message = message;
-    return this;
-  }
-
-  
-  @JsonProperty("message")
-  public String getMessage() {
-    return message;
-  }
-
-  @JsonProperty("message")
-  public void setMessage(String message) {
-    this.message = message;
+  @JsonProperty("balance")
+  public void setBalance(String balance) {
+    this.balance = balance;
   }
 
 
@@ -62,23 +43,21 @@ public class ErrorResponse   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ErrorResponse errorResponse = (ErrorResponse) o;
-    return Objects.equals(this.code, errorResponse.code) &&
-        Objects.equals(this.message, errorResponse.message);
+    Balance balance = (Balance) o;
+    return Objects.equals(this.balance, balance.balance);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(code, message);
+    return Objects.hash(balance);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ErrorResponse {\n");
+    sb.append("class Balance {\n");
     
-    sb.append("    code: ").append(toIndentedString(code)).append("\n");
-    sb.append("    message: ").append(toIndentedString(message)).append("\n");
+    sb.append("    balance: ").append(toIndentedString(balance)).append("\n");
     sb.append("}");
     return sb.toString();
   }

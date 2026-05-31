@@ -1,8 +1,8 @@
-package io.swagger.client.api;
+package education.openapi.specfirst.generated.api;
 
-import io.swagger.client.model.AccountRequest;
-import io.swagger.client.model.Balance;
-import io.swagger.client.model.ErrorResponse;
+import education.openapi.specfirst.generated.model.Balance;
+import education.openapi.specfirst.generated.model.ErrorResponse;
+import education.openapi.specfirst.generated.model.TransactionRequest;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -17,20 +17,20 @@ import javax.validation.Valid;
 /**
 * Represents a collection of functions to interact with the API endpoints.
 */
-@Path("/balance")
+@Path("/deposit")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", comments = "Generator version: 7.5.0")
-public interface BalanceApi {
+public interface DepositApi {
 
     /**
      * 
      *
-     * @param accountRequest 
-     * @return Current balance
+     * @param transactionRequest 
+     * @return Updated balance
      * @return Error
      */
-    @GET
+    @POST
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    Balance getBalance(@Valid @NotNull AccountRequest accountRequest);
+    Balance postDeposit(@Valid @NotNull TransactionRequest transactionRequest);
 
 }
