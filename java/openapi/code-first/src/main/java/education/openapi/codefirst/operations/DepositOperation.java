@@ -7,13 +7,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.vertx.ext.web.RoutingContext;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 @Path("/deposit")
-public interface DepositOperation extends ApiOperation {
+public interface DepositOperation extends ApiOperation<Balance, TransactionRequest> {
 
     @POST
     @Operation(
@@ -37,6 +36,5 @@ public interface DepositOperation extends ApiOperation {
             schema = @Schema(implementation = Balance.class)
         )
     )
-    @Override
-    void handle(RoutingContext ctx);
+    Balance execute(TransactionRequest request);
 }

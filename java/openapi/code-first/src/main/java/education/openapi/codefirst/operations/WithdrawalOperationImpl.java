@@ -2,12 +2,9 @@ package education.openapi.codefirst.operations;
 
 import education.openapi.codefirst.components.Balance;
 import education.openapi.codefirst.components.TransactionRequest;
-import io.vertx.ext.web.RoutingContext;
 
 import java.math.BigDecimal;
 import java.util.Map;
-
-import static education.openapi.codefirst.operations.ApiOperation.*;
 
 public class WithdrawalOperationImpl implements WithdrawalOperation
 {
@@ -18,29 +15,16 @@ public class WithdrawalOperationImpl implements WithdrawalOperation
         this.balances = balances;
     }
 
-    private Balance postWithdrawal(TransactionRequest transactionRequest)
+    @Override
+    public Balance execute(TransactionRequest request)
     {
-        BigDecimal amount = new BigDecimal(transactionRequest.amount);
-        String accountId = transactionRequest.accountId;
+        BigDecimal amount = new BigDecimal(request.amount);
+        String accountId = request.accountId;
         BigDecimal current = balances.getOrDefault(accountId, BigDecimal.ZERO);
         if (current.compareTo(amount) < 0) {
-            throw new education.openapi.codefirst.operations.InsufficientFundsException("Insufficient funds: balance is " + current.toPlainString());
+            throw new InsufficientFundsException("Insufficient funds: balance is " + current.toPlainString());
         }
         BigDecimal newBalance = balances.merge(accountId, amount.negate(), BigDecimal::add);
         return new Balance(newBalance.toPlainString());
-    }
-
-    @Override
-    public void handle(RoutingContext ctx)
-    {
-        try {
-            TransactionRequest req = MAPPER.readValue(ctx.body().asString(), TransactionRequest.class);
-            Balance result = postWithdrawal(req);
-            respondJson(ctx, 200, result);
-        } catch (InsufficientFundsException e) {
-            respondError(ctx, 400, "INSUFFICIENT_FUNDS", e.getMessage());
-        } catch (Exception e) {
-            respondError(ctx, 400, "BAD_REQUEST", e.getMessage());
-        }
     }
 }

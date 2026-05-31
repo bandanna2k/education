@@ -13,9 +13,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 @Path("/withdrawal")
-public interface WithdrawalOperation extends ApiOperation
+public interface WithdrawalOperation extends ApiOperation<Balance, TransactionRequest>
 {
-
     @POST
     @Operation(
         operationId = "postWithdrawal",
@@ -46,6 +45,5 @@ public interface WithdrawalOperation extends ApiOperation
             schema = @Schema(name = "ErrorResponse")
         )
     )
-    @Override
-    void handle(RoutingContext ctx);
+    Balance execute(TransactionRequest request);
 }

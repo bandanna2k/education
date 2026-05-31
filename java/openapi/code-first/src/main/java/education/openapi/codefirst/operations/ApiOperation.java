@@ -1,13 +1,27 @@
 package education.openapi.codefirst.operations;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import education.openapi.codefirst.components.ErrorResponse;
 import io.vertx.ext.web.RoutingContext;
 
-public interface ApiOperation
+public interface ApiOperation<Result, Body>
 {
-    void handle(RoutingContext ctx);
+    default void handle(RoutingContext ctx) {
+        try {
+            Body req = MAPPER.readValue(ctx.body().asString(), new TypeReference<>() {});
+            Result result = execute(req);
+            respondJson(ctx, 200, result);
+        } catch (Exception e) {
+            if (e instanceof InsufficientFundsException) {
+                respondError(ctx, 400, "INSUFFICIENT_FUNDS", e.getMessage());
+            } else {
+                respondError(ctx, 400, "BAD_REQUEST", e.getMessage());
+            }
+        }
+    }
 
+    Result execute(Body body);
 
     ObjectMapper MAPPER = new ObjectMapper();
 

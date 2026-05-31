@@ -7,13 +7,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.vertx.ext.web.RoutingContext;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 @Path("/balance")
-public interface BalanceOperation extends ApiOperation {
+public interface BalanceOperation extends ApiOperation<Balance, AccountRequest>{
 
     @GET
     @Operation(
@@ -37,6 +36,5 @@ public interface BalanceOperation extends ApiOperation {
             schema = @Schema(implementation = Balance.class)
         )
     )
-    @Override
-    void handle(RoutingContext ctx);
+    Balance execute(AccountRequest accountRequest);
 }
