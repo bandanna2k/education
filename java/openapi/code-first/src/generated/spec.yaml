@@ -91,6 +91,15 @@ components:
           description: The balance amount as a string
           example: "100.5"
       description: Account balance information
+    RoutingContext:
+      type: object
+      properties:
+        sessionAccessed:
+          type: boolean
+        acceptableContentType:
+          type: string
+        fresh:
+          type: boolean
     TransactionRequest:
       type: object
       properties:

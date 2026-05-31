@@ -1,5 +1,8 @@
 package education.openapi.codefirst;
 
+import education.openapi.codefirst.operations.BalanceOperation;
+import education.openapi.codefirst.operations.DepositOperation;
+import education.openapi.codefirst.operations.WithdrawalOperation;
 import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.jaxrs2.Reader;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
@@ -24,22 +27,17 @@ public class SpecGenerator
     public OpenAPI generate()
     {
         try {
-            // Load the API endpoint classes
-            Class<?> balanceApiClass = Class.forName("education.openapi.codefirst.operations.BalanceOperation");
-            Class<?> depositApiClass = Class.forName("education.openapi.codefirst.operations.DepositApi");
-            Class<?> withdrawalApiClass = Class.forName("education.openapi.codefirst.operations.WithdrawalOperation");
-
             Set<Class<?>> resourceClasses = new HashSet<>(Arrays.asList(
-                    balanceApiClass,
-                    depositApiClass,
-                    withdrawalApiClass
+                    Class.forName(BalanceOperation.class.getCanonicalName()),
+                    Class.forName(DepositOperation.class.getCanonicalName()),
+                    Class.forName(WithdrawalOperation.class.getCanonicalName())
             ));
 
             // Create OpenAPI configuration
             Set<String> resourceClassStrings = new HashSet<>(Arrays.asList(
-                    "education.openapi.codefirst.operations.BalanceApi",
-                    "education.openapi.codefirst.operations.DepositApi",
-                    "education.openapi.codefirst.operations.WithdrawalApi"
+                    BalanceOperation.class.getCanonicalName(),
+                    DepositOperation.class.getCanonicalName(),
+                    WithdrawalOperation.class.getCanonicalName()
             ));
 
             SwaggerConfiguration config = new SwaggerConfiguration()

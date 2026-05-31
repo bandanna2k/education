@@ -17,6 +17,7 @@ public interface DepositOperation extends ApiOperation {
 
     @POST
     @Operation(
+        operationId = "postDeposit",
         summary = "Deposit funds",
         description = "Deposits the specified amount into the account",
         tags = {"Deposit"}

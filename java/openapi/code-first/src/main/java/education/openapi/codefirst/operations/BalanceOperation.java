@@ -17,6 +17,7 @@ public interface BalanceOperation extends ApiOperation {
 
     @GET
     @Operation(
+        operationId = "getBalance",
         summary = "Get account balance",
         description = "Retrieves the current balance for a given account",
         tags = {"Balance"}

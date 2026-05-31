@@ -18,6 +18,7 @@ public interface WithdrawalOperation extends ApiOperation
 
     @POST
     @Operation(
+        operationId = "postWithdrawal",
         summary = "Withdraw funds",
         description = "Withdraws the specified amount from the account",
         tags = {"Withdrawal"}
