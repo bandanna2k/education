@@ -44,7 +44,10 @@ openApiGenerate {
         returnResponse              : 'false',
         useSwaggerAnnotations       : 'false',
         dateLibrary                 : 'java8',
-        hideGenerationTimestamp     : 'true'
+        hideGenerationTimestamp     : 'true',
+        models                      : 'true',
+        apis                        : 'true',
+        supportingFiles             : 'false'
     ]
     cleanupOutput           = true
 }

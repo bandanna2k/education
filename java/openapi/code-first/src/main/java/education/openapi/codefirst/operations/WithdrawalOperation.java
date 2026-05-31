@@ -1,4 +1,4 @@
-package education.openapi.codefirst.endpoints;
+package education.openapi.codefirst.operations;
 
 import education.openapi.codefirst.components.Balance;
 import education.openapi.codefirst.components.TransactionRequest;
@@ -7,15 +7,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.vertx.ext.web.RoutingContext;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 
 @Path("/withdrawal")
-public interface WithdrawalApi {
+public interface WithdrawalOperation extends ApiOperation
+{
 
     @POST
     @Operation(
@@ -46,5 +45,6 @@ public interface WithdrawalApi {
             schema = @Schema(name = "ErrorResponse")
         )
     )
-    Balance postWithdrawal(TransactionRequest transactionRequest);
+    @Override
+    void handle(RoutingContext ctx);
 }

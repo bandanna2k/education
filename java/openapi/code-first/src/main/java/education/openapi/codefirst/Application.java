@@ -5,9 +5,7 @@ import education.openapi.codefirst.components.AccountRequest;
 import education.openapi.codefirst.components.Balance;
 import education.openapi.codefirst.components.ErrorResponse;
 import education.openapi.codefirst.components.TransactionRequest;
-import education.openapi.codefirst.endpoints.BalanceApi;
-import education.openapi.codefirst.endpoints.DepositApi;
-import education.openapi.codefirst.endpoints.WithdrawalApi;
+import education.openapi.codefirst.operations.*;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -20,14 +18,15 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Application implements BalanceApi, DepositApi, WithdrawalApi
+public class Application
 {
-
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
     private final Vertx vertx;
-    private final Map<String, BigDecimal> balances = new ConcurrentHashMap<>();
     private HttpServer server;
+
+    private final Map<String, BigDecimal> balances = new ConcurrentHashMap<>();
+    private final BalanceOperation balanceOperation = new BalanceOperationImpl(balances);
+    private final DepositOperation depositOperation = new DepositOperationImpl(balances);
+    private final WithdrawalOperationImpl withdrawalOperation = new WithdrawalOperationImpl(balances);
 
     public Application(Vertx vertx) {
         this.vertx = vertx;
@@ -36,9 +35,9 @@ public class Application implements BalanceApi, DepositApi, WithdrawalApi
     public Future<Void> start(int port) {
         Router router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
-        router.get("/balance").handler(this::handleBalance);
-        router.post("/deposit").handler(this::handleDeposit);
-        router.post("/withdrawal").handler(this::handleWithdrawal);
+        router.get("/balance").handler(balanceOperation::handle);
+        router.post("/deposit").handler(depositOperation::handle);
+        router.post("/withdrawal").handler(withdrawalOperation::handle);
 
         Promise<Void> promise = Promise.promise();
         vertx.createHttpServer()
@@ -60,94 +59,5 @@ public class Application implements BalanceApi, DepositApi, WithdrawalApi
     public int actualPort() {
         if (server == null) throw new IllegalStateException("Server not started");
         return server.actualPort();
-    }
-
-    // --- BalanceApi ---
-
-    @Override
-    public Balance getBalance(AccountRequest accountRequest) {
-        BigDecimal amount = balances.getOrDefault(accountRequest.accountId, BigDecimal.ZERO);
-        return new Balance(amount.toPlainString());
-    }
-
-    // --- DepositApi ---
-
-    @Override
-    public Balance postDeposit(TransactionRequest transactionRequest) {
-        BigDecimal amount = new BigDecimal(transactionRequest.amount);
-        BigDecimal newBalance = balances.merge(
-                transactionRequest.accountId, amount, BigDecimal::add);
-        return new Balance(newBalance.toPlainString());
-    }
-
-    // --- WithdrawalApi ---
-
-    @Override
-    public Balance postWithdrawal(TransactionRequest transactionRequest) {
-        BigDecimal amount = new BigDecimal(transactionRequest.amount);
-        String accountId = transactionRequest.accountId;
-        BigDecimal current = balances.getOrDefault(accountId, BigDecimal.ZERO);
-        if (current.compareTo(amount) < 0) {
-            throw new InsufficientFundsException("Insufficient funds: balance is " + current.toPlainString());
-        }
-        BigDecimal newBalance = balances.merge(accountId, amount.negate(), BigDecimal::add);
-        return new Balance(newBalance.toPlainString());
-    }
-
-    // --- Vert.x route handlers ---
-
-    private void handleBalance(RoutingContext ctx) {
-        try {
-            AccountRequest req = MAPPER.readValue(ctx.body().asString(), AccountRequest.class);
-            Balance result = getBalance(req);
-            respondJson(ctx, 200, result);
-        } catch (Exception e) {
-            respondError(ctx, 400, "BAD_REQUEST", e.getMessage());
-        }
-    }
-
-    private void handleDeposit(RoutingContext ctx) {
-        try {
-            TransactionRequest req = MAPPER.readValue(ctx.body().asString(), TransactionRequest.class);
-            Balance result = postDeposit(req);
-            respondJson(ctx, 200, result);
-        } catch (Exception e) {
-            respondError(ctx, 400, "BAD_REQUEST", e.getMessage());
-        }
-    }
-
-    private void handleWithdrawal(RoutingContext ctx) {
-        try {
-            TransactionRequest req = MAPPER.readValue(ctx.body().asString(), TransactionRequest.class);
-            Balance result = postWithdrawal(req);
-            respondJson(ctx, 200, result);
-        } catch (InsufficientFundsException e) {
-            respondError(ctx, 400, "INSUFFICIENT_FUNDS", e.getMessage());
-        } catch (Exception e) {
-            respondError(ctx, 400, "BAD_REQUEST", e.getMessage());
-        }
-    }
-
-    private void respondJson(RoutingContext ctx, int status, Object body) {
-        try {
-            String json = MAPPER.writeValueAsString(body);
-            ctx.response()
-                    .setStatusCode(status)
-                    .putHeader("Content-Type", "application/json")
-                    .end(json);
-        } catch (Exception e) {
-            ctx.response().setStatusCode(500).end("Internal error");
-        }
-    }
-
-    private void respondError(RoutingContext ctx, int status, String code, String message) {
-        ErrorResponse error = new ErrorResponse(code, message);
-        respondJson(ctx, status, error);
-    }
-
-    static class InsufficientFundsException extends RuntimeException {
-        InsufficientFundsException(String message) {
-            super(message);
-        }
     }
 }

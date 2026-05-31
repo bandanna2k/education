@@ -25,9 +25,9 @@ public class SpecGenerator
     {
         try {
             // Load the API endpoint classes
-            Class<?> balanceApiClass = Class.forName("education.openapi.codefirst.endpoints.BalanceApi");
-            Class<?> depositApiClass = Class.forName("education.openapi.codefirst.endpoints.DepositApi");
-            Class<?> withdrawalApiClass = Class.forName("education.openapi.codefirst.endpoints.WithdrawalApi");
+            Class<?> balanceApiClass = Class.forName("education.openapi.codefirst.operations.BalanceOperation");
+            Class<?> depositApiClass = Class.forName("education.openapi.codefirst.operations.DepositApi");
+            Class<?> withdrawalApiClass = Class.forName("education.openapi.codefirst.operations.WithdrawalOperation");
 
             Set<Class<?>> resourceClasses = new HashSet<>(Arrays.asList(
                     balanceApiClass,
@@ -37,9 +37,9 @@ public class SpecGenerator
 
             // Create OpenAPI configuration
             Set<String> resourceClassStrings = new HashSet<>(Arrays.asList(
-                    "education.openapi.codefirst.endpoints.BalanceApi",
-                    "education.openapi.codefirst.endpoints.DepositApi",
-                    "education.openapi.codefirst.endpoints.WithdrawalApi"
+                    "education.openapi.codefirst.operations.BalanceApi",
+                    "education.openapi.codefirst.operations.DepositApi",
+                    "education.openapi.codefirst.operations.WithdrawalApi"
             ));
 
             SwaggerConfiguration config = new SwaggerConfiguration()

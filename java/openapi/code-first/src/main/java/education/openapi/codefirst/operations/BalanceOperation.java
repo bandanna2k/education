@@ -1,44 +1,41 @@
-package education.openapi.codefirst.endpoints;
+package education.openapi.codefirst.operations;
 
+import education.openapi.codefirst.components.AccountRequest;
 import education.openapi.codefirst.components.Balance;
-import education.openapi.codefirst.components.TransactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.vertx.ext.web.RoutingContext;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 
-@Path("/deposit")
-public interface DepositApi {
+@Path("/balance")
+public interface BalanceOperation extends ApiOperation {
 
-    @POST
+    @GET
     @Operation(
-        summary = "Deposit funds",
-        description = "Deposits the specified amount into the account",
-        tags = {"Deposit"}
+        summary = "Get account balance",
+        description = "Retrieves the current balance for a given account",
+        tags = {"Balance"}
     )
     @RequestBody(
         required = true,
         content = @Content(
             mediaType = "application/json",
-            schema = @Schema(implementation = TransactionRequest.class)
+            schema = @Schema(implementation = AccountRequest.class)
         )
     )
     @ApiResponse(
         responseCode = "200",
-        description = "Deposit completed successfully",
+        description = "Balance retrieved successfully",
         content = @Content(
             mediaType = "application/json",
             schema = @Schema(implementation = Balance.class)
         )
     )
-    Balance postDeposit(TransactionRequest transactionRequest);
+    @Override
+    void handle(RoutingContext ctx);
 }
