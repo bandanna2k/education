@@ -1,17 +1,11 @@
 package education.openapi.codefirst;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import education.openapi.codefirst.components.AccountRequest;
-import education.openapi.codefirst.components.Balance;
-import education.openapi.codefirst.components.ErrorResponse;
-import education.openapi.codefirst.components.TransactionRequest;
 import education.openapi.codefirst.operations.*;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 
 import java.math.BigDecimal;

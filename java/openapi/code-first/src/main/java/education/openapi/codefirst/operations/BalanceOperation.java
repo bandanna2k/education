@@ -1,7 +1,7 @@
 package education.openapi.codefirst.operations;
 
-import education.openapi.codefirst.components.AccountRequest;
-import education.openapi.codefirst.components.Balance;
+import education.openapi.codefirst.operations.components.AccountRequest;
+import education.openapi.codefirst.operations.components.Balance;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,13 +1,12 @@
 package education.openapi.codefirst.operations;
 
-import education.openapi.codefirst.components.Balance;
-import education.openapi.codefirst.components.TransactionRequest;
+import education.openapi.codefirst.operations.components.Balance;
+import education.openapi.codefirst.operations.components.TransactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.vertx.ext.web.RoutingContext;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;

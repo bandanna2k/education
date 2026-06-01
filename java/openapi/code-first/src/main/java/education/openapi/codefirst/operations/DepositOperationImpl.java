@@ -1,7 +1,7 @@
 package education.openapi.codefirst.operations;
 
-import education.openapi.codefirst.components.Balance;
-import education.openapi.codefirst.components.TransactionRequest;
+import education.openapi.codefirst.operations.components.Balance;
+import education.openapi.codefirst.operations.components.TransactionRequest;
 
 import java.math.BigDecimal;
 import java.util.Map;

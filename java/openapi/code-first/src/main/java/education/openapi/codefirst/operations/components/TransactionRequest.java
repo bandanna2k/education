@@ -1,4 +1,4 @@
-package education.openapi.codefirst.components;
+package education.openapi.codefirst.operations.components;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
