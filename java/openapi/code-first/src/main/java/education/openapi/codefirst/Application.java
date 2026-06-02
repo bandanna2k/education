@@ -1,21 +1,17 @@
 package education.openapi.codefirst;
 
-import education.openapi.codefirst.handlers.*;
 import education.openapi.codefirst.operations.*;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 
 import javax.ws.rs.*;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static education.openapi.codefirst.operations.ApiOperation.respondError;
 
@@ -34,7 +30,7 @@ public class Application
     public Future<Void> start(int port) {
         Router router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
-        router.route().failureHandler(ctx -> respondError(ctx, 500, "SERVER_ERROR", "An unexpected error occurred"));
+        router.route().failureHandler(Application::handleFailure);
 
         Arrays.stream(operations).forEach(operation -> addHandler(router, operation));
 
@@ -48,6 +44,16 @@ public class Application
                 })
                 .onFailure(promise::fail);
         return promise.future();
+    }
+
+    private static void handleFailure(RoutingContext ctx)
+    {
+        Throwable failure = ctx.failure();
+        if (failure != null) {
+            respondError(ctx, 404, "BAD_REQUEST", failure.getMessage());
+        } else {
+            respondError(ctx, 500, "SERVER_ERROR", "An unexpected error occurred");
+        }
     }
 
     private void addHandler(Router router, ApiOperation operation)

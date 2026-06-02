@@ -12,11 +12,18 @@ sourceSets {
         compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
         runtimeClasspath += output + compileClasspath
     }
+    daoTest {
+        java.srcDir 'src/dao-test/java'
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+        runtimeClasspath += output + compileClasspath
+    }
 }
 
 configurations {
     integrationTestImplementation.extendsFrom testImplementation
     integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+    daoTestImplementation.extendsFrom testImplementation
+    daoTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 dependencies {
@@ -54,6 +61,15 @@ tasks.register('integrationTest', Test) {
     useJUnitPlatform()
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter test
+}
+
+tasks.register('daoTest', Test) {
+    description = 'Runs DAO tests.'
+    group = 'verification'
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.daoTest.output.classesDirs
+    classpath = sourceSets.daoTest.runtimeClasspath
     shouldRunAfter test
 }
 

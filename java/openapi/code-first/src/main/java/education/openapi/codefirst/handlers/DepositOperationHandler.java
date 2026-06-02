@@ -1,5 +1,6 @@
 package education.openapi.codefirst.handlers;
 
+import education.openapi.codefirst.operations.ApiOperation;
 import education.openapi.codefirst.operations.DepositOperation;
 import education.openapi.codefirst.operations.components.TransactionRequest;
 import io.vertx.core.json.JsonObject;
@@ -7,6 +8,7 @@ import io.vertx.ext.web.RoutingContext;
 
 import java.math.BigDecimal;
 
+import static education.openapi.codefirst.operations.ApiOperation.*;
 import static education.openapi.codefirst.operations.ApiOperation.respondError;
 import static education.openapi.codefirst.operations.ApiOperation.respondJson;
 
@@ -22,14 +24,14 @@ public class DepositOperationHandler implements DepositOperation
     @Override
     public void handle(RoutingContext ctx)
     {
-        final String accountId = ctx.pathParam("accountId");
+        final int accountId = tryParseInt(ctx.pathParam("accountId"));
 //
 //        final ValidatedRequest validatedRequest = ctx.get("KEY_META_DATA_VALIDATED_REQUEST");
         final JsonObject jsonBody = ctx.body().asJsonObject();
 
         final TransactionRequest request = jsonBody.mapTo(TransactionRequest.class);
         final DepositCommand command = new DepositCommand(
-                Integer.parseInt(accountId),
+                accountId,
                 new BigDecimal(request.amount)
         );
         commandHandler.handle(command)

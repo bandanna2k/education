@@ -30,4 +30,14 @@ public interface ApiOperation extends Handler<RoutingContext>
     static String toVertxPath(String jaxRsPath) {
         return jaxRsPath.replaceAll("\\{([^}]+)\\}", ":$1");
     }
+
+    static int tryParseInt(String value)
+    {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid path parameter. " + value);
+        }
+    }
+
 }
