@@ -1,7 +1,8 @@
 package education.openapi.codefirst;
 
-import io.vertx.core.Vertx;
+import education.openapi.codefirst.generator.SpecGenerator;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.vertx.core.Vertx;
 
 public class Main
 {

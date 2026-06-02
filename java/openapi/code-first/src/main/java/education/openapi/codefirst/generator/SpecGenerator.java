@@ -1,4 +1,4 @@
-package education.openapi.codefirst;
+package education.openapi.codefirst.generator;
 
 import education.openapi.codefirst.operations.BalanceOperation;
 import education.openapi.codefirst.operations.DepositOperation;
@@ -46,6 +46,11 @@ public class SpecGenerator
             // Generate OpenAPI spec
             Reader reader = new Reader(config);
             OpenAPI openAPI = reader.read(resourceClasses);
+
+            // Remove RoutingContext component if present (picked up from handle() method signature)
+            if (openAPI.getComponents() != null && openAPI.getComponents().getSchemas() != null) {
+                openAPI.getComponents().getSchemas().remove("RoutingContext");
+            }
 
             // Add info if not present
             if (openAPI.getInfo() == null) {

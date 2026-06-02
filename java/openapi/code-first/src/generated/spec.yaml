@@ -7,13 +7,21 @@ servers:
 - url: http://localhost:8080
   description: Development server
 paths:
-  /balance:
+  /balance/{accountId}:
     get:
       tags:
       - Balance
       summary: Get account balance
       description: Retrieves the current balance for a given account
       operationId: getBalance
+      parameters:
+      - name: accountId
+        in: path
+        description: The unique account identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -27,13 +35,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Balance"
-  /deposit:
+  /deposit/{accountId}:
     post:
       tags:
       - Deposit
       summary: Deposit funds
       description: Deposits the specified amount into the account
       operationId: postDeposit
+      parameters:
+      - name: accountId
+        in: path
+        description: The unique account identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -47,13 +63,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Balance"
-  /withdrawal:
+  /withdrawal/{accountId}:
     post:
       tags:
       - Withdrawal
       summary: Withdraw funds
       description: Withdraws the specified amount from the account
       operationId: postWithdrawal
+      parameters:
+      - name: accountId
+        in: path
+        description: The unique account identifier
+        required: true
+        schema:
+          type: integer
+          format: int64
       requestBody:
         content:
           application/json:
@@ -79,9 +103,10 @@ components:
       type: object
       properties:
         accountId:
-          type: string
+          type: integer
           description: The unique account identifier
-          example: account-123
+          format: int32
+          example: 123
       description: Request object containing account information
     Balance:
       type: object
@@ -95,9 +120,10 @@ components:
       type: object
       properties:
         accountId:
-          type: string
+          type: integer
           description: The unique account identifier
-          example: account-123
+          format: int32
+          example: 123
         amount:
           type: string
           description: The transaction amount as a string
