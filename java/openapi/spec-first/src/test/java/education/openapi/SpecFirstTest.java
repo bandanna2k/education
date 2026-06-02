@@ -1,6 +1,6 @@
 package education.openapi;
 
-import education.openapi.codefirst.Application;
+import education.openapi.specfirst.Application;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ApplicationTest {
+public class SpecFirstTest
+{
 
     private Vertx vertx;
     private WebClient client;
@@ -43,9 +44,9 @@ class ApplicationTest {
     @Test
     void depositBalanceAndWithdrawalFlow() {
         // Deposit 100.0
-        HttpResponse<Buffer> depositResponse = client.post(port, "localhost", "/deposit")
+        HttpResponse<Buffer> depositResponse = client.post(port, "localhost", "/deposit/{accountId}".replace("{accountId}", "1"))
                 .putHeader("Content-Type", "application/json")
-                .sendJsonObject(new JsonObject().put("accountId", 1).put("amount", 100.0))
+                .sendJsonObject(new JsonObject().put("amount", 100.0))
                 .toCompletionStage().toCompletableFuture().join();
 
         assertThat(depositResponse.statusCode()).isEqualTo(200);

@@ -1,19 +1,21 @@
 package education.openapi;
 
-import education.openapi.specfirst.Application;
+import education.openapi.codefirst.Application;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-class ApplicationTest {
-
+public class CodeFirstTest
+{
     private Vertx vertx;
     private WebClient client;
     private Application application;
@@ -41,29 +43,30 @@ class ApplicationTest {
     }
 
     @Test
-    void depositBalanceAndWithdrawalFlow() {
+    public void depositBalanceAndWithdrawalFlow() {
         // Deposit 100.0
-        HttpResponse<Buffer> depositResponse = client.post(port, "localhost", "/deposit")
+        HttpResponse<Buffer> depositResponse = client.post(port, "localhost", "/deposit/{accountId}".replace("{accountId}", "1"))
                 .putHeader("Content-Type", "application/json")
-                .sendJsonObject(new JsonObject().put("accountId", 1).put("amount", 100.0))
+                .sendJsonObject(new JsonObject().put("amount", 100.0))
                 .toCompletionStage().toCompletableFuture().join();
 
-        assertThat(depositResponse.statusCode()).isEqualTo(200);
-        assertThat(depositResponse.bodyAsJsonObject().getString("balance")).isEqualTo("100.0");
+        Assertions.assertAll(
+                () -> assertThat(depositResponse.statusCode()).isEqualTo(200),
+                () -> assertThat(depositResponse.bodyAsJsonObject().getString("balance")).isEqualTo("100.0"));
 
         // Check balance
-        HttpResponse<Buffer> balanceResponse = client.get(port, "localhost", "/balance")
+        HttpResponse<Buffer> balanceResponse = client.get(port, "localhost", "/balance/{accountId}".replace("{accountId}", "1"))
                 .putHeader("Content-Type", "application/json")
-                .sendJsonObject(new JsonObject().put("accountId", 1))
+                .send()
                 .toCompletionStage().toCompletableFuture().join();
 
         assertThat(balanceResponse.statusCode()).isEqualTo(200);
         assertThat(balanceResponse.bodyAsJsonObject().getString("balance")).isEqualTo("100.0");
 
         // Withdraw 40.0
-        HttpResponse<Buffer> withdrawalResponse = client.post(port, "localhost", "/withdrawal")
+        HttpResponse<Buffer> withdrawalResponse = client.post(port, "localhost", "/withdrawal/{accountId}".replace("{accountId}", "1"))
                 .putHeader("Content-Type", "application/json")
-                .sendJsonObject(new JsonObject().put("accountId", 1).put("amount", 40.0))
+                .sendJsonObject(new JsonObject().put("amount", 40.0))
                 .toCompletionStage().toCompletableFuture().join();
 
         assertThat(withdrawalResponse.statusCode()).isEqualTo(200);
@@ -71,11 +74,11 @@ class ApplicationTest {
     }
 
     @Test
-    void withdrawalWithInsufficientFundsReturnsError() {
+    public void withdrawalWithInsufficientFundsReturnsError() {
         // Attempt to withdraw from an account with zero balance
-        HttpResponse<Buffer> response = client.post(port, "localhost", "/withdrawal")
+        HttpResponse<Buffer> response = client.post(port, "localhost", "/withdrawal/{accountId}".replace("{accountId}", "99"))
                 .putHeader("Content-Type", "application/json")
-                .sendJsonObject(new JsonObject().put("accountId", 99).put("amount", 50.0))
+                .sendJsonObject(new JsonObject().put("amount", 50.0))
                 .toCompletionStage().toCompletableFuture().join();
 
         assertThat(response.statusCode()).isEqualTo(400);

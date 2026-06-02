@@ -3,23 +3,29 @@ package education.openapi.codefirst.operations;
 import education.openapi.codefirst.operations.components.AccountRequest;
 import education.openapi.codefirst.operations.components.Balance;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.vertx.ext.web.RoutingContext;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-@Path("/balance")
-public interface BalanceOperation extends ApiOperation<Balance, AccountRequest>{
-
+@Path("/balance/{accountId}")
+public interface BalanceOperation extends ApiOperation
+{
     @GET
     @Operation(
         operationId = "getBalance",
         summary = "Get account balance",
         description = "Retrieves the current balance for a given account",
-        tags = {"Balance"}
+        tags = {"Balance"},
+        parameters = {
+            @Parameter(name = "accountId", in = ParameterIn.PATH, required = true, description = "The unique account identifier", schema = @Schema(type = "integer"))
+        }
     )
     @RequestBody(
         required = true,
@@ -36,5 +42,5 @@ public interface BalanceOperation extends ApiOperation<Balance, AccountRequest>{
             schema = @Schema(implementation = Balance.class)
         )
     )
-    Balance execute(AccountRequest accountRequest);
+    void handle(RoutingContext ctx);
 }
