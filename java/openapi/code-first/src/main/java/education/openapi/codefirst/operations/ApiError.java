@@ -2,7 +2,8 @@ package education.openapi.codefirst.operations;
 
 public enum ApiError
 {
-    INSUFFICIENT_FUNDS(400, "Insufficient funds.");
+    INSUFFICIENT_FUNDS(400, "Insufficient funds."),
+    BAD_REQUEST(400, "Bad request.");
 
     public final int errorCode;
     public final String errorMessage;

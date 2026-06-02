@@ -12,6 +12,8 @@ import io.vertx.ext.web.handler.BodyHandler;
 import javax.ws.rs.*;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,25 +24,19 @@ public class Application
     private final Vertx vertx;
     private HttpServer server;
 
-    private final Map<Integer, BigDecimal> balances = new ConcurrentHashMap<>();
-    private final BalanceOperationHandler balanceOperation = new BalanceOperationHandler(
-            new BalanceCommandHandler(balances));
-    private final DepositOperationHandler depositOperation = new DepositOperationHandler(
-            new DepositCommandHandler(balances));
-    private final WithdrawalOperationHandler withdrawalOperation = new WithdrawalOperationHandler(
-            new WithdrawalCommandHandler(balances));
+    private final ApiOperation[] operations;
 
-    public Application(Vertx vertx) {
+    public Application(Vertx vertx, ApiOperation... operations) {
         this.vertx = vertx;
+        this.operations = operations;
     }
 
     public Future<Void> start(int port) {
         Router router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
         router.route().failureHandler(ctx -> respondError(ctx, 500, "SERVER_ERROR", "An unexpected error occurred"));
-        addHandler(router, balanceOperation);
-        addHandler(router, depositOperation);
-        addHandler(router, withdrawalOperation);
+
+        Arrays.stream(operations).forEach(operation -> addHandler(router, operation));
 
         Promise<Void> promise = Promise.promise();
         vertx.createHttpServer()
