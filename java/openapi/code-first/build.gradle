@@ -6,6 +6,19 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    integrationTest {
+        java.srcDir 'src/integration-test/java'
+        compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
 dependencies {
     implementation          "io.vertx:vertx-core:5.0.12"
     implementation          "io.vertx:vertx-web:5.0.12"
@@ -34,9 +47,19 @@ test {
     useJUnitPlatform()
 }
 
-task generateSpec(type: JavaExec, dependsOn: 'classes') {
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter test
+}
+
+tasks.register('generateSpec', JavaExec) {
     group = 'openapi'
     description = 'Generates OpenAPI spec.yaml from Swagger annotations'
     mainClass = 'education.openapi.codefirst.SpecGenerator'
     classpath = sourceSets.main.runtimeClasspath
+    dependsOn 'classes'
 }
