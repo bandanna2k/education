@@ -1,8 +1,11 @@
 package education.openapi.specfirst.generated.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
+import io.swagger.annotations.*;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -25,6 +28,7 @@ public class ErrorResponse   {
   }
 
   
+  @ApiModelProperty(value = "")
   @JsonProperty("code")
   public String getCode() {
     return code;
@@ -43,6 +47,7 @@ public class ErrorResponse   {
   }
 
   
+  @ApiModelProperty(value = "")
   @JsonProperty("message")
   public String getMessage() {
     return message;

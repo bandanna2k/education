@@ -8,9 +8,9 @@ import {{javaxPackage}}.ws.rs.core.Response;
 import education.openapi.ApiOperation;
 import io.vertx.ext.web.RoutingContext;
 
-{{#useSwaggerAnnotations}}
 import io.swagger.annotations.*;
-{{/useSwaggerAnnotations}}
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 {{#supportAsync}}
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CompletableFuture;

@@ -1,3 +1,13 @@
+    @{{httpMethod}}
+    @Path("{{{path}}}"){{#hasConsumes}}
+    @Consumes({ {{#consumes}}"{{{mediaType}}}"{{^-last}}, {{/-last}}{{/consumes}} }){{/hasConsumes}}{{#hasProduces}}
+    @Produces({ {{#produces}}"{{{mediaType}}}"{{^-last}}, {{/-last}}{{/produces}} }){{/hasProduces}}
+    {{#responses}}
+    @ApiResponse(responseCode = "{{{code}}}", description = "{{{message}}}")
+    {{/responses}}
+    {{#bodyParam}}
+    @RequestBody(required = {{#required}}true{{/required}}{{^required}}false{{/required}}, description = "{{{description}}}")
+    {{/bodyParam}}
     /**
      * {{{summary}}}
      * {{{notes}}}
@@ -5,4 +15,3 @@
      * @param ctx the routing context
      */
     public void handle(io.vertx.ext.web.RoutingContext ctx);
-

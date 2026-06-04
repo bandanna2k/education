@@ -1,8 +1,11 @@
 package education.openapi.specfirst.generated.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
+import io.swagger.annotations.*;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -25,6 +28,7 @@ public class TransactionRequest   {
   }
 
   
+  @ApiModelProperty(required = true, value = "")
   @JsonProperty("accountId")
   @NotNull public Long getAccountId() {
     return accountId;
@@ -43,6 +47,7 @@ public class TransactionRequest   {
   }
 
   
+  @ApiModelProperty(required = true, value = "")
   @JsonProperty("amount")
   @NotNull public Double getAmount() {
     return amount;
