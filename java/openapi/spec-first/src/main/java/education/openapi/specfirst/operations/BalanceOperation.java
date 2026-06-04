@@ -1,5 +1,6 @@
 package education.openapi.specfirst.operations;
 
+import education.openapi.ApiOperation;
 import education.openapi.specfirst.generated.api.BalanceApi;
 import education.openapi.specfirst.generated.model.AccountRequest;
 import education.openapi.specfirst.generated.model.Balance;
@@ -8,10 +9,9 @@ import io.vertx.ext.web.RoutingContext;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static education.openapi.specfirst.operations.ApiOperation.respondError;
-import static education.openapi.specfirst.operations.ApiOperation.respondJson;
+import static education.openapi.specfirst.operations.ToBeRenamed.*;
 
-public class BalanceOperation implements BalanceApi, ApiOperation
+public class BalanceOperation implements BalanceApi
 {
     private final Map<Long, BigDecimal> balances;
 
@@ -20,8 +20,7 @@ public class BalanceOperation implements BalanceApi, ApiOperation
         this.balances = balances;
     }
 
-    @Override
-    public Balance getBalance(AccountRequest accountRequest)
+    private Balance getBalance(AccountRequest accountRequest)
     {
         BigDecimal amount = balances.getOrDefault(accountRequest.getAccountId(), BigDecimal.ZERO);
         return new Balance().balance(amount.toPlainString());

@@ -8,10 +8,9 @@ import io.vertx.ext.web.RoutingContext;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static education.openapi.specfirst.operations.ApiOperation.respondError;
-import static education.openapi.specfirst.operations.ApiOperation.respondJson;
+import static education.openapi.specfirst.operations.ToBeRenamed.*;
 
-public class WithdrawalOperation implements WithdrawalApi, ApiOperation
+public class WithdrawalOperation implements WithdrawalApi
 {
     private final Map<Long, BigDecimal> balances;
 
@@ -20,8 +19,7 @@ public class WithdrawalOperation implements WithdrawalApi, ApiOperation
         this.balances = balances;
     }
 
-    @Override
-    public Balance postWithdrawal(TransactionRequest transactionRequest)
+    private Balance postWithdrawal(TransactionRequest transactionRequest)
     {
         BigDecimal amount = BigDecimal.valueOf(transactionRequest.getAmount());
         long accountId = transactionRequest.getAccountId();

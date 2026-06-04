@@ -8,10 +8,9 @@ import io.vertx.ext.web.RoutingContext;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static education.openapi.specfirst.operations.ApiOperation.respondError;
-import static education.openapi.specfirst.operations.ApiOperation.respondJson;
+import static education.openapi.specfirst.operations.ToBeRenamed.*;
 
-public class DepositOperation implements DepositApi, ApiOperation
+public class DepositOperation implements DepositApi
 {
     private final Map<Long, BigDecimal> balances;
 
@@ -20,8 +19,7 @@ public class DepositOperation implements DepositApi, ApiOperation
         this.balances = balances;
     }
 
-    @Override
-    public Balance postDeposit(TransactionRequest transactionRequest)
+    private Balance postDeposit(TransactionRequest transactionRequest)
     {
         BigDecimal amount = BigDecimal.valueOf(transactionRequest.getAmount());
         BigDecimal newBalance = balances.merge(

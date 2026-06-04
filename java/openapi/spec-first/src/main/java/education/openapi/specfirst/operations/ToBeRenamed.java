@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import education.openapi.specfirst.generated.model.ErrorResponse;
 import io.vertx.ext.web.RoutingContext;
 
-public interface ApiOperation
+public interface ToBeRenamed
 {
     void handle(RoutingContext ctx);
 

@@ -5,7 +5,7 @@ import education.openapi.operations.components.ErrorResponse;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 
-public interface ApiOperation extends Handler<RoutingContext>
+public interface ToBeRenamed
 {
     ObjectMapper MAPPER = new ObjectMapper();
 

@@ -6,6 +6,8 @@ import education.openapi.specfirst.generated.model.ErrorResponse;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import education.openapi.ApiOperation;
+import io.vertx.ext.web.RoutingContext;
 
 
 import java.io.InputStream;
@@ -19,18 +21,16 @@ import javax.validation.Valid;
 */
 @Path("/balance")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", comments = "Generator version: 7.5.0")
-public interface BalanceApi {
+public interface BalanceApi extends ApiOperation {
 
     /**
+     * Get account balance
      * 
      *
-     * @param accountRequest 
-     * @return Current balance
-     * @return Error
+     * @param ctx the routing context
      */
-    @GET
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
-    Balance getBalance(@Valid @NotNull AccountRequest accountRequest);
+    public void handle(io.vertx.ext.web.RoutingContext ctx);
+
 
 }
+

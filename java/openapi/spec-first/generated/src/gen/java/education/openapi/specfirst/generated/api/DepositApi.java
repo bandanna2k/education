@@ -6,6 +6,8 @@ import education.openapi.specfirst.generated.model.TransactionRequest;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import education.openapi.ApiOperation;
+import io.vertx.ext.web.RoutingContext;
 
 
 import java.io.InputStream;
@@ -19,18 +21,16 @@ import javax.validation.Valid;
 */
 @Path("/deposit")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", comments = "Generator version: 7.5.0")
-public interface DepositApi {
+public interface DepositApi extends ApiOperation {
 
     /**
+     * Deposit funds
      * 
      *
-     * @param transactionRequest 
-     * @return Updated balance
-     * @return Error
+     * @param ctx the routing context
      */
-    @POST
-    @Consumes({ "application/json" })
-    @Produces({ "application/json" })
-    Balance postDeposit(@Valid @NotNull TransactionRequest transactionRequest);
+    public void handle(io.vertx.ext.web.RoutingContext ctx);
+
 
 }
+

@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/java/maths" />
             <option value="$PROJECT_DIR$/java/networking" />
             <option value="$PROJECT_DIR$/java/openapi" />
+            <option value="$PROJECT_DIR$/java/openapi/application" />
             <option value="$PROJECT_DIR$/java/openapi/code-first" />
             <option value="$PROJECT_DIR$/java/openapi/common" />
             <option value="$PROJECT_DIR$/java/openapi/dao-test" />

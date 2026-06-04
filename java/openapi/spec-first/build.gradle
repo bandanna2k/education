@@ -47,9 +47,10 @@ openApiGenerate {
         hideGenerationTimestamp     : 'true',
         models                      : 'true',
         apis                        : 'true',
-        supportingFiles             : 'false'
+        supportingFiles             : 'true'
     ]
     cleanupOutput           = true
+    templateDir             = "$projectDir/src/main/openapi-templates"
 }
 
 sourceSets {
