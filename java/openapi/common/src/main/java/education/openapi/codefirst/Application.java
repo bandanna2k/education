@@ -1,6 +1,6 @@
 package education.openapi.codefirst;
 
-import education.openapi.codefirst.operations.*;
+import education.openapi.codefirst.operations.ApiOperation;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;

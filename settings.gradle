@@ -16,6 +16,9 @@ include 'java:yaml'
 
 include 'java:openapi:code-first'
 include 'java:openapi:spec-first'
+include 'java:openapi:integration-test'
+include 'java:openapi:dao-test'
+include 'java:openapi:common'
 
 include 'java:websockets:communications'
 include 'java:websockets:infrastructure'

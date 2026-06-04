@@ -20,6 +20,9 @@
             <option value="$PROJECT_DIR$/java/networking" />
             <option value="$PROJECT_DIR$/java/openapi" />
             <option value="$PROJECT_DIR$/java/openapi/code-first" />
+            <option value="$PROJECT_DIR$/java/openapi/common" />
+            <option value="$PROJECT_DIR$/java/openapi/dao-test" />
+            <option value="$PROJECT_DIR$/java/openapi/integration-test" />
             <option value="$PROJECT_DIR$/java/openapi/spec-first" />
             <option value="$PROJECT_DIR$/java/quantum" />
             <option value="$PROJECT_DIR$/java/selenium" />
