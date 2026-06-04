@@ -1,12 +1,12 @@
 package education.openapi;
 
 import education.common.result.Result;
-import education.openapi.codefirst.Application;
-import education.openapi.codefirst.handlers.*;
-import education.openapi.codefirst.operations.BalanceOperation;
-import education.openapi.codefirst.operations.DepositOperation;
-import education.openapi.codefirst.operations.WithdrawalOperation;
-import education.openapi.codefirst.operations.components.Balance;
+import education.openapi.common.Application;
+import education.openapi.operations.BalanceOperation;
+import education.openapi.operations.DepositOperation;
+import education.openapi.operations.WithdrawalOperation;
+import education.openapi.operations.components.Balance;
+import education.openapi.common.handlers.*;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;

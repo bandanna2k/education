@@ -1,20 +1,16 @@
 package education.openapi;
 
-import education.common.result.Result;
-import education.openapi.codefirst.Application;
-import education.openapi.codefirst.handlers.*;
-import education.openapi.codefirst.operations.BalanceOperation;
-import education.openapi.codefirst.operations.DepositOperation;
-import education.openapi.codefirst.operations.WithdrawalOperation;
-import education.openapi.codefirst.operations.components.Balance;
-import io.vertx.core.Future;
+import education.openapi.common.Application;
+import education.openapi.operations.BalanceOperation;
+import education.openapi.operations.DepositOperation;
+import education.openapi.operations.WithdrawalOperation;
+import education.openapi.common.handlers.*;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,8 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 public class CodeFirstTest
@@ -43,7 +37,7 @@ public class CodeFirstTest
 
         final Map<Integer, BigDecimal> balances = new ConcurrentHashMap<>();
         final BalanceOperation balanceOperation = new BalanceOperationHandler(new BalanceCommandHandler(balances));
-        final DepositOperation depositOperation = new DepositOperationHandler(new  DepositCommandHandler(balances));
+        final DepositOperation depositOperation = new DepositOperationHandler(new DepositCommandHandler(balances));
         final WithdrawalOperation withdrawalOperation = new WithdrawalOperationHandler(new WithdrawalCommandHandler(balances));
 
         application = new Application(vertx, balanceOperation, depositOperation, withdrawalOperation);

@@ -1,7 +1,7 @@
-package education.openapi.codefirst.operations;
+package education.openapi.operations;
 
-import education.openapi.codefirst.operations.components.Balance;
-import education.openapi.codefirst.operations.components.TransactionRequest;
+import education.openapi.operations.components.Balance;
+import education.openapi.operations.components.TransactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -14,15 +14,15 @@ import io.vertx.ext.web.RoutingContext;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-@Path("/deposit/{accountId}")
-public interface DepositOperation extends ApiOperation
+@Path("/withdrawal/{accountId}")
+public interface WithdrawalOperation extends ApiOperation
 {
     @POST
     @Operation(
-        operationId = "postDeposit",
-        summary = "Deposit funds",
-        description = "Deposits the specified amount into the account",
-        tags = {"Deposit"},
+        operationId = "postWithdrawal",
+        summary = "Withdraw funds",
+        description = "Withdraws the specified amount from the account",
+        tags = {"Withdrawal"},
         parameters = {
             @Parameter(name = "accountId", in = ParameterIn.PATH, required = true, description = "The unique account identifier", schema = @Schema(type = "integer"))
         }
@@ -36,12 +36,19 @@ public interface DepositOperation extends ApiOperation
     )
     @ApiResponse(
         responseCode = "200",
-        description = "Deposit completed successfully",
+        description = "Withdrawal completed successfully",
         content = @Content(
             mediaType = "application/json",
             schema = @Schema(implementation = Balance.class)
         )
     )
-    @Override
+    @ApiResponse(
+        responseCode = "400",
+        description = "Withdrawal failed (insufficient funds or invalid request)",
+        content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(name = "ErrorResponse")
+        )
+    )
     void handle(RoutingContext event);
 }

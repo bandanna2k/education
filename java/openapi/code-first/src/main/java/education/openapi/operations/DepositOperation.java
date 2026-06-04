@@ -1,7 +1,7 @@
-package education.openapi.codefirst.operations;
+package education.openapi.operations;
 
-import education.openapi.codefirst.operations.components.AccountRequest;
-import education.openapi.codefirst.operations.components.Balance;
+import education.openapi.operations.components.Balance;
+import education.openapi.operations.components.TransactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -11,18 +11,18 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vertx.ext.web.RoutingContext;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-@Path("/balance/{accountId}")
-public interface BalanceOperation extends ApiOperation
+@Path("/deposit/{accountId}")
+public interface DepositOperation extends ApiOperation
 {
-    @GET
+    @POST
     @Operation(
-        operationId = "getBalance",
-        summary = "Get account balance",
-        description = "Retrieves the current balance for a given account",
-        tags = {"Balance"},
+        operationId = "postDeposit",
+        summary = "Deposit funds",
+        description = "Deposits the specified amount into the account",
+        tags = {"Deposit"},
         parameters = {
             @Parameter(name = "accountId", in = ParameterIn.PATH, required = true, description = "The unique account identifier", schema = @Schema(type = "integer"))
         }
@@ -31,16 +31,17 @@ public interface BalanceOperation extends ApiOperation
         required = true,
         content = @Content(
             mediaType = "application/json",
-            schema = @Schema(implementation = AccountRequest.class)
+            schema = @Schema(implementation = TransactionRequest.class)
         )
     )
     @ApiResponse(
         responseCode = "200",
-        description = "Balance retrieved successfully",
+        description = "Deposit completed successfully",
         content = @Content(
             mediaType = "application/json",
             schema = @Schema(implementation = Balance.class)
         )
     )
-    void handle(RoutingContext ctx);
+    @Override
+    void handle(RoutingContext event);
 }

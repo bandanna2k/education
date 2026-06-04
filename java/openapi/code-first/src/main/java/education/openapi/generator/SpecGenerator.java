@@ -1,8 +1,8 @@
-package education.openapi.codefirst.generator;
+package education.openapi.generator;
 
-import education.openapi.codefirst.operations.BalanceOperation;
-import education.openapi.codefirst.operations.DepositOperation;
-import education.openapi.codefirst.operations.WithdrawalOperation;
+import education.openapi.operations.BalanceOperation;
+import education.openapi.operations.DepositOperation;
+import education.openapi.operations.WithdrawalOperation;
 import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.jaxrs2.Reader;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;

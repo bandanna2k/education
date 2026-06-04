@@ -1,8 +1,8 @@
 package education.openapi;
 
-import education.openapi.codefirst.handlers.BalanceCommandHandler;
-import education.openapi.codefirst.handlers.DepositCommand;
-import education.openapi.codefirst.handlers.DepositCommandHandler;
+import education.openapi.common.handlers.BalanceCommandHandler;
+import education.openapi.common.handlers.DepositCommand;
+import education.openapi.common.handlers.DepositCommandHandler;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

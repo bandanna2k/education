@@ -1,10 +1,10 @@
-package education.openapi.codefirst.handlers;
+package education.openapi.common.handlers;
 
-import education.openapi.codefirst.operations.BalanceOperation;
+import education.openapi.operations.BalanceOperation;
 import io.vertx.ext.web.RoutingContext;
 
-import static education.openapi.codefirst.operations.ApiOperation.respondError;
-import static education.openapi.codefirst.operations.ApiOperation.respondJson;
+import static education.openapi.operations.ApiOperation.respondError;
+import static education.openapi.operations.ApiOperation.respondJson;
 
 public class BalanceOperationHandler implements BalanceOperation
 {

@@ -1,16 +1,15 @@
-package education.openapi.codefirst.handlers;
+package education.openapi.common.handlers;
 
-import education.openapi.codefirst.operations.ApiOperation;
-import education.openapi.codefirst.operations.DepositOperation;
-import education.openapi.codefirst.operations.components.TransactionRequest;
+import education.openapi.operations.DepositOperation;
+import education.openapi.operations.components.TransactionRequest;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
 import java.math.BigDecimal;
 
-import static education.openapi.codefirst.operations.ApiOperation.*;
-import static education.openapi.codefirst.operations.ApiOperation.respondError;
-import static education.openapi.codefirst.operations.ApiOperation.respondJson;
+import static education.openapi.operations.ApiOperation.*;
+import static education.openapi.operations.ApiOperation.respondError;
+import static education.openapi.operations.ApiOperation.respondJson;
 
 public class DepositOperationHandler implements DepositOperation
 {

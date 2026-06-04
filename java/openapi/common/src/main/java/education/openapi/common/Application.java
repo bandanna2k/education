@@ -1,6 +1,6 @@
-package education.openapi.codefirst;
+package education.openapi.common;
 
-import education.openapi.codefirst.operations.ApiOperation;
+import education.openapi.operations.ApiOperation;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -13,7 +13,7 @@ import javax.ws.rs.*;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import static education.openapi.codefirst.operations.ApiOperation.respondError;
+import static education.openapi.operations.ApiOperation.respondError;
 
 public class Application
 {

@@ -1,4 +1,4 @@
-package education.openapi.codefirst.handlers;
+package education.openapi.common.handlers;
 
 import java.math.BigDecimal;
 

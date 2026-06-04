@@ -1,4 +1,4 @@
-package education.openapi.codefirst.operations;
+package education.openapi.operations;
 
 public enum ApiError
 {

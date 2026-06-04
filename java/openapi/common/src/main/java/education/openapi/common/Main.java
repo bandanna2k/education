@@ -1,7 +1,8 @@
-package education.openapi.codefirst;
+package education.openapi.common;
 
 import education.openapi.codefirst.generator.SpecGenerator;
 import education.openapi.codefirst.handlers.*;
+import education.openapi.common.handlers.*;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.vertx.core.Vertx;
 

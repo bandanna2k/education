@@ -1,8 +1,8 @@
-package education.openapi.codefirst.handlers;
+package education.openapi.common.handlers;
 
 import education.common.result.Result;
-import education.openapi.codefirst.operations.ApiError;
-import education.openapi.codefirst.operations.components.Balance;
+import education.openapi.operations.ApiError;
+import education.openapi.operations.components.Balance;
 
 import java.math.BigDecimal;
 import java.util.Map;

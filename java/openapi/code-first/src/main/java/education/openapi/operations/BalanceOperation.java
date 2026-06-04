@@ -1,7 +1,7 @@
-package education.openapi.codefirst.operations;
+package education.openapi.operations;
 
-import education.openapi.codefirst.operations.components.Balance;
-import education.openapi.codefirst.operations.components.TransactionRequest;
+import education.openapi.operations.components.AccountRequest;
+import education.openapi.operations.components.Balance;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -11,18 +11,18 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.vertx.ext.web.RoutingContext;
 
-import javax.ws.rs.POST;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-@Path("/withdrawal/{accountId}")
-public interface WithdrawalOperation extends ApiOperation
+@Path("/balance/{accountId}")
+public interface BalanceOperation extends ApiOperation
 {
-    @POST
+    @GET
     @Operation(
-        operationId = "postWithdrawal",
-        summary = "Withdraw funds",
-        description = "Withdraws the specified amount from the account",
-        tags = {"Withdrawal"},
+        operationId = "getBalance",
+        summary = "Get account balance",
+        description = "Retrieves the current balance for a given account",
+        tags = {"Balance"},
         parameters = {
             @Parameter(name = "accountId", in = ParameterIn.PATH, required = true, description = "The unique account identifier", schema = @Schema(type = "integer"))
         }
@@ -31,24 +31,16 @@ public interface WithdrawalOperation extends ApiOperation
         required = true,
         content = @Content(
             mediaType = "application/json",
-            schema = @Schema(implementation = TransactionRequest.class)
+            schema = @Schema(implementation = AccountRequest.class)
         )
     )
     @ApiResponse(
         responseCode = "200",
-        description = "Withdrawal completed successfully",
+        description = "Balance retrieved successfully",
         content = @Content(
             mediaType = "application/json",
             schema = @Schema(implementation = Balance.class)
         )
     )
-    @ApiResponse(
-        responseCode = "400",
-        description = "Withdrawal failed (insufficient funds or invalid request)",
-        content = @Content(
-            mediaType = "application/json",
-            schema = @Schema(name = "ErrorResponse")
-        )
-    )
-    void handle(RoutingContext event);
+    void handle(RoutingContext ctx);
 }

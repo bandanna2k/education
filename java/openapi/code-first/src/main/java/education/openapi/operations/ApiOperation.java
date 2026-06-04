@@ -1,8 +1,7 @@
-package education.openapi.codefirst.operations;
+package education.openapi.operations;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import education.openapi.codefirst.operations.components.ErrorResponse;
+import education.openapi.operations.components.ErrorResponse;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 
