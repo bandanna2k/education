@@ -5,7 +5,7 @@ package {{package}};
 
 import {{javaxPackage}}.ws.rs.*;
 import {{javaxPackage}}.ws.rs.core.Response;
-import education.openapi.ApiOperation;
+import io.vertx.core.Handler;
 import io.vertx.ext.web.RoutingContext;
 
 import io.swagger.annotations.*;
@@ -30,7 +30,7 @@ import {{javaxPackage}}.validation.Valid;{{/useBeanValidation}}
 @Consumes({ {{#consumes}}"{{{mediaType}}}"{{^-last}}, {{/-last}}{{/consumes}} }){{/hasConsumes}}{{#hasProduces}}
 @Produces({ {{#produces}}"{{{mediaType}}}"{{^-last}}, {{/-last}}{{/produces}} }){{/hasProduces}}
 {{>generatedAnnotation}}
-public {{#interfaceOnly}}interface{{/interfaceOnly}}{{^interfaceOnly}}class{{/interfaceOnly}} {{classname}} extends ApiOperation {
+public {{#interfaceOnly}}interface{{/interfaceOnly}}{{^interfaceOnly}}class{{/interfaceOnly}} {{classname}} extends Handler<RoutingContext> {
 {{#operations}}
 {{#operation}}
 

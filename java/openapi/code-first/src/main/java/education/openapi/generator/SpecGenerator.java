@@ -1,8 +1,8 @@
 package education.openapi.generator;
 
-import education.openapi.operations.BalanceOperation;
-import education.openapi.operations.DepositOperation;
-import education.openapi.operations.WithdrawalOperation;
+import education.openapi.api.BalanceApi;
+import education.openapi.api.DepositApi;
+import education.openapi.api.WithdrawalApi;
 import io.swagger.v3.core.util.Yaml;
 import io.swagger.v3.jaxrs2.Reader;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
@@ -28,16 +28,16 @@ public class SpecGenerator
     {
         try {
             Set<Class<?>> resourceClasses = new HashSet<>(Arrays.asList(
-                    Class.forName(BalanceOperation.class.getCanonicalName()),
-                    Class.forName(DepositOperation.class.getCanonicalName()),
-                    Class.forName(WithdrawalOperation.class.getCanonicalName())
+                    Class.forName(BalanceApi.class.getCanonicalName()),
+                    Class.forName(DepositApi.class.getCanonicalName()),
+                    Class.forName(WithdrawalApi.class.getCanonicalName())
             ));
 
             // Create OpenAPI configuration
             Set<String> resourceClassStrings = new HashSet<>(Arrays.asList(
-                    BalanceOperation.class.getCanonicalName(),
-                    DepositOperation.class.getCanonicalName(),
-                    WithdrawalOperation.class.getCanonicalName()
+                    BalanceApi.class.getCanonicalName(),
+                    DepositApi.class.getCanonicalName(),
+                    WithdrawalApi.class.getCanonicalName()
             ));
 
             SwaggerConfiguration config = new SwaggerConfiguration()

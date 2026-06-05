@@ -1,10 +1,10 @@
 package education.openapi;
 
-import education.openapi.common.Application;
-import education.openapi.operations.BalanceOperation;
-import education.openapi.operations.DepositOperation;
-import education.openapi.operations.WithdrawalOperation;
-import education.openapi.common.handlers.*;
+import education.openapi.api.BalanceApi;
+import education.openapi.api.DepositApi;
+import education.openapi.api.WithdrawalApi;
+import education.openapi.application.Application;
+import education.openapi.application.handlers.*;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
@@ -19,9 +19,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 
 public class CodeFirstTest
 {
@@ -36,11 +33,11 @@ public class CodeFirstTest
         client = WebClient.create(vertx);
 
         final Map<Integer, BigDecimal> balances = new ConcurrentHashMap<>();
-        final BalanceOperation balanceOperation = new BalanceOperationHandler(new BalanceCommandHandler(balances));
-        final DepositOperation depositOperation = new DepositOperationHandler(new DepositCommandHandler(balances));
-        final WithdrawalOperation withdrawalOperation = new WithdrawalOperationHandler(new WithdrawalCommandHandler(balances));
+        final BalanceApi balanceApi = new BalanceApiHandler(new BalanceCommandHandler(balances));
+        final DepositApi depositApi = new DepositApiHandler(new DepositCommandHandler(balances));
+        final WithdrawalApi withdrawalApi = new WithdrawalApiHandler(new WithdrawalCommandHandler(balances));
 
-        application = new Application(vertx, balanceOperation, depositOperation, withdrawalOperation);
+        application = new Application(vertx, balanceApi, depositApi, withdrawalApi);
         application.start(0).toCompletionStage().toCompletableFuture().join();
         port = application.actualPort();
     }

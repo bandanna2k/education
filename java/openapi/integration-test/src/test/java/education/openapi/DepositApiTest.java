@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-public class SpecValidationsTest
+public class DepositApiTest
 {
     private Vertx vertx;
     private WebClient client;
@@ -51,7 +51,6 @@ public class SpecValidationsTest
     {
         given(balanceCommandHandler.handle(anyInt())).willReturn(Result.success(new Balance("0")));
         given(depositCommandHandler.handle(any())).willReturn(Result.success(new Balance("0")));
-//        given(withdrawalCommandHandler.handle(any())).willReturn(Result.failure(ApiError.BAD_REQUEST));
         given(withdrawalCommandHandler.handle(any())).willReturn(Result.success(new Balance("0")));
     }
 
@@ -74,27 +73,38 @@ public class SpecValidationsTest
     }
 
     @Test
-    public void shouldGetBalance()
+    public void shouldFailWithBadAccountId()
     {
         setupSuccessfulMocks();
 
-        HttpResponse<Buffer> balanceResponse = client.get(port, "localhost", "/balance/{accountId}".replace("{accountId}", "1"))
+        String accountId = "XXX";
+        HttpResponse<Buffer> depositResponse = client.post(port, "localhost", "/deposit/{accountId}".replace("{accountId}", accountId))
                 .putHeader("Content-Type", "application/json")
-                .send()
+                .sendJsonObject(new JsonObject().put("amount", 100.0))
                 .toCompletionStage().toCompletableFuture().join();
-
-        assertThat(balanceResponse.statusCode()).isEqualTo(200);
+        assertThat(depositResponse.statusCode())
+                .describedAs(depositResponse.bodyAsString())
+                .isEqualTo(404);
+        assertThat(depositResponse.bodyAsJsonObject().getString("message"))
+                .describedAs(depositResponse.bodyAsString())
+                .contains("Invalid path parameter. XXX");
     }
 
     @Test
-    public void shouldWithdraw()
+    public void shouldFailWithBadAmount()
     {
         setupSuccessfulMocks();
 
-        HttpResponse<Buffer> withdrawalResponse = client.post(port, "localhost", "/withdrawal/{accountId}".replace("{accountId}", "1"))
+        String accountId = "1";
+        HttpResponse<Buffer> depositResponse = client.post(port, "localhost", "/deposit/{accountId}".replace("{accountId}", accountId))
                 .putHeader("Content-Type", "application/json")
-                .sendJsonObject(new JsonObject().put("amount", 40.0))
+                .sendJsonObject(new JsonObject().put("amount", "XXX"))
                 .toCompletionStage().toCompletableFuture().join();
-        assertThat(withdrawalResponse.statusCode()).isEqualTo(200);
+        assertThat(depositResponse.statusCode())
+                .describedAs(depositResponse.bodyAsString())
+                .isEqualTo(404);
+        assertThat(depositResponse.bodyAsJsonObject().getString("message"))
+                .describedAs(depositResponse.bodyAsString())
+                .contains("Character X is neither a decimal digit number");
     }
 }
