@@ -4,7 +4,7 @@ import education.common.result.Result;
 import education.openapi.api.BalanceApi;
 import education.openapi.api.DepositApi;
 import education.openapi.api.WithdrawalApi;
-import education.openapi.api.components.Balance;
+import education.openapi.model.Balance;
 import education.openapi.application.Application;
 import education.openapi.application.handlers.*;
 import io.vertx.core.Vertx;
@@ -49,9 +49,9 @@ public class DepositApiTest
 
     private void setupSuccessfulMocks()
     {
-        given(balanceCommandHandler.handle(anyInt())).willReturn(Result.success(new Balance("0")));
-        given(depositCommandHandler.handle(any())).willReturn(Result.success(new Balance("0")));
-        given(withdrawalCommandHandler.handle(any())).willReturn(Result.success(new Balance("0")));
+        given(balanceCommandHandler.handle(anyInt())).willReturn(Result.success(new Balance().balance("0")));
+        given(depositCommandHandler.handle(any())).willReturn(Result.success(new Balance().balance("0")));
+        given(withdrawalCommandHandler.handle(any())).willReturn(Result.success(new Balance().balance("0")));
     }
 
     @AfterEach

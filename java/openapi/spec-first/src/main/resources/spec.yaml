@@ -4,17 +4,20 @@ info:
   version: 1.0.0
 
 paths:
-  /balance:
+  /balance/{accountId}:
     get:
       operationId: getBalance
       tags: [Balance]
       summary: Get account balance
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AccountRequest'
+      description: Retrieves the current balance for a given account
+      parameters:
+        - name: accountId
+          in: path
+          description: The unique account identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Current balance
@@ -27,44 +30,60 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /deposit:
+                $ref: "#/components/schemas/ErrorResponse"
+  /deposit/{accountId}:
     post:
       operationId: postDeposit
       tags: [Deposit]
       summary: Deposit funds
+      description: Deposits the specified amount into the account
+      parameters:
+        - name: accountId
+          in: path
+          description: The unique account identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionRequest'
+              $ref: "#/components/schemas/TransactionRequest"
+        required: true
       responses:
         '200':
           description: Updated balance
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Balance'
+                $ref: "#/components/schemas/Balance"
         '400':
           description: Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /withdrawal:
+                $ref: "#/components/schemas/ErrorResponse"
+  /withdrawal/{accountId}:
     post:
       operationId: postWithdrawal
       tags: [Withdrawal]
       summary: Withdraw funds
+      description: Withdraws the specified amount from the account
+      parameters:
+        - name: accountId
+          in: path
+          description: The unique account identifier
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionRequest'
+              $ref: "#/components/schemas/TransactionRequest"
+        required: true
       responses:
         '200':
           description: Updated balance
@@ -81,35 +100,36 @@ paths:
 
 components:
   schemas:
-    AccountRequest:
-      type: object
-      required: [accountId]
-      properties:
-        accountId:
-          type: integer
-          format: int64
-
-    TransactionRequest:
-      type: object
-      required: [accountId, amount]
-      properties:
-        accountId:
-          type: integer
-          format: int64
-        amount:
-          type: number
-          format: double
-
     Balance:
       type: object
       properties:
         balance:
           type: string
-
+          description: The balance amount as a string
+          example: "100.5"
+      description: Account balance information
     ErrorResponse:
       type: object
       properties:
         code:
           type: string
+          description: Error code identifier
+          example: BAD_REQUEST
         message:
           type: string
+          description: Human-readable error message
+          example: Invalid request parameters
+      description: Error response object
+    TransactionRequest:
+      type: object
+      properties:
+        accountId:
+          type: integer
+          description: The unique account identifier
+          format: int32
+          example: 123
+        amount:
+          type: string
+          description: The transaction amount as a string
+          example: "50.0"
+      description: Request object for deposit and withdrawal transactions

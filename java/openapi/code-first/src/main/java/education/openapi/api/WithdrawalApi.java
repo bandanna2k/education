@@ -1,7 +1,8 @@
 package education.openapi.api;
 
-import education.openapi.api.components.Balance;
-import education.openapi.api.components.TransactionRequest;
+import education.openapi.model.Balance;
+import education.openapi.model.ErrorResponse;
+import education.openapi.model.TransactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -44,11 +45,18 @@ public interface WithdrawalApi extends Handler<RoutingContext>
         )
     )
     @ApiResponse(
+            responseCode = "400",
+            description = "Bad request",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class))
+    )
+    @ApiResponse(
         responseCode = "400",
         description = "Withdrawal failed (insufficient funds or invalid request)",
         content = @Content(
             mediaType = "application/json",
-            schema = @Schema(name = "ErrorResponse")
+            schema = @Schema(implementation = ErrorResponse.class)
         )
     )
     void handle(RoutingContext event);

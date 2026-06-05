@@ -1,7 +1,7 @@
 package education.openapi.application.handlers;
 
 import education.openapi.api.WithdrawalApi;
-import education.openapi.api.components.TransactionRequest;
+import education.openapi.model.TransactionRequest;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
@@ -30,7 +30,7 @@ public class WithdrawalApiHandler implements WithdrawalApi
         final TransactionRequest request = jsonBody.mapTo(TransactionRequest.class);
         final WithdrawalCommand command = new WithdrawalCommand(
                 Integer.parseInt(accountId),
-                new BigDecimal(request.amount)
+                new BigDecimal(request.getAmount())
         );
         commandHandler.handle(command)
                 .consume(

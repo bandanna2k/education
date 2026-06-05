@@ -1,8 +1,8 @@
 package education.openapi.application.handlers;
 
 import education.common.result.Result;
-import education.openapi.api.ApiError;
-import education.openapi.api.components.Balance;
+import education.openapi.application.ApiError;
+import education.openapi.model.Balance;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -27,6 +27,6 @@ public class WithdrawalCommandHandler
             return Result.failure(ApiError.INSUFFICIENT_FUNDS);
         }
         BigDecimal newBalance = balances.merge(accountId, amount.negate(), BigDecimal::add);
-        return success(new Balance(newBalance.toPlainString()));
+        return success(new Balance().balance(newBalance.toPlainString()));
     }
 }

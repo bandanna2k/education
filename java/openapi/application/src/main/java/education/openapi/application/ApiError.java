@@ -1,4 +1,4 @@
-package education.openapi.api;
+package education.openapi.application;
 
 public enum ApiError
 {

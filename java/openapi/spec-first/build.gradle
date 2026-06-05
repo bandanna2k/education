@@ -34,9 +34,9 @@ openApiGenerate {
     generatorName           = 'jaxrs-spec'
     inputSpec               = "$projectDir/src/main/resources/spec.yaml"
     outputDir               = generatedRoot
-    apiPackage              = 'education.openapi.generated.api'
-    modelPackage            = 'education.openapi.generated.model'
-    invokerPackage          = 'education.openapi.generated'
+    apiPackage              = 'education.openapi.api'
+    modelPackage            = 'education.openapi.model'
+    invokerPackage          = 'education.openapi'
     generateApiTests        = false
     generateModelTests      = false
     generateApiDocumentation = false

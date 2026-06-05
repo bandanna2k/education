@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+def useSpecFirst = false
+
 repositories {
     mavenCentral()
 }
@@ -10,9 +12,11 @@ dependencies {
     testImplementation          "io.vertx:vertx-core:5.0.12"
     testImplementation          "io.vertx:vertx-web:5.0.12"
 
-    testImplementation       project(':java:common')
-    testImplementation       project(':java:openapi:code-first')
-    testImplementation       project(':java:openapi:application')
+    testImplementation          project(':java:common')
+    testImplementation          project(':java:openapi:application')
+    testImplementation          project(useSpecFirst
+            ? ':java:openapi:spec-first'
+            : ':java:openapi:code-first')
 
     testImplementation      platform('org.junit:junit-bom:5.10.0')
     testImplementation      'org.junit.jupiter:junit-jupiter-engine:5.13.4'

@@ -1,7 +1,7 @@
 package education.openapi.application.handlers;
 
 import education.openapi.api.DepositApi;
-import education.openapi.api.components.TransactionRequest;
+import education.openapi.model.TransactionRequest;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 
@@ -29,7 +29,7 @@ public class DepositApiHandler implements DepositApi
         final TransactionRequest request = jsonBody.mapTo(TransactionRequest.class);
         final DepositCommand command = new DepositCommand(
                 accountId,
-                new BigDecimal(request.amount)
+                new BigDecimal(request.getAmount())
         );
         commandHandler.handle(command)
                 .consume(

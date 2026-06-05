@@ -1,4 +1,4 @@
-package education.openapi.api.components;
+package education.openapi.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,4 +20,12 @@ public class TransactionRequest
             example = "50.00"
     )
     public String amount;
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
 }

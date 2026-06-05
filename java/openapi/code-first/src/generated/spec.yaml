@@ -35,6 +35,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Balance"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /deposit/{accountId}:
     post:
       tags:
@@ -63,6 +69,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Balance"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /withdrawal/{accountId}:
     post:
       tags:
@@ -96,7 +108,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     AccountRequest:
@@ -116,6 +128,18 @@ components:
           description: The balance amount as a string
           example: "100.5"
       description: Account balance information
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code identifier
+          example: BAD_REQUEST
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request parameters
+      description: Error response object
     TransactionRequest:
       type: object
       properties:

@@ -4,9 +4,9 @@ import education.common.result.Result;
 import education.openapi.api.BalanceApi;
 import education.openapi.api.DepositApi;
 import education.openapi.api.WithdrawalApi;
-import education.openapi.api.components.Balance;
 import education.openapi.application.Application;
 import education.openapi.application.handlers.*;
+import education.openapi.model.Balance;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
@@ -49,10 +49,10 @@ public class SpecValidationsTest
 
     private void setupSuccessfulMocks()
     {
-        given(balanceCommandHandler.handle(anyInt())).willReturn(Result.success(new Balance("0")));
-        given(depositCommandHandler.handle(any())).willReturn(Result.success(new Balance("0")));
+        given(balanceCommandHandler.handle(anyInt())).willReturn(Result.success(new Balance().balance("0")));
+        given(depositCommandHandler.handle(any())).willReturn(Result.success(new Balance().balance("0")));
 //        given(withdrawalCommandHandler.handle(any())).willReturn(Result.failure(ApiError.BAD_REQUEST));
-        given(withdrawalCommandHandler.handle(any())).willReturn(Result.success(new Balance("0")));
+        given(withdrawalCommandHandler.handle(any())).willReturn(Result.success(new Balance().balance("0")));
     }
 
     @AfterEach

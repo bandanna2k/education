@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+def useSpecFirst = false
+
 repositories {
     mavenCentral()
 }
@@ -11,7 +13,9 @@ dependencies {
     implementation          "io.vertx:vertx-web:5.0.12"
     implementation          "io.vertx:vertx-openapi:5.0.12"
 
-    implementation          project(':java:openapi:code-first')
+    implementation          project(useSpecFirst
+            ? ':java:openapi:spec-first'
+            : ':java:openapi:code-first')
 
     // Dependencies required by openapi-generator jaxrs-spec models
     implementation          'com.fasterxml.jackson.core:jackson-databind:2.17.2'

@@ -1,7 +1,7 @@
 package education.openapi.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import education.openapi.api.components.ErrorResponse;
+import education.openapi.model.ErrorResponse;
 import io.vertx.ext.web.RoutingContext;
 
 public interface ToBeRenamed
@@ -21,7 +21,7 @@ public interface ToBeRenamed
     }
 
     static void respondError(RoutingContext ctx, int status, String code, String message) {
-        ErrorResponse error = new ErrorResponse(code, message);
+        ErrorResponse error = new ErrorResponse().code(code).message(message);
         respondJson(ctx, status, error);
     }
 

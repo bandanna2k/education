@@ -1,7 +1,8 @@
 package education.openapi.api;
 
-import education.openapi.api.components.AccountRequest;
-import education.openapi.api.components.Balance;
+import education.openapi.model.AccountRequest;
+import education.openapi.model.Balance;
+import education.openapi.model.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -36,12 +37,19 @@ public interface BalanceApi extends Handler<RoutingContext>
         )
     )
     @ApiResponse(
-        responseCode = "200",
-        description = "Balance retrieved successfully",
-        content = @Content(
-            mediaType = "application/json",
-            schema = @Schema(implementation = Balance.class)
-        )
+            responseCode = "200",
+            description = "Balance retrieved successfully",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Balance.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "400",
+            description = "Bad request",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class))
     )
     void handle(RoutingContext ctx);
 }
