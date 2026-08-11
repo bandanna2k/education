@@ -26,7 +26,7 @@ public class AssertTest
 
     @Test
     void multipleAssertsUsingJuniper() {
-        final Object o = Boolean.parseBoolean(System.getProperty("CREATE_NEW_OBJECT", "false")) ? new Object() : null;
+        final Object o = null;
         assertAll(
                 () -> assertThat(o).describedAs("Is not null").isNotNull(),
                 () -> assertThat(o).describedAs("Is instance of").isInstanceOf(Object.class)
@@ -35,7 +35,7 @@ public class AssertTest
 
     @Test
     void multipleAsserts() {
-        assertThat("the quick brown fox")
+        assertThat("")
                 .satisfies(
                 a -> assertThat(a).as("contains").contains("quick"),
                 a -> assertThat(a).as("contains").contains("brown"),
