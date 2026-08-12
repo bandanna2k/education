@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/java/1brc" />
             <option value="$PROJECT_DIR$/java/ai" />
             <option value="$PROJECT_DIR$/java/benchmarks" />
+            <option value="$PROJECT_DIR$/java/caching" />
             <option value="$PROJECT_DIR$/java/common" />
             <option value="$PROJECT_DIR$/java/cryptography" />
             <option value="$PROJECT_DIR$/java/designpatterns" />
